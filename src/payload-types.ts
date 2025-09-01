@@ -69,6 +69,7 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    characters: Character;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -77,6 +78,7 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    characters: CharactersSelect<false> | CharactersSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -144,6 +146,39 @@ export interface User {
 export interface Media {
   id: string;
   alt: string;
+  /**
+   * The unique asset ID from the DINOv3 service (R2 object key).
+   */
+  dinoAssetId?: string | null;
+  dinoProcessingStatus?: ('pending' | 'processing' | 'validation_failed' | 'validation_success' | 'error') | null;
+  /**
+   * 384-dimensional feature vector from DINOv3 model.
+   */
+  dinoFeatures?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Image quality score (0-100) from DINOv3 analysis.
+   */
+  qualityScore?: number | null;
+  /**
+   * Character consistency score (0-100) when compared to reference.
+   */
+  consistencyScore?: number | null;
+  /**
+   * Detailed notes from DINOv3 validation process, including failure reasons.
+   */
+  validationNotes?: string | null;
+  /**
+   * Timestamp when DINOv3 processing was completed.
+   */
+  dinoProcessedAt?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -155,6 +190,277 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "characters".
+ */
+export interface Character {
+  id: string;
+  /**
+   * The primary name of the character.
+   */
+  name: string;
+  status?: ('draft' | 'in_development' | 'ready' | 'in_production' | 'archived') | null;
+  /**
+   * Unique identifier for this character (auto-generated if not provided).
+   */
+  characterId?: string | null;
+  /**
+   * Detailed background story and history of the character.
+   */
+  biography?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Character personality, behavioral traits, and psychological profile.
+   */
+  personality?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * What drives this character, their goals and desires.
+   */
+  motivations?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Key relationships with other characters and entities.
+   */
+  relationships?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Origin story and formative experiences.
+   */
+  backstory?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  skills?:
+    | {
+        skill: string;
+        level?: ('beginner' | 'intermediate' | 'advanced' | 'expert' | 'master') | null;
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  age?: number | null;
+  height?: string | null;
+  weight?: string | null;
+  eyeColor?: string | null;
+  hairColor?: string | null;
+  /**
+   * Detailed physical appearance, distinguishing features, and overall look.
+   */
+  physicalDescription?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Voice characteristics, accent, speech patterns, and mannerisms.
+   */
+  voiceDescription?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Typical clothing style, fashion preferences, and signature looks.
+   */
+  clothing?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * The single "genesis" image that defines the character. All consistency is measured against this.
+   */
+  masterReferenceImage?: (string | null) | Media;
+  /**
+   * Indicates if the master reference image has been processed by DINOv3.
+   */
+  masterReferenceProcessed?: boolean | null;
+  /**
+   * Quality score of the master reference image (0-100).
+   */
+  masterReferenceQuality?: number | null;
+  /**
+   * Indicates if the 360° core reference set has been generated.
+   */
+  coreSetGenerated?: boolean | null;
+  /**
+   * Timestamp when the 360° core set was generated.
+   */
+  coreSetGeneratedAt?: string | null;
+  /**
+   * Quality metrics for the generated 360° core set.
+   */
+  coreSetQuality?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Indicates if character persona has been synced to PathRAG knowledge base.
+   */
+  pathragSynced?: boolean | null;
+  /**
+   * Timestamp of the last successful PathRAG sync.
+   */
+  pathragLastSync?: string | null;
+  /**
+   * Number of documents synced to PathRAG knowledge base.
+   */
+  pathragDocumentCount?: number | null;
+  /**
+   * Timestamp of the last consistency validation run.
+   */
+  lastConsistencyValidation?: string | null;
+  /**
+   * Summary statistics from the last consistency validation.
+   */
+  consistencyValidationSummary?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * A library of all generated and validated shots.
+   */
+  imageGallery?:
+    | {
+        imageFile: string | Media;
+        /**
+         * Check this for the initial 360-degree turnaround images.
+         */
+        isCoreReference?: boolean | null;
+        /**
+         * The unique key from the DINOv3 service (R2 object key).
+         */
+        dinoAssetId?: string | null;
+        dinoProcessingStatus?: ('pending' | 'processing' | 'validation_failed' | 'validation_success') | null;
+        qualityScore?: number | null;
+        consistencyScore?: number | null;
+        /**
+         * Contains reasons for failure from the DINOv3 service.
+         */
+        validationNotes?: string | null;
+        /**
+         * e.g., front, 45_left, over-the-shoulder, close-up
+         */
+        shotType?: string | null;
+        /**
+         * Descriptive tags for this image (lighting, mood, pose, etc.)
+         */
+        tags?: string | null;
+        /**
+         * The prompt used to generate this image (if AI-generated).
+         */
+        generationPrompt?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -170,6 +476,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: string | Media;
+      } | null)
+    | ({
+        relationTo: 'characters';
+        value: string | Character;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -241,6 +551,13 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
+  dinoAssetId?: T;
+  dinoProcessingStatus?: T;
+  dinoFeatures?: T;
+  qualityScore?: T;
+  consistencyScore?: T;
+  validationNotes?: T;
+  dinoProcessedAt?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -252,6 +569,64 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "characters_select".
+ */
+export interface CharactersSelect<T extends boolean = true> {
+  name?: T;
+  status?: T;
+  characterId?: T;
+  biography?: T;
+  personality?: T;
+  motivations?: T;
+  relationships?: T;
+  backstory?: T;
+  skills?:
+    | T
+    | {
+        skill?: T;
+        level?: T;
+        description?: T;
+        id?: T;
+      };
+  age?: T;
+  height?: T;
+  weight?: T;
+  eyeColor?: T;
+  hairColor?: T;
+  physicalDescription?: T;
+  voiceDescription?: T;
+  clothing?: T;
+  masterReferenceImage?: T;
+  masterReferenceProcessed?: T;
+  masterReferenceQuality?: T;
+  coreSetGenerated?: T;
+  coreSetGeneratedAt?: T;
+  coreSetQuality?: T;
+  pathragSynced?: T;
+  pathragLastSync?: T;
+  pathragDocumentCount?: T;
+  lastConsistencyValidation?: T;
+  consistencyValidationSummary?: T;
+  imageGallery?:
+    | T
+    | {
+        imageFile?: T;
+        isCoreReference?: T;
+        dinoAssetId?: T;
+        dinoProcessingStatus?: T;
+        qualityScore?: T;
+        consistencyScore?: T;
+        validationNotes?: T;
+        shotType?: T;
+        tags?: T;
+        generationPrompt?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
