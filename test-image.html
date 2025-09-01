@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Image Generator</title>
+</head>
+<body>
+    <canvas id="canvas" width="512" height="512"></canvas>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Create a simple test image for Elena Vasquez
+        ctx.fillStyle = '#f4c2a1'; // Skin tone
+        ctx.fillRect(0, 0, 512, 512);
+        
+        // Face
+        ctx.fillStyle = '#e8b896';
+        ctx.beginPath();
+        ctx.ellipse(256, 200, 80, 100, 0, 0, 2 * Math.PI);
+        ctx.fill();
+        
+        // Hair
+        ctx.fillStyle = '#2c1810';
+        ctx.beginPath();
+        ctx.ellipse(256, 150, 90, 80, 0, 0, 2 * Math.PI);
+        ctx.fill();
+        
+        // Eyes
+        ctx.fillStyle = '#4a3728';
+        ctx.beginPath();
+        ctx.ellipse(235, 180, 8, 12, 0, 0, 2 * Math.PI);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.ellipse(277, 180, 8, 12, 0, 0, 2 * Math.PI);
+        ctx.fill();
+        
+        // Nose
+        ctx.fillStyle = '#d4a384';
+        ctx.beginPath();
+        ctx.ellipse(256, 200, 4, 8, 0, 0, 2 * Math.PI);
+        ctx.fill();
+        
+        // Mouth
+        ctx.fillStyle = '#c4847d';
+        ctx.beginPath();
+        ctx.ellipse(256, 220, 12, 4, 0, 0, 2 * Math.PI);
+        ctx.fill();
+        
+        // Convert to blob and download
+        canvas.toBlob(function(blob) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'elena-vasquez-reference.png';
+            a.click();
+        });
+    </script>
+</body>
+</html>

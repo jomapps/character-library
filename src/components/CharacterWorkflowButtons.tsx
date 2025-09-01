@@ -2,22 +2,32 @@
 
 import React, { useState } from 'react'
 import { Button } from '@payloadcms/ui'
+import { useDocumentInfo } from '@payloadcms/ui'
 
 interface CharacterWorkflowButtonsProps {
-  characterId: string
-  characterName: string
+  // Payload UI field props
+  path?: string
+  name?: string
+  label?: string
+  // Custom props (optional for backward compatibility)
+  characterId?: string
+  characterName?: string
   masterReferenceProcessed?: boolean
   coreSetGenerated?: boolean
   onRefresh?: () => void
 }
 
-export const CharacterWorkflowButtons: React.FC<CharacterWorkflowButtonsProps> = ({
-  characterId,
-  characterName,
-  masterReferenceProcessed = false,
-  coreSetGenerated = false,
-  onRefresh,
-}) => {
+export const CharacterWorkflowButtons: React.FC<CharacterWorkflowButtonsProps> = (props) => {
+  // Get document data from Payload context
+  const { id: docId, data: docData } = useDocumentInfo()
+
+  // Use props or document data
+  const characterId = props.characterId || docId
+  const characterName = props.characterName || docData?.name || 'Unknown Character'
+  const masterReferenceProcessed =
+    props.masterReferenceProcessed || docData?.masterReferenceProcessed || false
+  const coreSetGenerated = props.coreSetGenerated || docData?.coreSetGenerated || false
+  const onRefresh = props.onRefresh
   const [loading, setLoading] = useState<string | null>(null)
   const [results, setResults] = useState<any>(null)
   const [error, setError] = useState<string | null>(null)
@@ -248,3 +258,5 @@ export const CharacterWorkflowButtons: React.FC<CharacterWorkflowButtonsProps> =
     </div>
   )
 }
+
+export default CharacterWorkflowButtons
