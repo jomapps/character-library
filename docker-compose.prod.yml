@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - .env.production
+    depends_on:
+      - mongo
+    restart: unless-stopped
+    volumes:
+      - ./media:/app/media
+      - app_data:/app/.next
+
+  mongo:
+    image: mongo:6.0
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+    command: --storageEngine=wiredTiger
+    environment:
+      - MONGO_INITDB_DATABASE=character_library_prod
+
+volumes:
+  mongo_data:
+  app_data:
