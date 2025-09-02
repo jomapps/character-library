@@ -1,17 +1,17 @@
 # Production Deployment Guide for Character Library
 
-This guide walks you through deploying the Character Library application to production using the domain `character.ft.tc`.
+This guide walks you through deploying the Character Library application to production using the domain `character.ft.tc` with direct server deployment (no Docker).
 
 ## Prerequisites
 
 ### Production Server Requirements
 - **OS**: Ubuntu 20.04+ or similar Linux distribution
-- **Node.js**: 18.20.2+ or 20.9.0+
-- **Docker & Docker Compose**: Latest stable versions
-- **MongoDB**: 5.0+ (can be containerized)
+- **Node.js**: 18.20.2+ or 20.9.0+ (already installed)
+- **MongoDB**: 5.0+ (already installed and running)
+- **pnpm**: Latest version
 - **Memory**: 4GB+ RAM recommended
 - **Storage**: 20GB+ free space
-- **Network**: Open ports 80, 443, 3000, 27017
+- **Network**: Open ports 80, 443, 3000
 
 ### Domain Setup
 - Domain `character.ft.tc` pointing to your production server IP
@@ -24,18 +24,10 @@ This guide walks you through deploying the Character Library application to prod
 sudo apt update && sudo apt upgrade -y
 ```
 
-### 1.2 Install Docker & Docker Compose
+### 1.2 Install pnpm (if not already installed)
 ```bash
-# Install Docker
-curl -fsSL https://get.docker.com -o get-docker.sh
-sudo sh get-docker.sh
-sudo usermod -aG docker $USER
-
-# Install Docker Compose
-sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
-
-# Logout and login again for group changes to take effect
+curl -fsSL https://get.pnpm.io/install.sh | sh -
+source ~/.bashrc
 ```
 
 ### 1.3 Install Nginx (for reverse proxy)
@@ -47,6 +39,11 @@ sudo systemctl enable nginx
 ### 1.4 Install Certbot (for SSL)
 ```bash
 sudo apt install certbot python3-certbot-nginx -y
+```
+
+### 1.5 Install PM2 (Process Manager)
+```bash
+npm install -g pm2
 ```
 
 ## Step 2: Application Deployment
