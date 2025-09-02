@@ -209,7 +209,7 @@ chmod +x deploy.sh
 # On your local machine
 git add .
 git commit -m "Your changes"
-git push origin main
+git push origin master
 
 # On production server
 cd /opt/character-library

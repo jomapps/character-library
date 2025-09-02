@@ -38,7 +38,7 @@ fi
 
 # Pull latest changes
 print_status "Pulling latest changes from Git..."
-git pull origin main
+git pull origin master
 
 # Stop existing containers
 print_status "Stopping existing containers..."
