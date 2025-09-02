@@ -99,7 +99,10 @@ echo -e "${NC}\n"
 # Load environment variables - .env is required
 if [ -f ".env" ]; then
     print_info "Loading environment variables from .env file"
-    export $(grep -v '^#' .env | xargs)
+    # Use source/. to load environment variables safely
+    set -a  # automatically export all variables
+    source .env
+    set +a  # turn off automatic export
 else
     print_error ".env file not found! This file is required for service testing."
     echo -e "${RED}Please ensure .env file exists in the current directory.${NC}"
