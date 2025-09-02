@@ -96,15 +96,14 @@ echo "║  before deploying the Character Library application.         ║"
 echo "╚══════════════════════════════════════════════════════════════╝"
 echo -e "${NC}\n"
 
-# Load environment variables if .env exists
+# Load environment variables - .env is required
 if [ -f ".env" ]; then
     print_info "Loading environment variables from .env file"
     export $(grep -v '^#' .env | xargs)
-elif [ -f ".env.production" ]; then
-    print_info "Loading environment variables from .env.production file"
-    export $(grep -v '^#' .env.production | xargs)
 else
-    print_warning "No .env file found, using default values"
+    print_error ".env file not found! This file is required for service testing."
+    echo -e "${RED}Please ensure .env file exists in the current directory.${NC}"
+    exit 1
 fi
 
 # Check System Requirements
