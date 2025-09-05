@@ -98,10 +98,16 @@ echo -e "${NC}\n"
 
 # Load environment variables - .env is required
 if [ -f ".env" ]; then
+    print_success ".env file found"
     print_info "Loading environment variables from .env file"
+
     # Use source/. to load environment variables safely
     set -a  # automatically export all variables
-    source .env
+    if source .env 2>/dev/null; then
+        print_success "Environment variables loaded successfully"
+    else
+        print_warning "Some environment variables may have failed to load"
+    fi
     set +a  # turn off automatic export
 else
     print_error ".env file not found! This file is required for service testing."

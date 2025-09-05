@@ -163,16 +163,32 @@ sudo systemctl reload nginx
 
 ## Step 5: SSL Certificate Setup
 
-### 5.1 Obtain SSL Certificate
+### 5.1 Automated SSL Setup (Recommended)
+Use the provided SSL setup script for automated configuration:
+```bash
+# Make the script executable
+chmod +x setup-ssl.sh
+
+# Run the SSL setup script (requires sudo)
+sudo ./setup-ssl.sh
+```
+
+### 5.2 Manual SSL Setup (Alternative)
 ```bash
 sudo certbot --nginx -d character.ft.tc
 ```
 
-### 5.2 Auto-renewal Setup
+### 5.3 Auto-renewal Setup
 ```bash
 sudo crontab -e
 # Add this line:
 0 12 * * * /usr/bin/certbot renew --quiet
+```
+
+### 5.4 Verify SSL Configuration
+```bash
+# Check SSL status
+./check-ssl.sh
 ```
 
 ## Step 6: Git-based Deployment Workflow
