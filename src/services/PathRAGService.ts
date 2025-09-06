@@ -23,8 +23,12 @@ export interface PathRAGQueryResponse {
 
 export interface PathRAGHealthResponse {
   status: string
-  message: string
-  arangodb_status: string
+  services: {
+    api: string
+    arangodb: string
+    query_engine: string
+    storage: string
+  }
   timestamp: string
 }
 
@@ -72,7 +76,7 @@ export class PathRAGService {
       const data: PathRAGHealthResponse = await response.json()
       
       return {
-        healthy: data.status === 'healthy' && data.arangodb_status === 'connected',
+        healthy: data.status === 'healthy' && data.services?.arangodb === 'connected',
         details: data,
       }
     } catch (error) {

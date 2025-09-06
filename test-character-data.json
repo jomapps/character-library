@@ -1,0 +1,131 @@
+{
+  "name": "Aria Shadowbane",
+  "status": "draft",
+  "biography": {
+    "root": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "text": "Born in the twilight forests of Elderwood, Aria was raised by a secretive guild of shadow dancers. Her early years were marked by rigorous training in stealth, acrobatics, and the ancient art of shadow manipulation."
+            }
+          ]
+        }
+      ],
+      "direction": null,
+      "format": "",
+      "indent": 0,
+      "version": 1
+    }
+  },
+  "personality": {
+    "root": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "text": "Aria is introspective and cautious, preferring to observe before acting. She has a dry sense of humor and struggles with trust issues due to past betrayals. Despite her guarded nature, she has a strong moral compass and will risk everything to protect the innocent."
+            }
+          ]
+        }
+      ],
+      "direction": null,
+      "format": "",
+      "indent": 0,
+      "version": 1
+    }
+  },
+  "motivations": {
+    "root": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "text": "Driven by a need to atone for past mistakes that led to the destruction of her guild. She seeks to uncover the truth behind the betrayal that cost her everything and find a way to honor her fallen comrades."
+            }
+          ]
+        }
+      ],
+      "direction": null,
+      "format": "",
+      "indent": 0,
+      "version": 1
+    }
+  },
+  "backstory": {
+    "root": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "text": "Five years ago, Aria's guild was ambushed during what should have been a routine mission. She was the sole survivor, saved only by her mentor's sacrifice. The attack was orchestrated by someone with intimate knowledge of their operations, suggesting a traitor within their ranks."
+            }
+          ]
+        }
+      ],
+      "direction": null,
+      "format": "",
+      "indent": 0,
+      "version": 1
+    }
+  },
+  "skills": [
+    {
+      "skill": "Stealth",
+      "level": "expert",
+      "description": "Master of moving unseen and unheard through any environment"
+    },
+    {
+      "skill": "Shadow Magic",
+      "level": "advanced",
+      "description": "Can manipulate shadows for concealment and minor illusions"
+    },
+    {
+      "skill": "Dual Wielding",
+      "level": "expert",
+      "description": "Exceptional skill with paired daggers and short swords"
+    },
+    {
+      "skill": "Acrobatics",
+      "level": "master",
+      "description": "Incredible agility and parkour abilities"
+    }
+  ],
+  "age": 127,
+  "height": "5'6\"",
+  "weight": "125 lbs",
+  "eyeColor": "Violet",
+  "hairColor": "Silver-white",
+  "physicalDescription": {
+    "root": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "text": "Aria is a lithe elf with an athletic build honed by years of training. Her silver-white hair is often braided with small charms and trinkets. Her violet eyes seem to shimmer with an inner light, and intricate tattoos of shadow patterns wind around her arms and shoulders. She moves with fluid grace, every gesture purposeful and controlled."
+            }
+          ]
+        }
+      ],
+      "direction": null,
+      "format": "",
+      "indent": 0,
+      "version": 1
+    }
+  }
+}
