@@ -174,20 +174,21 @@ The **Character Library** is a state-of-the-art Digital Asset Management (DAM) s
 ## 🔌 **API Endpoints Overview**
 
 ### **Character Management**
-- `GET/POST/PATCH/DELETE /api/characters` - CRUD operations
-- `POST /api/characters/query` - Natural language queries
-- `POST /api/pathrag/manage` - Knowledge base management
+- `GET/POST/PATCH/DELETE /api/v1/characters` - CRUD operations
+- `POST /api/v1/characters/query` - Natural language queries
+- `POST /api/v1/pathrag/manage` - Knowledge base management
 
 ### **Image Generation**
-- `POST /api/characters/{id}/generate-initial-image` - Master reference
-- `POST /api/characters/{id}/generate-core-set` - 360° turnaround
-- `POST /api/characters/{id}/generate-image` - On-demand images
-- `POST /api/characters/generate-initial-image` - Standalone images
+- `POST /api/v1/characters/{id}/generate-initial-image` - Master reference
+- `POST /api/v1/characters/{id}/generate-core-set` - 360° turnaround
+- `POST /api/v1/characters/{id}/generate-image` - On-demand images
+- `POST /api/v1/characters/{id}/generate-smart-image` - **Intelligent generation with auto-reference selection**
+- `POST /api/v1/characters/generate-initial-image` - Standalone images
 
 ### **Quality Assurance**
-- `POST /api/characters/{id}/validate-consistency` - Batch validation
-- `POST /api/qa` - Quality assurance operations
-- `GET/PUT /api/qa/config` - QA configuration
+- `POST /api/v1/characters/{id}/validate-consistency` - Batch validation
+- `POST /api/v1/qa` - Quality assurance operations
+- `GET/PUT /api/v1/qa/config` - QA configuration
 
 ### **Media Management**
 - `GET/POST/PATCH/DELETE /api/media` - Media file operations

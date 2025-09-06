@@ -16,60 +16,60 @@ This document outlines a comprehensive test plan for all Character Library API e
 ## Test Execution Order
 
 ### Phase 1: Basic Character Management
-1. **List Characters (GET /api/characters)**
+1. **List Characters (GET /api/v1/characters)**
    - Verify empty or existing character list
    - Test pagination parameters
 
-2. **Create Character (POST /api/characters)**
+2. **Create Character (POST /api/v1/characters)**
    - Create Aria Shadowbane with complete persona data
    - Verify character creation and auto-generated characterId
 
-3. **Get Specific Character (GET /api/characters/{id})**
+3. **Get Specific Character (GET /api/v1/characters/{id})**
    - Retrieve the created character by ID
    - Verify all data fields are correctly stored
 
-4. **Update Character (PATCH /api/characters/{id})**
+4. **Update Character (PATCH /api/v1/characters/{id})**
    - Update character status and add additional details
    - Verify changes are persisted
 
 ### Phase 2: PathRAG Knowledge Base Management
-5. **PathRAG Health Check (POST /api/pathrag/manage)**
+5. **PathRAG Health Check (POST /api/v1/pathrag/manage)**
    - Verify PathRAG service is healthy and accessible
 
-6. **Sync Character to PathRAG (POST /api/pathrag/manage)**
+6. **Sync Character to PathRAG (POST /api/v1/pathrag/manage)**
    - Sync the created character to the knowledge base
    - Verify successful synchronization
 
-7. **Get PathRAG Stats (POST /api/pathrag/manage)**
+7. **Get PathRAG Stats (POST /api/v1/pathrag/manage)**
    - Retrieve knowledge base statistics
    - Verify character data is indexed
 
 ### Phase 3: Character Query System
-8. **Query Character Knowledge (POST /api/characters/query)**
+8. **Query Character Knowledge (POST /api/v1/characters/query)**
    - Test various natural language queries about Aria
    - Test different response types and parameters
 
-9. **Get Query Stats (GET /api/characters/query?action=stats)**
+9. **Get Query Stats (GET /api/v1/characters/query?action=stats)**
    - Retrieve PathRAG statistics via query endpoint
 
 ### Phase 4: Image Generation & Management
-10. **Generate Character Image (POST /api/characters/{id}/generate-image)**
+10. **Generate Character Image (POST /api/v1/characters/{id}/generate-image)**
     - Generate a master reference image for Aria
     - Test different prompts and styles
 
-11. **Generate 360° Core Set (POST /api/characters/{id}/generate-core-set)**
+11. **Generate 360° Core Set (POST /api/v1/characters/{id}/generate-core-set)**
     - Generate comprehensive reference angles
     - Requires master reference image from previous step
 
 ### Phase 5: Quality Assurance
-12. **Validate Character Consistency (POST /api/characters/{id}/validate-consistency)**
+12. **Validate Character Consistency (POST /api/v1/characters/{id}/validate-consistency)**
     - Run consistency validation across all character images
     - Verify quality scores and recommendations
 
-13. **QA Configuration (GET /api/qa/config)**
+13. **QA Configuration (GET /api/v1/qa/config)**
     - Retrieve current QA thresholds and settings
 
-14. **Run QA on Assets (POST /api/qa)**
+14. **Run QA on Assets (POST /api/v1/qa)**
     - Test quality assurance on generated images
     - Verify consistency and quality scoring
 
@@ -82,7 +82,7 @@ This document outlines a comprehensive test plan for all Character Library API e
     - Retrieve specific media file details
 
 ### Phase 7: Advanced Operations
-17. **Delete Character (DELETE /api/characters/{id})**
+17. **Delete Character (DELETE /api/v1/characters/{id})**
     - Clean up test data (optional, for cleanup)
 
 ## Test Data Templates

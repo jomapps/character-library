@@ -44,12 +44,12 @@ curl -s -X GET "http://localhost:3001/api/characters/query?action=health"
 ### ✅ **PathRAG Queries - NOW WORKING**
 ```bash
 # Test 1: Basic character query
-curl -s -X POST "http://localhost:3001/api/characters/query" \
+curl -s -X POST "http://localhost:3001/api/v1/characters/query" \
   -H "Content-Type: application/json" \
   -d '{"query": "Tell me about Aria Shadowbane", "options": {"responseType": "Single Paragraph"}}'
 
 # Test 2: Attribute-based query  
-curl -s -X POST "http://localhost:3001/api/characters/query" \
+curl -s -X POST "http://localhost:3001/api/v1/characters/query" \
   -H "Content-Type: application/json" \
   -d '{"query": "What characters have violet eyes?", "options": {"responseType": "Bullet Points"}}'
 

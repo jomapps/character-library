@@ -5,8 +5,8 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
-import configPromise from '../../../../../payload.config'
-import { qualityAssuranceService } from '../../../../../services/QualityAssuranceService'
+import config from '@payload-config'
+import { qualityAssuranceService } from '../../../../../../services/QualityAssuranceService'
 
 interface ConsistencyValidationResult {
   imageId: string
@@ -35,7 +35,7 @@ interface ValidationSummary {
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const payload = await getPayload({ config: configPromise })
+    const payload = await getPayload({ config })
     const { id: characterId } = await params
 
     console.log(`Validating character consistency for: ${characterId}`)

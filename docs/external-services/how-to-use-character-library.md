@@ -29,7 +29,7 @@ The Character Library is a state-of-the-art Digital Asset Management system for 
 
 ### 1. Character Query API (PathRAG Integration)
 
-#### POST /api/characters/query
+#### POST /api/v1/characters/query
 Query the character knowledge base using natural language.
 
 **Request Body**:
@@ -76,7 +76,7 @@ Query the character knowledge base using natural language.
 - `503`: PathRAG service unavailable
 - `500`: Internal server error
 
-#### GET /api/characters/query
+#### GET /api/v1/characters/query
 Get API information and example queries.
 
 **Query Parameters**:
@@ -90,8 +90,8 @@ Get API information and example queries.
   "data": {
     "description": "Character Knowledge Query API powered by PathRAG",
     "endpoints": {
-      "POST /api/characters/query": "Query character knowledge base with natural language",
-      "GET /api/characters/query?action=stats": "Get PathRAG knowledge base statistics"
+      "POST /api/v1/characters/query": "Query character knowledge base with natural language",
+      "GET /api/v1/characters/query?action=stats": "Get PathRAG knowledge base statistics"
     },
     "exampleQueries": [
       "Tell me about the character named Jax",
@@ -104,7 +104,7 @@ Get API information and example queries.
 
 ### 2. Character Image Generation
 
-#### POST /api/characters/[id]/generate-image
+#### POST /api/v1/characters/[id]/generate-image
 Generate on-demand images for a specific character.
 
 **URL Parameters**:
@@ -145,7 +145,7 @@ Generate on-demand images for a specific character.
 }
 ```
 
-#### POST /api/characters/[id]/generate-core-set
+#### POST /api/v1/characters/[id]/generate-core-set
 Generate a 360° core reference set for a character.
 
 **URL Parameters**:
@@ -180,7 +180,7 @@ Generate a 360° core reference set for a character.
 
 ### 3. Character Validation
 
-#### POST /api/characters/[id]/validate-consistency
+#### POST /api/v1/characters/[id]/validate-consistency
 Validate consistency across all character gallery images.
 
 **URL Parameters**:
@@ -217,7 +217,7 @@ Validate consistency across all character gallery images.
 
 ### 4. PathRAG Management
 
-#### POST /api/pathrag/manage
+#### POST /api/v1/pathrag/manage
 Perform PathRAG knowledge base management operations.
 
 **Request Body**:
@@ -500,6 +500,6 @@ curl -X POST http://localhost:3000/api/characters/CHARACTER_ID/generate-image \
 
 - **GraphQL Playground**: `/api/graphql-playground` for interactive API exploration
 - **Admin Panel**: `/admin` for visual character management
-- **Health Checks**: Use `/api/characters/query?action=health` to verify service status
+- **Health Checks**: Use `/api/v1/characters/query?action=health` to verify service status
 
 For additional support or questions about integrating with the Character Library API, please refer to the project documentation or contact the development team.

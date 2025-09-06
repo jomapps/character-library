@@ -5,7 +5,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { pathragService } from '../../../../services/PathRAGService'
+import { pathragService } from '../../../../../services/PathRAGService'
 
 interface CharacterQueryRequest {
   query: string
@@ -138,9 +138,9 @@ export async function GET(request: NextRequest) {
       data: {
         description: 'Character Knowledge Query API powered by PathRAG',
         endpoints: {
-          'POST /api/characters/query': 'Query character knowledge base with natural language',
-          'GET /api/characters/query?action=stats': 'Get PathRAG knowledge base statistics',
-          'GET /api/characters/query?action=health': 'Check PathRAG service health',
+          'POST /api/v1/characters/query': 'Query character knowledge base with natural language',
+          'GET /api/v1/characters/query?action=stats': 'Get PathRAG knowledge base statistics',
+          'GET /api/v1/characters/query?action=health': 'Check PathRAG service health',
         },
         queryOptions: {
           responseType: [

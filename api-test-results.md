@@ -13,54 +13,54 @@
 
 ### ✅ Phase 1: Basic Character Management (4/4 PASSED)
 
-#### Test 1: List Characters (GET /api/characters)
+#### Test 1: List Characters (GET /api/v1/characters)
 - **Status**: ✅ PASSED
 - **Response**: Empty character list with proper pagination structure
 - **Notes**: Pagination parameters working correctly
 
-#### Test 2: Create Character (POST /api/characters)
+#### Test 2: Create Character (POST /api/v1/characters)
 - **Status**: ✅ PASSED
 - **Response**: Character "Aria Shadowbane" created successfully
 - **Character ID**: 68bb099c12eac58de3b79622
 - **Character Slug**: aria-shadowbane
 - **Notes**: All persona data (biography, personality, motivations, backstory, skills, physical attributes) stored correctly
 
-#### Test 3: Get Specific Character (GET /api/characters/{id})
+#### Test 3: Get Specific Character (GET /api/v1/characters/{id})
 - **Status**: ✅ PASSED
 - **Response**: Complete character data retrieved successfully
 - **Notes**: All fields match the original creation data
 
-#### Test 4: Update Character (PATCH /api/characters/{id})
+#### Test 4: Update Character (PATCH /api/v1/characters/{id})
 - **Status**: ✅ PASSED
 - **Response**: Character status updated from "draft" to "in_development"
 - **Notes**: updatedAt timestamp correctly modified
 
 ### ⚠️ Phase 2: PathRAG Knowledge Base Management (2/3 PARTIAL)
 
-#### Test 5: PathRAG Health Check (POST /api/pathrag/manage)
+#### Test 5: PathRAG Health Check (POST /api/v1/pathrag/manage)
 - **Status**: ⚠️ PARTIAL
 - **Response**: Service configured but health check shows issues
 - **Details**: API running, ArangoDB connected, but overall health false
 - **Notes**: Service is functional despite health check warnings
 
-#### Test 6: Sync Character to PathRAG (POST /api/pathrag/manage)
+#### Test 6: Sync Character to PathRAG (POST /api/v1/pathrag/manage)
 - **Status**: ✅ PASSED
 - **Response**: Character successfully synced to knowledge base
 - **Notes**: Character now shows pathragSynced: true and pathragLastSync timestamp
 
-#### Test 7: Get PathRAG Stats (POST /api/pathrag/manage)
+#### Test 7: Get PathRAG Stats (POST /api/v1/pathrag/manage)
 - **Status**: ❌ FAILED
 - **Error**: "PathRAG stats failed: 404 NOT FOUND"
 - **Notes**: Stats endpoint not available, but sync functionality works
 
 ### ❌ Phase 3: Character Query System (1/2 FAILED)
 
-#### Test 8: Query Character Knowledge (POST /api/characters/query)
+#### Test 8: Query Character Knowledge (POST /api/v1/characters/query)
 - **Status**: ❌ FAILED
 - **Error**: "PathRAG service is not available - Service health check failed"
 - **Notes**: Despite successful sync, query health check fails
 
-#### Test 9: Get Query Stats (GET /api/characters/query?action=stats)
+#### Test 9: Get Query Stats (GET /api/v1/characters/query?action=stats)
 - **Status**: ❌ FAILED
 - **Error**: "Failed to get PathRAG statistics - PathRAG stats failed: 404 NOT FOUND"
 - **Notes**: Same issue as PathRAG management stats
@@ -82,18 +82,18 @@
   - Attempted programmatic upload with Node.js FormData
 - **Root Cause**: Payload CMS media upload validation or multipart parsing issue
 
-#### Test 11: Generate Character Image (POST /api/characters/{id}/generate-image)
+#### Test 11: Generate Character Image (POST /api/v1/characters/{id}/generate-image)
 - **Status**: ❌ FAILED (Dependency)
 - **Error**: "Master reference image must be processed before generating images"
 - **Notes**: Cannot test without successful image upload from Test 10
 
-#### Test 12: Generate 360° Core Set (POST /api/characters/{id}/generate-core-set)
+#### Test 12: Generate 360° Core Set (POST /api/v1/characters/{id}/generate-core-set)
 - **Status**: ❌ FAILED (Dependency)
 - **Notes**: Cannot test without master reference image from Test 10
 
 ### ✅ Phase 5: Quality Assurance (1/1 PASSED)
 
-#### Test 13: QA Configuration (GET /api/qa)
+#### Test 13: QA Configuration (GET /api/v1/qa)
 - **Status**: ✅ PASSED
 - **Response**: Retrieved QA thresholds and configuration
 - **Configuration**: 

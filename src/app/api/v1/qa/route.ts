@@ -1,12 +1,12 @@
 /**
  * Quality Assurance API endpoints
- * POST /api/qa - Run QA on single or multiple assets
- * GET /api/qa/config - Get current QA configuration
- * PUT /api/qa/config - Update QA configuration
+ * POST /api/v1/qa - Run QA on single or multiple assets
+ * GET /api/v1/qa/config - Get current QA configuration
+ * PUT /api/v1/qa/config - Update QA configuration
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { qualityAssuranceService } from '../../../services/QualityAssuranceService'
+import { qualityAssuranceService } from '../../../../services/QualityAssuranceService'
 
 interface QARequest {
   assetIds: string | string[]

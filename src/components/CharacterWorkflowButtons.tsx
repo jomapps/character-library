@@ -65,7 +65,7 @@ export const CharacterWorkflowButtons: React.FC<CharacterWorkflowButtonsProps> =
 
     setLoading('core-set')
     try {
-      const result = await handleApiCall(`/api/characters/${characterId}/generate-core-set`)
+      const result = await handleApiCall(`/api/v1/characters/${characterId}/generate-core-set`)
       setResults(result)
       if (onRefresh) onRefresh()
     } catch (err) {
@@ -78,7 +78,7 @@ export const CharacterWorkflowButtons: React.FC<CharacterWorkflowButtonsProps> =
   const validateConsistency = async () => {
     setLoading('validate')
     try {
-      const result = await handleApiCall(`/api/characters/${characterId}/validate-consistency`)
+      const result = await handleApiCall(`/api/v1/characters/${characterId}/validate-consistency`)
       setResults(result)
       if (onRefresh) onRefresh()
     } catch (err) {
@@ -98,7 +98,7 @@ export const CharacterWorkflowButtons: React.FC<CharacterWorkflowButtonsProps> =
 
     setLoading('on-demand')
     try {
-      const result = await handleApiCall(`/api/characters/${characterId}/generate-image`, 'POST', {
+      const result = await handleApiCall(`/api/v1/characters/${characterId}/generate-image`, 'POST', {
         prompt,
         style: 'character_production',
         shotType: 'on_demand_custom',
@@ -117,7 +117,7 @@ export const CharacterWorkflowButtons: React.FC<CharacterWorkflowButtonsProps> =
     setLoading('qa')
     try {
       // First get the character data to extract asset IDs
-      const characterResponse = await fetch(`/api/characters/${characterId}`)
+      const characterResponse = await fetch(`/api/v1/characters/${characterId}`)
       const characterData = await characterResponse.json()
 
       if (!characterData.imageGallery || characterData.imageGallery.length === 0) {
@@ -134,7 +134,7 @@ export const CharacterWorkflowButtons: React.FC<CharacterWorkflowButtonsProps> =
 
       const masterRefId = characterData.masterReferenceImage?.dinoAssetId
 
-      const result = await handleApiCall('/api/qa', 'POST', {
+      const result = await handleApiCall('/api/v1/qa', 'POST', {
         assetIds,
         masterReferenceAssetId: masterRefId,
       })

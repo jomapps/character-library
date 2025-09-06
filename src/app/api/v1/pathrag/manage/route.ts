@@ -1,13 +1,13 @@
 /**
  * PathRAG Knowledge Base Management API
- * POST /api/pathrag/manage - Perform management operations
- * GET /api/pathrag/manage - Get management interface info
+ * POST /api/v1/pathrag/manage - Perform management operations
+ * GET /api/v1/pathrag/manage - Get management interface info
  */
 
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
-import configPromise from '../../../../payload.config'
-import { pathragService } from '../../../../services/PathRAGService'
+import config from '@payload-config'
+import { pathragService } from '../../../../../services/PathRAGService'
 
 interface ManagementRequest {
   action: 'sync_all' | 'sync_character' | 'delete_entity' | 'health_check' | 'get_stats'
@@ -155,7 +155,7 @@ async function handleGetStats() {
 }
 
 async function handleSyncAll(force: boolean) {
-  const payload = await getPayload({ config: configPromise })
+  const payload = await getPayload({ config })
   
   console.log(`Starting bulk sync of all characters (force: ${force})`)
 
@@ -243,7 +243,7 @@ async function handleSyncAll(force: boolean) {
 }
 
 async function handleSyncCharacter(characterId: string) {
-  const payload = await getPayload({ config: configPromise })
+  const payload = await getPayload({ config })
   
   console.log(`Syncing individual character: ${characterId}`)
 

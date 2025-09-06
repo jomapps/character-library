@@ -9,9 +9,9 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
-import configPromise from '../../../../payload.config'
-import { imageGenerationService } from '../../../../services/ImageGenerationService'
-import { dinoOrchestrator } from '../../../../services/DinoOrchestrator'
+import config from '@payload-config'
+import { imageGenerationService } from '../../../../../services/ImageGenerationService'
+import { dinoOrchestrator } from '../../../../../services/DinoOrchestrator'
 
 interface GenerateStandaloneImageRequest {
   prompt: string
@@ -40,7 +40,7 @@ export async function POST(
   request: NextRequest
 ): Promise<NextResponse<GenerateStandaloneImageResponse>> {
   try {
-    const payload = await getPayload({ config: configPromise })
+    const payload = await getPayload({ config })
     const body: GenerateStandaloneImageRequest = await request.json()
 
     if (!body.prompt) {

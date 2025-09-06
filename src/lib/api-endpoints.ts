@@ -25,7 +25,7 @@ export const apiEndpoints: ApiEndpoint[] = [
     id: 'characters-list',
     name: 'List Characters',
     method: 'GET',
-    path: '/api/characters',
+    path: '/api/v1/characters',
     description: 'Get all characters from the database',
     category: 'Character Management',
     fields: [
@@ -51,7 +51,7 @@ export const apiEndpoints: ApiEndpoint[] = [
     id: 'characters-get',
     name: 'Get Character',
     method: 'GET',
-    path: '/api/characters/{id}',
+    path: '/api/v1/characters/{id}',
     description: 'Get a specific character by ID',
     category: 'Character Management',
     fields: [
@@ -68,7 +68,7 @@ export const apiEndpoints: ApiEndpoint[] = [
     id: 'characters-create',
     name: 'Create Character',
     method: 'POST',
-    path: '/api/characters',
+    path: '/api/v1/characters',
     description: 'Create a new character',
     category: 'Character Management',
     fields: [
@@ -99,7 +99,7 @@ export const apiEndpoints: ApiEndpoint[] = [
     id: 'characters-update',
     name: 'Update Character',
     method: 'PATCH',
-    path: '/api/characters/{id}',
+    path: '/api/v1/characters/{id}',
     description: 'Update an existing character',
     category: 'Character Management',
     fields: [
@@ -130,7 +130,7 @@ export const apiEndpoints: ApiEndpoint[] = [
     id: 'characters-delete',
     name: 'Delete Character',
     method: 'DELETE',
-    path: '/api/characters/{id}',
+    path: '/api/v1/characters/{id}',
     description: 'Delete a character',
     category: 'Character Management',
     fields: [
@@ -147,7 +147,7 @@ export const apiEndpoints: ApiEndpoint[] = [
     id: 'characters-generate-core-set',
     name: 'Generate Core Set',
     method: 'POST',
-    path: '/api/characters/{id}/generate-core-set',
+    path: '/api/v1/characters/{id}/generate-core-set',
     description: 'Generate 360° core reference set for a character',
     category: 'Character Management',
     fields: [
@@ -167,13 +167,124 @@ export const apiEndpoints: ApiEndpoint[] = [
       }
     ]
   },
+  {
+    id: 'characters-generate-image',
+    name: 'Generate Image',
+    method: 'POST',
+    path: '/api/v1/characters/{id}/generate-image',
+    description: 'Generate a new image for a character',
+    category: 'Character Management',
+    fields: [
+      {
+        name: 'id',
+        type: 'string',
+        required: true,
+        description: 'Character ID',
+        placeholder: 'Enter character ID'
+      },
+      {
+        name: 'prompt',
+        type: 'string',
+        required: false,
+        description: 'Custom prompt for image generation',
+        placeholder: 'Enter custom prompt'
+      },
+      {
+        name: 'style',
+        type: 'string',
+        required: false,
+        description: 'Image style',
+        placeholder: 'realistic, anime, cartoon, etc.'
+      }
+    ]
+  },
+  {
+    id: 'characters-generate-smart-image',
+    name: 'Generate Smart Image',
+    method: 'POST',
+    path: '/api/v1/characters/{id}/generate-smart-image',
+    description: 'Generate an intelligent image using reference selection',
+    category: 'Character Management',
+    fields: [
+      {
+        name: 'id',
+        type: 'string',
+        required: true,
+        description: 'Character ID',
+        placeholder: 'Enter character ID'
+      },
+      {
+        name: 'prompt',
+        type: 'string',
+        required: false,
+        description: 'Custom prompt for image generation',
+        placeholder: 'Enter custom prompt'
+      },
+      {
+        name: 'useSmartSelection',
+        type: 'boolean',
+        required: false,
+        description: 'Use smart reference selection',
+        defaultValue: true
+      }
+    ]
+  },
+  {
+    id: 'characters-generate-initial-image',
+    name: 'Generate Initial Image',
+    method: 'POST',
+    path: '/api/v1/characters/{id}/generate-initial-image',
+    description: 'Generate the first image for a character',
+    category: 'Character Management',
+    fields: [
+      {
+        name: 'id',
+        type: 'string',
+        required: true,
+        description: 'Character ID',
+        placeholder: 'Enter character ID'
+      },
+      {
+        name: 'prompt',
+        type: 'string',
+        required: false,
+        description: 'Custom prompt for image generation',
+        placeholder: 'Enter custom prompt'
+      }
+    ]
+  },
+  {
+    id: 'characters-validate-consistency',
+    name: 'Validate Consistency',
+    method: 'POST',
+    path: '/api/v1/characters/{id}/validate-consistency',
+    description: 'Validate character consistency across images',
+    category: 'Character Management',
+    fields: [
+      {
+        name: 'id',
+        type: 'string',
+        required: true,
+        description: 'Character ID',
+        placeholder: 'Enter character ID'
+      },
+      {
+        name: 'threshold',
+        type: 'number',
+        required: false,
+        description: 'Consistency threshold (0-1)',
+        placeholder: '0.8',
+        defaultValue: 0.8
+      }
+    ]
+  },
 
   // Character Query (PathRAG)
   {
     id: 'characters-query',
     name: 'Query Characters',
     method: 'POST',
-    path: '/api/characters/query',
+    path: '/api/v1/characters/query',
     description: 'Query character knowledge base with natural language',
     category: 'Character Query',
     fields: [
@@ -213,7 +324,7 @@ export const apiEndpoints: ApiEndpoint[] = [
     id: 'characters-query-stats',
     name: 'Query Stats',
     method: 'GET',
-    path: '/api/characters/query',
+    path: '/api/v1/characters/query',
     description: 'Get PathRAG knowledge base statistics',
     category: 'Character Query',
     fields: [
@@ -230,7 +341,7 @@ export const apiEndpoints: ApiEndpoint[] = [
     id: 'characters-query-health',
     name: 'Query Health',
     method: 'GET',
-    path: '/api/characters/query',
+    path: '/api/v1/characters/query',
     description: 'Check PathRAG service health',
     category: 'Character Query',
     fields: [
@@ -249,7 +360,7 @@ export const apiEndpoints: ApiEndpoint[] = [
     id: 'pathrag-manage',
     name: 'PathRAG Management',
     method: 'POST',
-    path: '/api/pathrag/manage',
+    path: '/api/v1/pathrag/manage',
     description: 'Perform PathRAG knowledge base management operations',
     category: 'PathRAG Management',
     fields: [
@@ -287,7 +398,7 @@ export const apiEndpoints: ApiEndpoint[] = [
     id: 'pathrag-info',
     name: 'PathRAG Info',
     method: 'GET',
-    path: '/api/pathrag/manage',
+    path: '/api/v1/pathrag/manage',
     description: 'Get PathRAG management interface information',
     category: 'PathRAG Management',
     fields: []
@@ -298,7 +409,7 @@ export const apiEndpoints: ApiEndpoint[] = [
     id: 'qa-run',
     name: 'Run QA',
     method: 'POST',
-    path: '/api/qa',
+    path: '/api/v1/qa',
     description: 'Run quality assurance on assets',
     category: 'Quality Assurance',
     fields: [
@@ -345,7 +456,7 @@ export const apiEndpoints: ApiEndpoint[] = [
     id: 'qa-config-get',
     name: 'Get QA Config',
     method: 'GET',
-    path: '/api/qa/config',
+    path: '/api/v1/qa/config',
     description: 'Get current QA configuration',
     category: 'Quality Assurance',
     fields: []
@@ -354,7 +465,7 @@ export const apiEndpoints: ApiEndpoint[] = [
     id: 'qa-config-update',
     name: 'Update QA Config',
     method: 'PUT',
-    path: '/api/qa/config',
+    path: '/api/v1/qa/config',
     description: 'Update QA configuration',
     category: 'Quality Assurance',
     fields: [

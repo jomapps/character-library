@@ -31,7 +31,7 @@ export const CharacterQueryInterface: React.FC = () => {
 
   const checkServiceHealth = async () => {
     try {
-      const response = await fetch('/api/characters/query?action=health')
+      const response = await fetch('/api/v1/characters/query?action=health')
       const data = await response.json()
       setServiceHealth(data.data?.healthy || false)
     } catch (err) {
@@ -41,7 +41,7 @@ export const CharacterQueryInterface: React.FC = () => {
 
   const fetchStats = async () => {
     try {
-      const response = await fetch('/api/characters/query?action=stats')
+      const response = await fetch('/api/v1/characters/query?action=stats')
       const data = await response.json()
       if (data.success) {
         setStats(data.data.pathragStats)
@@ -61,7 +61,7 @@ export const CharacterQueryInterface: React.FC = () => {
     setError(null)
 
     try {
-      const response = await fetch('/api/characters/query', {
+      const response = await fetch('/api/v1/characters/query', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

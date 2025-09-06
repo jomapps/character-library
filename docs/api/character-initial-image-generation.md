@@ -6,8 +6,8 @@ This document describes the API endpoints for generating initial character image
 
 The Character Library provides two endpoints for generating initial character images:
 
-1. **Standalone Generation** (`POST /api/characters/generate-initial-image`) - Generate an image without requiring an existing character
-2. **Character-Specific Generation** (`POST /api/characters/[id]/generate-initial-image`) - Generate an initial image for an existing character
+1. **Standalone Generation** (`POST /api/v1/characters/generate-initial-image`) - Generate an image without requiring an existing character
+2. **Character-Specific Generation** (`POST /api/v1/characters/[id]/generate-initial-image`) - Generate an initial image for an existing character
 
 Both endpoints create high-quality reference images optimized for character consistency validation and future image generation.
 
@@ -26,7 +26,7 @@ Both endpoints create high-quality reference images optimized for character cons
 
 Generate an initial character image without requiring an existing character.
 
-**Endpoint**: `POST /api/characters/generate-initial-image`
+**Endpoint**: `POST /api/v1/characters/generate-initial-image`
 
 **Request Body**:
 ```json
@@ -66,7 +66,7 @@ Generate an initial character image without requiring an existing character.
 
 Generate an initial image for an existing character and set it as the master reference image.
 
-**Endpoint**: `POST /api/characters/[id]/generate-initial-image`
+**Endpoint**: `POST /api/v1/characters/[id]/generate-initial-image`
 
 **Request Body**:
 ```json
@@ -203,7 +203,7 @@ if (result.success) {
 
 ```bash
 # Standalone generation
-curl -X POST http://localhost:3000/api/characters/generate-initial-image \
+curl -X POST http://localhost:3000/api/v1/characters/generate-initial-image \
   -H "Content-Type: application/json" \
   -d '{
     "prompt": "A cyberpunk hacker with neon blue hair and augmented reality glasses",
@@ -211,7 +211,7 @@ curl -X POST http://localhost:3000/api/characters/generate-initial-image \
   }'
 
 # Character-specific generation
-curl -X POST http://localhost:3000/api/characters/64f8a1b2c3d4e5f6a7b8c9d0/generate-initial-image \
+curl -X POST http://localhost:3000/api/v1/characters/64f8a1b2c3d4e5f6a7b8c9d0/generate-initial-image \
   -H "Content-Type: application/json" \
   -d '{
     "prompt": "A steampunk inventor with brass goggles and mechanical arm"

@@ -5,12 +5,12 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
-import configPromise from '../../../../../payload.config'
-import { characterWorkflowService } from '../../../../../services/CharacterWorkflowService'
+import config from '@payload-config'
+import { characterWorkflowService } from '../../../../../../services/CharacterWorkflowService'
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const payload = await getPayload({ config: configPromise })
+    const payload = await getPayload({ config })
     const { id: characterId } = await params
 
     console.log(`Starting 360° core set generation for character: ${characterId}`)

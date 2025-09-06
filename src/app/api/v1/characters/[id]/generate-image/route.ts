@@ -5,8 +5,8 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
-import configPromise from '../../../../../payload.config'
-import { characterWorkflowService } from '../../../../../services/CharacterWorkflowService'
+import config from '@payload-config'
+import { characterWorkflowService } from '../../../../../../services/CharacterWorkflowService'
 
 interface GenerateImageRequest {
   prompt: string
@@ -18,7 +18,7 @@ interface GenerateImageRequest {
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const payload = await getPayload({ config: configPromise })
+    const payload = await getPayload({ config })
     const { id: characterId } = await params
     const body: GenerateImageRequest = await request.json()
 
@@ -177,7 +177,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 // GET endpoint to retrieve generation history
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const payload = await getPayload({ config: configPromise })
+    const payload = await getPayload({ config })
     const { id: characterId } = await params
 
     // Get the character document

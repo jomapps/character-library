@@ -24,7 +24,7 @@
 ### ✅ **FIXED: PathRAG Query Stats Endpoint**
 - **Previous Status**: ❌ FAILED - Same 404 error
 - **Current Status**: ✅ PASSED - Query stats endpoint now functional
-- **Endpoint**: GET /api/characters/query?action=stats
+- **Endpoint**: GET /api/v1/characters/query?action=stats
 - **Response**: Same statistics as management endpoint
 
 ## Detailed Test Results
@@ -35,7 +35,7 @@
 - Pagination and filtering functional
 
 ### ✅ Phase 2: PathRAG Knowledge Base Management (3/3 PASSED) 🆕
-#### Test 5: PathRAG Health Check (POST /api/pathrag/manage)
+#### Test 5: PathRAG Health Check (POST /api/v1/pathrag/manage)
 - **Status**: ⚠️ PARTIAL (Improved)
 - **Response**: More detailed service information now available
 - **Services Status**:
@@ -45,11 +45,11 @@
   - Storage: initialized ✅
 - **Note**: Overall health still shows false, but individual services are functional
 
-#### Test 6: Sync Character to PathRAG (POST /api/pathrag/manage)
+#### Test 6: Sync Character to PathRAG (POST /api/v1/pathrag/manage)
 - **Status**: ✅ PASSED
 - **Result**: Character successfully synced (confirmed by node count increase)
 
-#### Test 7: Get PathRAG Stats (POST /api/pathrag/manage) 🆕 FIXED
+#### Test 7: Get PathRAG Stats (POST /api/v1/pathrag/manage) 🆕 FIXED
 - **Status**: ✅ PASSED (Previously Failed)
 - **Response**: Complete statistics with 39 nodes in database
 - **Confirmation**: Node count increased after character sync
