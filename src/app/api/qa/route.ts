@@ -6,8 +6,6 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { getPayload } from 'payload'
-import config from '../../../payload.config'
 import { qualityAssuranceService } from '../../../services/QualityAssuranceService'
 
 interface QARequest {

@@ -6,7 +6,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
-import config from '../../../../payload.config'
+import configPromise from '../../../../payload.config'
 import { pathragService } from '../../../../services/PathRAGService'
 
 interface ManagementRequest {
@@ -155,7 +155,7 @@ async function handleGetStats() {
 }
 
 async function handleSyncAll(force: boolean) {
-  const payload = await getPayload({ config })
+  const payload = await getPayload({ config: configPromise })
   
   console.log(`Starting bulk sync of all characters (force: ${force})`)
 
@@ -243,7 +243,7 @@ async function handleSyncAll(force: boolean) {
 }
 
 async function handleSyncCharacter(characterId: string) {
-  const payload = await getPayload({ config })
+  const payload = await getPayload({ config: configPromise })
   
   console.log(`Syncing individual character: ${characterId}`)
 

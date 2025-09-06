@@ -1,0 +1,22 @@
+{
+  "mcpServers": {
+    "Context 7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp@latest"
+      ]
+    },
+    "Playwright": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@playwright/mcp@latest"
+      ]
+    },
+    "byterover-mcp": {
+      "url": "https://mcp.byterover.dev/mcp?machineId=1f079dfa-4572-6d90-ba6d-54334e6034e5",
+      "type": "http"
+    }
+  }
+}
