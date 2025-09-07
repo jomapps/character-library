@@ -320,7 +320,6 @@ export class PathRAGService {
    */
   private buildCharacterDocuments(character: any): string[] {
     const documents: string[] = []
-    const characterId = character.characterId || character.id
     const characterName = character.name
 
     if (!characterName) {

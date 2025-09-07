@@ -5,7 +5,7 @@
  * including quality analysis, consistency validation, and batch processing
  */
 
-import { dinoOrchestrator } from './DinoOrchestrator'
+
 
 export interface QAResult {
   assetId: string
@@ -316,7 +316,7 @@ export class QualityAssuranceService {
    */
   private generateBatchRecommendations(
     results: QAResult[],
-    thresholds: Partial<QAThresholds>
+    _thresholds: Partial<QAThresholds>
   ): string[] {
     const recommendations: string[] = []
     const passRate = results.filter(r => r.isValid).length / results.length

@@ -11,7 +11,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
 import { imageGenerationService } from '../../../../../../services/ImageGenerationService'
-import { dinoOrchestrator } from '../../../../../../services/DinoOrchestrator'
+
 
 interface GenerateInitialImageRequest {
   prompt: string

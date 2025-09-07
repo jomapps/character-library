@@ -1,28 +1,84 @@
-# Payload Blank Template
+# Character Library
 
-This template comes configured with the bare minimum to get started on anything you need.
+A state-of-the-art Digital Asset Management (DAM) system specifically designed for managing fictional characters and their visual assets. Built with Next.js, Payload CMS, and integrated with advanced AI services for character image generation and consistency validation.
 
-## Quick start
+## 🎯 Features
 
-This template can be deployed directly from our Cloud hosting and it will setup MongoDB and cloud S3 object storage for media.
+### Core Character Management
+- **Comprehensive Character Profiles** - Store detailed personas, biographies, relationships, and attributes
+- **Rich Text Content** - Biography, personality, motivations, backstory with full rich text editing
+- **Physical Descriptions** - Age, height, eye color, hair color, and detailed physical descriptions
+- **Skills & Abilities** - Track character skills with proficiency levels
+- **Status Tracking** - Draft → Development → Production → Archived workflow
 
-## Quick Start - local setup
+### AI-Powered Image Generation
+- **Master Reference Images** - Generate consistent character reference images
+- **360° Core Reference Sets** - Complete character turnaround references
+- **Scene-Specific Images** - Context-aware image generation for specific scenes
+- **Character Interactions** - Generate images showing character relationships
+- **Batch Processing** - Efficient bulk image generation for projects
 
-To spin up this template locally, follow these steps:
+### Visual Consistency & Quality Assurance
+- **DINOv3 Integration** - Advanced computer vision for visual consistency validation
+- **Quality Metrics** - Comprehensive quality scoring and analysis
+- **Consistency Validation** - Cross-scene and cross-image consistency checking
+- **Automated QA Pipeline** - Quality assurance workflows with recommendations
 
-### Clone
+### Character Relationships
+- **Relationship Mapping** - Define and track character relationships
+- **Relationship Strength & Conflict** - Quantify relationship dynamics (1-10 scales)
+- **Bidirectional Relationships** - Automatic reverse relationship creation
+- **Relationship Graphs** - Visual relationship network analysis
+- **Relationship-Aware Images** - Generate images that reflect character dynamics
 
-After you click the `Deploy` button above, you'll want to have standalone copy of this repo on your machine. If you've already cloned this repo, skip to [Development](#development).
+### Novel Movie Integration
+- **Project-Specific Management** - Characters linked to specific Novel Movie projects
+- **Bidirectional Synchronization** - Sync changes between Novel Movie and Character Library
+- **Conflict Resolution** - Automatic and manual conflict resolution strategies
+- **Bulk Operations** - Efficient handling of multiple characters and operations
+- **Scene Context Tracking** - Track character appearances across different scenes
 
-### Development
+### Natural Language Querying
+- **PathRAG Integration** - Query character knowledge using natural language
+- **Knowledge Base Sync** - Automatic synchronization with graph database
+- **Contextual Search** - Find characters based on traits, relationships, and story elements
 
-1. First [clone the repo](#clone) if you have not done so already
-2. `cd my-project && cp .env.example .env` to copy the example environment variables. You'll need to add the `MONGODB_URI` from your Cloud project to your `.env` if you want to use S3 storage and the MongoDB database that was created for you.
+## 🚀 Quick Start
 
-3. `pnpm install && pnpm dev` to install dependencies and start the dev server
-4. open `http://localhost:3000` to open the app in your browser
+### Prerequisites
+- Node.js 18+
+- MongoDB database
+- Environment variables configured (see `.env.example`)
 
-That's it! Changes made in `./src` will be reflected in your app. Follow the on-screen instructions to login and create your first admin user. Then check out [Production](#production) once you're ready to build and serve your app, and [Deployment](#deployment) when you're ready to go live.
+### Local Development
+
+1. **Clone and Install**
+   ```bash
+   git clone <repository-url>
+   cd character-library
+   cp .env.example .env
+   npm install
+   ```
+
+2. **Configure Environment**
+   Edit `.env` with your database and service configurations:
+   ```env
+   MONGODB_URI=mongodb://localhost:27017/character-library
+   PAYLOAD_SECRET=your-secret-key
+   DINOV3_API_URL=your-dinov3-service-url
+   PATHRAG_API_URL=your-pathrag-service-url
+   FAL_KEY=your-fal-ai-key
+   ```
+
+3. **Start Development Server**
+   ```bash
+   npm run dev
+   ```
+
+4. **Access the Application**
+   - Frontend: `http://localhost:3000`
+   - Admin Panel: `http://localhost:3000/admin`
+   - API Documentation: `http://localhost:3000/api-docs`
 
 #### Docker (Optional)
 
@@ -48,20 +104,274 @@ See the [Collections](https://payloadcms.com/docs/configuration/collections) doc
 
   For additional help, see the official [Auth Example](https://github.com/payloadcms/payload/tree/main/examples/auth) or the [Authentication](https://payloadcms.com/docs/authentication/overview#authentication-overview) docs.
 
-- #### Media
+## 📚 API Documentation
 
-  This is the uploads enabled collection. It features pre-configured sizes, focal point and manual resizing to help you manage your pictures.
+### Novel Movie Integration Endpoints
 
-### Docker
+#### Character Management
+```http
+# Create Novel Movie character
+POST /api/v1/characters/novel-movie
+{
+  "novelMovieProjectId": "project-123",
+  "characterData": { /* character data */ },
+  "syncSettings": { "conflictResolution": "novel-movie-wins" }
+}
 
-Alternatively, you can use [Docker](https://www.docker.com) to spin up this template locally. To do so, follow these steps:
+# Sync character changes
+PUT /api/v1/characters/{id}/novel-movie-sync
+{
+  "characterData": { /* updated data */ },
+  "lastModified": "2025-09-07T05:34:51.566Z",
+  "changeSet": ["biography", "personality"]
+}
 
-1. Follow [steps 1 and 2 from above](#development), the docker-compose file will automatically use the `.env` file in your project root
-1. Next run `docker-compose up`
-1. Follow [steps 4 and 5 from above](#development) to login and create your first admin user
+# Bulk operations
+POST /api/v1/characters/bulk/novel-movie
+{
+  "projectId": "project-123",
+  "operation": "create",
+  "characters": [{ /* character data */ }]
+}
+```
 
-That's it! The Docker instance will help you get up and running quickly while also standardizing the development environment across your teams.
+#### Scene-Specific Image Generation
+```http
+# Generate scene image
+POST /api/v1/characters/{id}/generate-scene-image
+{
+  "sceneContext": "Character in dark alley",
+  "sceneType": "action",
+  "mood": "tense"
+}
 
-## Questions
+# Generate character interaction
+POST /api/v1/characters/generate-interaction
+{
+  "primaryCharacterId": "char-1",
+  "secondaryCharacterIds": ["char-2"],
+  "interactionType": "confrontation",
+  "sceneDescription": "Heated argument"
+}
 
-If you have any issues or questions, reach out to us on [Discord](https://discord.com/invite/payload) or start a [GitHub discussion](https://github.com/payloadcms/payload/discussions).
+# Batch scene generation
+POST /api/v1/characters/batch-generate-scenes
+{
+  "projectId": "project-123",
+  "scenes": [{ /* scene data */ }]
+}
+```
+
+#### Character Relationships
+```http
+# Create relationship
+POST /api/v1/characters/{id}/relationships
+{
+  "relatedCharacterId": "other-char",
+  "relationshipType": "mentor",
+  "strength": 9,
+  "conflictLevel": 1
+}
+
+# Get relationship graph
+GET /api/v1/characters/relationships/graph?projectId=project-123
+
+# Generate relationship image
+POST /api/v1/characters/generate-relationship-image
+{
+  "characterIds": ["char-1", "char-2"],
+  "relationshipContext": "Mentor teaching student"
+}
+```
+
+#### Quality Assurance
+```http
+# Get quality metrics
+GET /api/v1/characters/{id}/quality-metrics
+
+# Validate project consistency
+POST /api/v1/characters/validate-project-consistency
+{
+  "projectId": "project-123",
+  "includeVisualValidation": true
+}
+
+# Batch validation
+POST /api/v1/characters/batch-validate
+{
+  "characterIds": ["char-1", "char-2"],
+  "validationType": "complete"
+}
+```
+
+### Standard Character Endpoints
+```http
+# CRUD Operations
+GET    /api/v1/characters           # List characters
+POST   /api/v1/characters           # Create character
+GET    /api/v1/characters/{id}      # Get character
+PUT    /api/v1/characters/{id}      # Update character
+DELETE /api/v1/characters/{id}      # Delete character
+
+# Image Generation
+POST   /api/v1/characters/{id}/generate-image
+POST   /api/v1/characters/{id}/generate-core-set
+POST   /api/v1/characters/{id}/validate-consistency
+
+# Knowledge Base
+POST   /api/v1/characters/{id}/sync-to-pathrag
+POST   /api/v1/characters/query-knowledge
+```
+
+## 🏗️ Architecture
+
+### Core Collections
+- **Characters** - Main character data with enhanced Novel Movie integration fields
+- **Media** - File storage with AI-generated image metadata
+- **Users** - Authentication and access control
+
+### Enhanced Character Schema
+```typescript
+interface Character {
+  // Basic Information
+  name: string
+  characterId: string
+  status: 'draft' | 'in_development' | 'ready' | 'in_production' | 'archived'
+
+  // Character Development
+  biography: RichText
+  personality: RichText
+  motivations: RichText
+  backstory: RichText
+
+  // Physical Description
+  age: number
+  height: string
+  eyeColor: string
+  hairColor: string
+  physicalDescription: RichText
+
+  // Novel Movie Integration
+  novelMovieIntegration: {
+    projectId: string
+    syncStatus: 'synced' | 'pending' | 'conflict' | 'error'
+    lastSyncAt: Date
+    changeLog: ChangeLogEntry[]
+  }
+
+  // Enhanced Relationships
+  enhancedRelationships: Array<{
+    characterId: string
+    relationshipType: string
+    strength: number // 1-10
+    conflictLevel: number // 1-10
+    visualCues: string[]
+  }>
+
+  // Scene Contexts
+  sceneContexts: Array<{
+    sceneId: string
+    sceneType: 'dialogue' | 'action' | 'emotional' | 'establishing'
+    generatedImages: string[]
+    qualityScores: number[]
+  }>
+
+  // Quality Metrics
+  enhancedQualityMetrics: {
+    narrativeConsistency: number
+    crossSceneConsistency: number
+    relationshipVisualConsistency: number
+    validationHistory: ValidationEntry[]
+  }
+}
+```
+
+### External Service Integration
+- **DINOv3 Service** - Visual consistency validation using computer vision
+- **PathRAG Service** - Natural language querying and knowledge base management
+- **FAL.ai** - AI image generation with FLUX models
+- **Novel Movie System** - Production workflow integration
+
+## 🔧 Configuration
+
+### Environment Variables
+```env
+# Database
+MONGODB_URI=mongodb://localhost:27017/character-library
+PAYLOAD_SECRET=your-secret-key
+
+# AI Services
+DINOV3_API_URL=http://localhost:8000
+PATHRAG_API_URL=http://localhost:8001
+FAL_KEY=your-fal-ai-key
+
+# File Storage
+S3_BUCKET=your-s3-bucket
+S3_ACCESS_KEY_ID=your-access-key
+S3_SECRET_ACCESS_KEY=your-secret-key
+S3_REGION=us-east-1
+
+# Novel Movie Integration
+NOVEL_MOVIE_API_URL=http://novel-movie-api
+NOVEL_MOVIE_API_KEY=your-api-key
+```
+
+### Docker Setup (Optional)
+```bash
+# Start with Docker Compose
+docker-compose up -d
+
+# Or use individual containers
+docker run -d --name mongodb mongo:latest
+docker run -d --name character-library -p 3000:3000 character-library:latest
+```
+
+## 🚀 Production Deployment
+
+### Build and Deploy
+```bash
+# Build for production
+npm run build
+
+# Start production server
+npm run serve
+
+# Or use PM2 for process management
+pm2 start ecosystem.config.js
+```
+
+### Deployment Options
+- **Payload Cloud** - One-click deployment from GitHub
+- **Vercel/Netlify** - Serverless deployment with MongoDB Atlas
+- **Docker** - Containerized deployment on any platform
+- **Traditional VPS** - Manual deployment on virtual private servers
+
+## 📖 Documentation
+
+- [High-Level Overview](docs/high-level-overview.md)
+- [External Services Integration](docs/external-services/how-to-use-character-library.md)
+- [Novel Movie Integration Requirements](docs/novel-required-improvements.md)
+- [API Endpoints Reference](src/lib/api-endpoints.ts)
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🆘 Support
+
+For support and questions:
+- Check the [documentation](docs/)
+- Open an issue on GitHub
+- Contact the development team
+
+---
+
+**Character Library** - Powering the future of character-driven content creation with AI-enhanced asset management.

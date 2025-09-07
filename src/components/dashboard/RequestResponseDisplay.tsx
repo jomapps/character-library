@@ -3,14 +3,13 @@
 import { useState } from 'react'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
-import { 
-  ChevronDown, 
-  ChevronRight, 
-  Copy, 
-  Clock, 
-  CheckCircle, 
+import {
+  ChevronDown,
+  ChevronRight,
+  Copy,
+  Clock,
+  CheckCircle,
   XCircle,
-  Terminal,
   Code
 } from 'lucide-react'
 import { ApiResponse, ApiRequest } from '@/lib/api-client'

@@ -61,7 +61,7 @@ export class CharacterWorkflowService {
     characterId: string,
     imageBuffer: Buffer,
     filename: string,
-    payload: any
+    _payload: any
   ): Promise<MasterReferenceResult> {
     try {
       console.log(`Processing master reference for character: ${characterId}`)

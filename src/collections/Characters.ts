@@ -211,6 +211,264 @@ export const Characters: CollectionConfig = {
           ],
         },
         {
+          label: 'Novel Movie Integration',
+          fields: [
+            {
+              name: 'novelMovieIntegration',
+              type: 'group',
+              label: 'Novel Movie Project Integration',
+              admin: {
+                description: 'Integration settings and sync status with Novel Movie projects.',
+              },
+              fields: [
+                {
+                  name: 'projectId',
+                  type: 'text',
+                  label: 'Project ID',
+                  admin: {
+                    description: 'The Novel Movie project ID this character belongs to.',
+                  },
+                },
+                {
+                  name: 'projectName',
+                  type: 'text',
+                  label: 'Project Name',
+                  admin: {
+                    description: 'The name of the Novel Movie project.',
+                  },
+                },
+                {
+                  name: 'lastSyncAt',
+                  type: 'date',
+                  label: 'Last Sync Time',
+                  admin: {
+                    readOnly: true,
+                    description: 'Timestamp of the last successful sync with Novel Movie.',
+                  },
+                },
+                {
+                  name: 'syncStatus',
+                  type: 'select',
+                  label: 'Sync Status',
+                  options: [
+                    { label: 'Synced', value: 'synced' },
+                    { label: 'Pending', value: 'pending' },
+                    { label: 'Conflict', value: 'conflict' },
+                    { label: 'Error', value: 'error' },
+                  ],
+                  defaultValue: 'pending',
+                  admin: {
+                    description: 'Current synchronization status with Novel Movie.',
+                  },
+                },
+                {
+                  name: 'conflictResolution',
+                  type: 'select',
+                  label: 'Conflict Resolution Strategy',
+                  options: [
+                    { label: 'Manual Resolution', value: 'manual' },
+                    { label: 'Auto Resolution', value: 'auto' },
+                  ],
+                  defaultValue: 'manual',
+                  admin: {
+                    description: 'How to handle sync conflicts between systems.',
+                  },
+                },
+                {
+                  name: 'changeLog',
+                  type: 'array',
+                  label: 'Change Log',
+                  admin: {
+                    description: 'History of changes and sync operations.',
+                  },
+                  fields: [
+                    {
+                      name: 'timestamp',
+                      type: 'date',
+                      required: true,
+                      label: 'Change Time',
+                    },
+                    {
+                      name: 'source',
+                      type: 'select',
+                      required: true,
+                      label: 'Change Source',
+                      options: [
+                        { label: 'Novel Movie', value: 'novel-movie' },
+                        { label: 'Character Library', value: 'character-library' },
+                      ],
+                    },
+                    {
+                      name: 'changes',
+                      type: 'array',
+                      label: 'Changed Fields',
+                      fields: [
+                        {
+                          name: 'field',
+                          type: 'text',
+                          required: true,
+                        },
+                      ],
+                    },
+                    {
+                      name: 'resolvedBy',
+                      type: 'text',
+                      label: 'Resolved By',
+                      admin: {
+                        description: 'User or system that resolved conflicts.',
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              name: 'enhancedRelationships',
+              type: 'array',
+              label: 'Character Relationships',
+              admin: {
+                description: 'Detailed character relationships with other characters in the project.',
+              },
+              fields: [
+                {
+                  name: 'characterId',
+                  type: 'text',
+                  required: true,
+                  label: 'Related Character ID',
+                  admin: {
+                    description: 'ID of the related character.',
+                  },
+                },
+                {
+                  name: 'characterName',
+                  type: 'text',
+                  label: 'Related Character Name',
+                  admin: {
+                    description: 'Name of the related character for reference.',
+                  },
+                },
+                {
+                  name: 'relationshipType',
+                  type: 'text',
+                  required: true,
+                  label: 'Relationship Type',
+                  admin: {
+                    description: 'Type of relationship (e.g., friend, enemy, family, mentor).',
+                  },
+                },
+                {
+                  name: 'relationshipDynamic',
+                  type: 'textarea',
+                  label: 'Relationship Dynamic',
+                  admin: {
+                    description: 'Description of how these characters interact.',
+                  },
+                },
+                {
+                  name: 'storyContext',
+                  type: 'textarea',
+                  label: 'Story Context',
+                  admin: {
+                    description: 'How this relationship affects the story.',
+                  },
+                },
+                {
+                  name: 'visualCues',
+                  type: 'array',
+                  label: 'Visual Cues',
+                  admin: {
+                    description: 'Visual elements that represent this relationship.',
+                  },
+                  fields: [
+                    {
+                      name: 'cue',
+                      type: 'text',
+                      required: true,
+                    },
+                  ],
+                },
+                {
+                  name: 'strength',
+                  type: 'number',
+                  label: 'Relationship Strength',
+                  min: 1,
+                  max: 10,
+                  admin: {
+                    description: 'Strength of the relationship (1-10).',
+                  },
+                },
+                {
+                  name: 'conflictLevel',
+                  type: 'number',
+                  label: 'Conflict Level',
+                  min: 1,
+                  max: 10,
+                  admin: {
+                    description: 'Level of conflict in the relationship (1-10).',
+                  },
+                },
+              ],
+            },
+            {
+              name: 'sceneContexts',
+              type: 'array',
+              label: 'Scene Contexts',
+              admin: {
+                description: 'Track character appearances in different scenes.',
+              },
+              fields: [
+                {
+                  name: 'sceneId',
+                  type: 'text',
+                  required: true,
+                  label: 'Scene ID',
+                },
+                {
+                  name: 'sceneType',
+                  type: 'select',
+                  label: 'Scene Type',
+                  options: [
+                    { label: 'Dialogue', value: 'dialogue' },
+                    { label: 'Action', value: 'action' },
+                    { label: 'Emotional', value: 'emotional' },
+                    { label: 'Establishing', value: 'establishing' },
+                  ],
+                },
+                {
+                  name: 'generatedImages',
+                  type: 'array',
+                  label: 'Generated Images',
+                  fields: [
+                    {
+                      name: 'imageId',
+                      type: 'text',
+                      required: true,
+                    },
+                  ],
+                },
+                {
+                  name: 'qualityScores',
+                  type: 'array',
+                  label: 'Quality Scores',
+                  fields: [
+                    {
+                      name: 'score',
+                      type: 'number',
+                      min: 0,
+                      max: 100,
+                    },
+                  ],
+                },
+                {
+                  name: 'lastGenerated',
+                  type: 'date',
+                  label: 'Last Generated',
+                },
+              ],
+            },
+          ],
+        },
+        {
           label: 'Reference Image Gallery',
           fields: [
             {
@@ -284,6 +542,94 @@ export const Characters: CollectionConfig = {
                 position: 'sidebar',
                 hidden: true, // Hidden by default as it's technical data
               },
+            },
+            {
+              name: 'enhancedQualityMetrics',
+              type: 'group',
+              label: 'Enhanced Quality Metrics',
+              admin: {
+                description: 'Comprehensive quality metrics for Novel Movie integration.',
+                position: 'sidebar',
+              },
+              fields: [
+                {
+                  name: 'narrativeConsistency',
+                  type: 'number',
+                  label: 'Narrative Consistency Score',
+                  min: 0,
+                  max: 100,
+                  admin: {
+                    readOnly: true,
+                    description: 'Consistency with story narrative (0-100).',
+                  },
+                },
+                {
+                  name: 'crossSceneConsistency',
+                  type: 'number',
+                  label: 'Cross-Scene Consistency Score',
+                  min: 0,
+                  max: 100,
+                  admin: {
+                    readOnly: true,
+                    description: 'Visual consistency across different scenes (0-100).',
+                  },
+                },
+                {
+                  name: 'relationshipVisualConsistency',
+                  type: 'number',
+                  label: 'Relationship Visual Consistency',
+                  min: 0,
+                  max: 100,
+                  admin: {
+                    readOnly: true,
+                    description: 'Visual consistency in relationship interactions (0-100).',
+                  },
+                },
+                {
+                  name: 'lastValidated',
+                  type: 'date',
+                  label: 'Last Validation',
+                  admin: {
+                    readOnly: true,
+                    description: 'Timestamp of last quality validation.',
+                  },
+                },
+                {
+                  name: 'validationHistory',
+                  type: 'array',
+                  label: 'Validation History',
+                  admin: {
+                    readOnly: true,
+                    description: 'History of quality validation runs.',
+                  },
+                  fields: [
+                    {
+                      name: 'timestamp',
+                      type: 'date',
+                      required: true,
+                    },
+                    {
+                      name: 'validationType',
+                      type: 'select',
+                      options: [
+                        { label: 'Visual', value: 'visual' },
+                        { label: 'Narrative', value: 'narrative' },
+                        { label: 'Complete', value: 'complete' },
+                      ],
+                    },
+                    {
+                      name: 'score',
+                      type: 'number',
+                      min: 0,
+                      max: 100,
+                    },
+                    {
+                      name: 'notes',
+                      type: 'textarea',
+                    },
+                  ],
+                },
+              ],
             },
             {
               name: 'pathragSynced',

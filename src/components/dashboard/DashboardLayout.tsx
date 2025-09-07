@@ -3,7 +3,7 @@
 import { ReactNode } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, User, TestTube } from 'lucide-react'
+import { User, TestTube } from 'lucide-react'
 
 interface DashboardLayoutProps {
   children: ReactNode

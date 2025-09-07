@@ -11,6 +11,10 @@ The Character Library is a state-of-the-art Digital Asset Management system for 
 - **Natural Language Queries**: Query character knowledge base using PathRAG service
 - **Quality Assurance**: Automated image consistency and quality validation
 - **360° Core Reference Sets**: Generate comprehensive character reference images
+- **Novel Movie Integration**: Specialized endpoints for Novel Movie production workflow integration
+- **Scene-Specific Image Generation**: Context-aware image generation for specific scenes and interactions
+- **Relationship Management**: Advanced character relationship tracking and visualization
+- **Batch Operations**: Efficient bulk processing for large-scale projects
 
 ### Target Audience
 
@@ -18,6 +22,9 @@ The Character Library is a state-of-the-art Digital Asset Management system for 
 - Animation and film production teams
 - Content creators and writers
 - Applications requiring character asset management
+- **Novel Movie production systems** (specialized integration)
+- AI-powered storytelling platforms
+- Character-driven content management systems
 
 ## Base URL and Authentication
 
@@ -495,6 +502,219 @@ curl -X POST http://localhost:3000/api/characters/CHARACTER_ID/generate-image \
 - **PathRAG Queries**: No explicit rate limits, but consider reasonable usage
 - **File Uploads**: Limited by server configuration and storage capacity
 - **Concurrent Operations**: Image generation and validation are resource-intensive
+
+## Novel Movie Integration
+
+The Character Library provides specialized endpoints for seamless integration with Novel Movie production systems.
+
+### Novel Movie Character Management
+
+#### Create Novel Movie Character
+```http
+POST /api/v1/characters/novel-movie
+Content-Type: application/json
+
+{
+  "novelMovieProjectId": "project-123",
+  "projectName": "My Movie Project",
+  "characterData": {
+    "name": "John Doe",
+    "status": "in_development",
+    "age": 35,
+    "height": "6 feet",
+    "eyeColor": "blue",
+    "hairColor": "brown",
+    "biography": { /* RichText content */ },
+    "personality": { /* RichText content */ },
+    "relationships": [
+      {
+        "characterId": "other-char-id",
+        "relationshipType": "friend",
+        "strength": 8,
+        "conflictLevel": 2
+      }
+    ]
+  },
+  "syncSettings": {
+    "autoSync": true,
+    "conflictResolution": "novel-movie-wins"
+  }
+}
+```
+
+#### Sync Character Changes
+```http
+PUT /api/v1/characters/{characterId}/novel-movie-sync
+Content-Type: application/json
+
+{
+  "characterData": { /* Updated character data */ },
+  "lastModified": "2025-09-07T05:34:51.566Z",
+  "changeSet": ["biography", "personality", "relationships"],
+  "conflictResolution": "novel-movie-wins"
+}
+```
+
+#### Bulk Character Operations
+```http
+POST /api/v1/characters/bulk/novel-movie
+Content-Type: application/json
+
+{
+  "projectId": "project-123",
+  "operation": "create",
+  "characters": [
+    {
+      "characterData": { /* Character 1 data */ }
+    },
+    {
+      "characterData": { /* Character 2 data */ }
+    }
+  ],
+  "syncSettings": {
+    "conflictResolution": "manual"
+  }
+}
+```
+
+### Scene-Specific Image Generation
+
+#### Generate Scene Image
+```http
+POST /api/v1/characters/{characterId}/generate-scene-image
+Content-Type: application/json
+
+{
+  "sceneContext": "Character walking through a dark alley at night",
+  "sceneType": "action",
+  "mood": "tense",
+  "lightingStyle": "dramatic shadows",
+  "environmentContext": "urban alley",
+  "style": "character_scene"
+}
+```
+
+#### Generate Character Interaction
+```http
+POST /api/v1/characters/generate-interaction
+Content-Type: application/json
+
+{
+  "primaryCharacterId": "char-1",
+  "secondaryCharacterIds": ["char-2", "char-3"],
+  "interactionType": "confrontation",
+  "sceneDescription": "Heated argument in a restaurant",
+  "mood": "tense",
+  "environmentContext": "upscale restaurant"
+}
+```
+
+#### Batch Scene Generation
+```http
+POST /api/v1/characters/batch-generate-scenes
+Content-Type: application/json
+
+{
+  "projectId": "project-123",
+  "scenes": [
+    {
+      "sceneId": "scene-001",
+      "characters": ["char-1", "char-2"],
+      "sceneDescription": "Opening dialogue scene",
+      "requiredShots": ["medium_shot", "close_up"],
+      "sceneType": "dialogue"
+    }
+  ],
+  "batchSettings": {
+    "maxConcurrent": 3,
+    "qualityThreshold": 80
+  }
+}
+```
+
+### Character Relationships
+
+#### Create Relationship
+```http
+POST /api/v1/characters/{characterId}/relationships
+Content-Type: application/json
+
+{
+  "relatedCharacterId": "other-char-id",
+  "relationshipType": "mentor",
+  "relationshipDynamic": "Wise teacher guiding young student",
+  "storyContext": "Met during training academy",
+  "visualCues": ["respectful distance", "teaching gestures"],
+  "strength": 9,
+  "conflictLevel": 1,
+  "bidirectional": true
+}
+```
+
+#### Get Relationship Graph
+```http
+GET /api/v1/characters/relationships/graph?projectId=project-123
+```
+
+#### Generate Relationship Image
+```http
+POST /api/v1/characters/generate-relationship-image
+Content-Type: application/json
+
+{
+  "characterIds": ["char-1", "char-2"],
+  "relationshipContext": "Mentor teaching student",
+  "visualStyle": "character_relationship",
+  "mood": "inspiring",
+  "emphasizeRelationship": true
+}
+```
+
+### Quality Assurance & Validation
+
+#### Get Character Quality Metrics
+```http
+GET /api/v1/characters/{characterId}/quality-metrics
+```
+
+#### Validate Project Consistency
+```http
+POST /api/v1/characters/validate-project-consistency
+Content-Type: application/json
+
+{
+  "projectId": "project-123",
+  "includeVisualValidation": true,
+  "includeNarrativeValidation": true,
+  "includeRelationshipValidation": true,
+  "consistencyThreshold": 85,
+  "qualityThreshold": 80
+}
+```
+
+#### Batch Character Validation
+```http
+POST /api/v1/characters/batch-validate
+Content-Type: application/json
+
+{
+  "characterIds": ["char-1", "char-2", "char-3"],
+  "validationType": "complete",
+  "qualityThreshold": 80,
+  "consistencyThreshold": 85,
+  "includeRecommendations": true
+}
+```
+
+### Novel Movie Integration Features
+
+- **Project-Specific Character Management**: Characters are linked to specific Novel Movie projects
+- **Bidirectional Synchronization**: Changes can be synced between Novel Movie and Character Library
+- **Conflict Resolution**: Automatic and manual conflict resolution strategies
+- **Scene Context Tracking**: Characters track their appearances across different scenes
+- **Relationship-Aware Generation**: Images consider character relationships and dynamics
+- **Comprehensive Validation**: Project-wide consistency validation and quality metrics
+- **Batch Processing**: Efficient handling of multiple characters and operations
 
 ## Support and Resources
 

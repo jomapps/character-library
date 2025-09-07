@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { DashboardLayout } from '@/components/dashboard/DashboardLayout'
-import { ArrowLeft, User, Star, Eye, Download, ExternalLink } from 'lucide-react'
+import { ArrowLeft, User, Star, ExternalLink } from 'lucide-react'
 
 interface MediaItem {
   id: string

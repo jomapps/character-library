@@ -364,6 +364,119 @@ export interface Character {
     [k: string]: unknown;
   } | null;
   /**
+   * Integration settings and sync status with Novel Movie projects.
+   */
+  novelMovieIntegration?: {
+    /**
+     * The Novel Movie project ID this character belongs to.
+     */
+    projectId?: string | null;
+    /**
+     * The name of the Novel Movie project.
+     */
+    projectName?: string | null;
+    /**
+     * Timestamp of the last successful sync with Novel Movie.
+     */
+    lastSyncAt?: string | null;
+    /**
+     * Current synchronization status with Novel Movie.
+     */
+    syncStatus?: ('synced' | 'pending' | 'conflict' | 'error') | null;
+    /**
+     * How to handle sync conflicts between systems.
+     */
+    conflictResolution?: ('manual' | 'auto') | null;
+    /**
+     * History of changes and sync operations.
+     */
+    changeLog?:
+      | {
+          timestamp: string;
+          source: 'novel-movie' | 'character-library';
+          changes?:
+            | {
+                field: string;
+                id?: string | null;
+              }[]
+            | null;
+          /**
+           * User or system that resolved conflicts.
+           */
+          resolvedBy?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  /**
+   * Detailed character relationships with other characters in the project.
+   */
+  enhancedRelationships?:
+    | {
+        /**
+         * ID of the related character.
+         */
+        characterId: string;
+        /**
+         * Name of the related character for reference.
+         */
+        characterName?: string | null;
+        /**
+         * Type of relationship (e.g., friend, enemy, family, mentor).
+         */
+        relationshipType: string;
+        /**
+         * Description of how these characters interact.
+         */
+        relationshipDynamic?: string | null;
+        /**
+         * How this relationship affects the story.
+         */
+        storyContext?: string | null;
+        /**
+         * Visual elements that represent this relationship.
+         */
+        visualCues?:
+          | {
+              cue: string;
+              id?: string | null;
+            }[]
+          | null;
+        /**
+         * Strength of the relationship (1-10).
+         */
+        strength?: number | null;
+        /**
+         * Level of conflict in the relationship (1-10).
+         */
+        conflictLevel?: number | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Track character appearances in different scenes.
+   */
+  sceneContexts?:
+    | {
+        sceneId: string;
+        sceneType?: ('dialogue' | 'action' | 'emotional' | 'establishing') | null;
+        generatedImages?:
+          | {
+              imageId: string;
+              id?: string | null;
+            }[]
+          | null;
+        qualityScores?:
+          | {
+              score?: number | null;
+              id?: string | null;
+            }[]
+          | null;
+        lastGenerated?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
    * The single "genesis" image that defines the character. All consistency is measured against this.
    */
   masterReferenceImage?: (string | null) | Media;
@@ -395,6 +508,39 @@ export interface Character {
     | number
     | boolean
     | null;
+  /**
+   * Comprehensive quality metrics for Novel Movie integration.
+   */
+  enhancedQualityMetrics?: {
+    /**
+     * Consistency with story narrative (0-100).
+     */
+    narrativeConsistency?: number | null;
+    /**
+     * Visual consistency across different scenes (0-100).
+     */
+    crossSceneConsistency?: number | null;
+    /**
+     * Visual consistency in relationship interactions (0-100).
+     */
+    relationshipVisualConsistency?: number | null;
+    /**
+     * Timestamp of last quality validation.
+     */
+    lastValidated?: string | null;
+    /**
+     * History of quality validation runs.
+     */
+    validationHistory?:
+      | {
+          timestamp: string;
+          validationType?: ('visual' | 'narrative' | 'complete') | null;
+          score?: number | null;
+          notes?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
   /**
    * Indicates if character persona has been synced to PathRAG knowledge base.
    */
@@ -599,12 +745,90 @@ export interface CharactersSelect<T extends boolean = true> {
   physicalDescription?: T;
   voiceDescription?: T;
   clothing?: T;
+  novelMovieIntegration?:
+    | T
+    | {
+        projectId?: T;
+        projectName?: T;
+        lastSyncAt?: T;
+        syncStatus?: T;
+        conflictResolution?: T;
+        changeLog?:
+          | T
+          | {
+              timestamp?: T;
+              source?: T;
+              changes?:
+                | T
+                | {
+                    field?: T;
+                    id?: T;
+                  };
+              resolvedBy?: T;
+              id?: T;
+            };
+      };
+  enhancedRelationships?:
+    | T
+    | {
+        characterId?: T;
+        characterName?: T;
+        relationshipType?: T;
+        relationshipDynamic?: T;
+        storyContext?: T;
+        visualCues?:
+          | T
+          | {
+              cue?: T;
+              id?: T;
+            };
+        strength?: T;
+        conflictLevel?: T;
+        id?: T;
+      };
+  sceneContexts?:
+    | T
+    | {
+        sceneId?: T;
+        sceneType?: T;
+        generatedImages?:
+          | T
+          | {
+              imageId?: T;
+              id?: T;
+            };
+        qualityScores?:
+          | T
+          | {
+              score?: T;
+              id?: T;
+            };
+        lastGenerated?: T;
+        id?: T;
+      };
   masterReferenceImage?: T;
   masterReferenceProcessed?: T;
   masterReferenceQuality?: T;
   coreSetGenerated?: T;
   coreSetGeneratedAt?: T;
   coreSetQuality?: T;
+  enhancedQualityMetrics?:
+    | T
+    | {
+        narrativeConsistency?: T;
+        crossSceneConsistency?: T;
+        relationshipVisualConsistency?: T;
+        lastValidated?: T;
+        validationHistory?:
+          | T
+          | {
+              timestamp?: T;
+              validationType?: T;
+              score?: T;
+              notes?: T;
+              id?: T;
+            };
+      };
   pathragSynced?: T;
   pathragLastSync?: T;
   pathragDocumentCount?: T;

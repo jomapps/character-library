@@ -1,11 +1,12 @@
 {
   "name": "character-library",
-  "version": "1.0.0",
-  "description": "A blank template to get started with Payload 3.0",
+  "version": "2.0.0",
+  "description": "AI-powered Digital Asset Management system for fictional characters with Novel Movie integration",
   "license": "MIT",
   "type": "module",
   "scripts": {
     "build": "cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=8000\" next build",
+    "build:production": "pnpm build && ./copy-static-files.sh",
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
     "devsafe": "rm -rf .next && cross-env NODE_OPTIONS=--no-deprecation next dev",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
@@ -15,7 +16,8 @@
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "test": "pnpm run test:int && pnpm run test:e2e",
     "test:e2e": "cross-env NODE_OPTIONS=\"--no-deprecation --no-experimental-strip-types\" pnpm exec playwright test",
-    "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts"
+    "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts",
+    "test:character-library": "node test-character-library-integration.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.1",

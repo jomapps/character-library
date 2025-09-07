@@ -14,11 +14,11 @@ interface MainContentProps {
   requestHistory: any[]
 }
 
-export function MainContent({ 
-  selectedEndpoint, 
-  endpoints, 
-  onRequestComplete, 
-  requestHistory 
+export function MainContent({
+  selectedEndpoint,
+  endpoints: _endpoints,
+  onRequestComplete,
+  requestHistory
 }: MainContentProps) {
   const [currentRequest, setCurrentRequest] = useState<ApiRequest | undefined>()
   const [currentResponse, setCurrentResponse] = useState<ApiResponse | undefined>()
