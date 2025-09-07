@@ -152,6 +152,57 @@ Generate on-demand images for a specific character.
 }
 ```
 
+#### POST /api/v1/characters/[id]/generate-smart-image
+**NEW** Generate character images with intelligent reference selection and adaptive retry logic.
+
+**URL Parameters**:
+- `id` (string): Character ID
+
+**Request Body**:
+```json
+{
+  "prompt": "Character in a forest setting",
+  "characterName": "Optional character name for context",
+  "maxRetries": 3,
+  "qualityThreshold": 70,
+  "consistencyThreshold": 85,
+  "style": "character_production",
+  "tags": "forest, outdoor"
+}
+```
+
+**Parameters**:
+- `prompt` (string, required): Description for image generation
+- `characterName` (string, optional): Character name for enhanced context
+- `maxRetries` (number, optional): Maximum retry attempts (default: 3)
+- `qualityThreshold` (number, optional): Minimum quality score (default: 70)
+- `consistencyThreshold` (number, optional): Minimum consistency score (default: 85)
+- `style` (string, optional): Generation style
+- `tags` (string, optional): Tags for categorization
+
+**Response**:
+```json
+{
+  "success": true,
+  "message": "Smart image generated successfully",
+  "data": {
+    "characterId": "character_id",
+    "characterName": "Character Name",
+    "imageId": "generated_image_id",
+    "dinoAssetId": "dino_asset_key",
+    "publicUrl": "https://...",
+    "selectedReferenceId": "ref_image_id",
+    "selectedReferenceType": "master_reference",
+    "qualityScore": 0.88,
+    "consistencyScore": 0.92,
+    "attempts": 1,
+    "generationTime": 45000,
+    "validationNotes": "High quality image with excellent consistency",
+    "filename": "character_forest_scene.jpg"
+  }
+}
+```
+
 #### POST /api/v1/characters/[id]/generate-core-set
 Generate a 360° core reference set for a character.
 
@@ -181,6 +232,54 @@ Generate a 360° core reference set for a character.
       "validImages": 7,
       "averageQuality": 0.86
     }
+  }
+}
+```
+
+#### POST /api/v1/characters/[id]/generate-scene-image
+**NEW** Generate character images tailored for specific scenes with context-aware prompting.
+
+**URL Parameters**:
+- `id` (string): Character ID
+
+**Request Body**:
+```json
+{
+  "sceneContext": "Character walking through a dark alley at night",
+  "sceneType": "action",
+  "additionalCharacters": ["char-2", "char-3"],
+  "environmentContext": "urban alley",
+  "mood": "tense",
+  "lightingStyle": "dramatic shadows",
+  "style": "character_scene",
+  "referenceImageAssetId": "optional_reference_id"
+}
+```
+
+**Parameters**:
+- `sceneContext` (string, required): Description of the scene
+- `sceneType` (string, required): "dialogue" | "action" | "emotional" | "establishing"
+- `additionalCharacters` (array, optional): Other character IDs in the scene
+- `environmentContext` (string, optional): Environmental setting
+- `mood` (string, optional): Scene mood
+- `lightingStyle` (string, optional): Lighting description
+- `style` (string, optional): Generation style
+- `referenceImageAssetId` (string, optional): Specific reference image to use
+
+**Response**:
+```json
+{
+  "success": true,
+  "message": "Scene image generated successfully",
+  "data": {
+    "characterId": "character_id",
+    "imageId": "scene_image_id",
+    "sceneContext": "Character walking through a dark alley at night",
+    "sceneType": "action",
+    "qualityScore": 0.85,
+    "consistencyScore": 0.90,
+    "publicUrl": "https://...",
+    "filename": "character_alley_scene.jpg"
   }
 }
 ```
@@ -218,6 +317,110 @@ Validate consistency across all character gallery images.
       "qualityValid": 5,
       "overallValid": 4
     }
+  }
+}
+```
+
+#### POST /api/v1/characters/batch-validate
+**NEW** Validate multiple characters simultaneously with aggregated results.
+
+**Request Body**:
+```json
+{
+  "characterIds": ["char-1", "char-2", "char-3"],
+  "validationType": "complete",
+  "qualityThreshold": 80,
+  "consistencyThreshold": 85,
+  "includeRecommendations": true
+}
+```
+
+**Parameters**:
+- `characterIds` (array, required): Array of character IDs to validate
+- `validationType` (string, required): "visual" | "narrative" | "complete"
+- `qualityThreshold` (number, optional): Minimum quality score (default: 70)
+- `consistencyThreshold` (number, optional): Minimum consistency score (default: 85)
+- `includeRecommendations` (boolean, optional): Include improvement recommendations
+
+**Response**:
+```json
+{
+  "success": true,
+  "results": [
+    {
+      "characterId": "char-1",
+      "characterName": "Character One",
+      "success": true,
+      "validationType": "complete",
+      "overallScore": 88,
+      "visualScore": 90,
+      "narrativeScore": 85,
+      "relationshipScore": 89,
+      "issues": [],
+      "recommendations": ["Consider adding more diverse poses"]
+    }
+  ],
+  "summary": {
+    "totalCharacters": 3,
+    "validatedCharacters": 3,
+    "failedValidations": 0,
+    "averageScore": 87,
+    "scoreDistribution": {
+      "excellent": 2,
+      "good": 1,
+      "fair": 0,
+      "poor": 0
+    }
+  }
+}
+```
+
+#### POST /api/v1/characters/validate-project-consistency
+**NEW** Validate character consistency across an entire project.
+
+**Request Body**:
+```json
+{
+  "projectId": "project-123",
+  "includeVisualValidation": true,
+  "includeNarrativeValidation": true,
+  "includeRelationshipValidation": true,
+  "qualityThreshold": 80,
+  "consistencyThreshold": 85
+}
+```
+
+**Parameters**:
+- `projectId` (string, required): Project identifier
+- `includeVisualValidation` (boolean, optional): Include visual consistency checks
+- `includeNarrativeValidation` (boolean, optional): Include narrative coherence checks
+- `includeRelationshipValidation` (boolean, optional): Include relationship validation
+- `qualityThreshold` (number, optional): Minimum quality threshold
+- `consistencyThreshold` (number, optional): Minimum consistency threshold
+
+**Response**:
+```json
+{
+  "success": true,
+  "projectId": "project-123",
+  "validationResults": {
+    "overallScore": 85,
+    "visualConsistencyScore": 88,
+    "narrativeConsistencyScore": 82,
+    "relationshipConsistencyScore": 87,
+    "issues": [
+      {
+        "type": "visual",
+        "severity": "warning",
+        "characterId": "char-1",
+        "description": "Slight inconsistency in eye color across images",
+        "suggestedFix": "Review and standardize eye color in reference images"
+      }
+    ],
+    "recommendations": [
+      "Standardize lighting conditions across character images",
+      "Review relationship dynamics for consistency"
+    ]
   }
 }
 ```
@@ -280,7 +483,153 @@ The application provides full Payload CMS REST API access for all collections:
 - `POST /api/users/login` - User login
 - `POST /api/users/logout` - User logout
 
-### 6. GraphQL API
+### 6. Relationship Management
+
+#### POST /api/v1/characters/[id]/relationships
+**NEW** Create and manage character relationships.
+
+**URL Parameters**:
+- `id` (string): Character ID
+
+**Request Body**:
+```json
+{
+  "relatedCharacterId": "other-char-id",
+  "relationshipType": "mentor",
+  "relationshipDynamic": "Wise teacher guiding young student",
+  "storyContext": "Met during training academy",
+  "visualCues": ["respectful distance", "teaching gestures"],
+  "strength": 9,
+  "conflictLevel": 1,
+  "bidirectional": true
+}
+```
+
+**Response**:
+```json
+{
+  "success": true,
+  "message": "Relationship created successfully",
+  "data": {
+    "relationshipId": "rel-123",
+    "characterId": "char-1",
+    "relatedCharacterId": "char-2",
+    "relationshipType": "mentor",
+    "strength": 9,
+    "conflictLevel": 1
+  }
+}
+```
+
+#### GET /api/v1/characters/relationships/graph
+**NEW** Get relationship graph for visualization and analysis.
+
+**Query Parameters**:
+- `projectId` (string, optional): Filter by project ID
+
+**Response**:
+```json
+{
+  "success": true,
+  "nodes": [
+    {
+      "id": "char-1",
+      "name": "Character One",
+      "status": "ready",
+      "characterId": "char-1",
+      "metadata": {
+        "totalRelationships": 3,
+        "averageRelationshipStrength": 7.5,
+        "averageConflictLevel": 2.1
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "rel-123",
+      "source": "char-1",
+      "target": "char-2",
+      "relationshipType": "mentor",
+      "strength": 9,
+      "conflictLevel": 1,
+      "bidirectional": true
+    }
+  ],
+  "statistics": {
+    "totalCharacters": 5,
+    "totalRelationships": 8,
+    "averageConnectionsPerCharacter": 3.2
+  }
+}
+```
+
+#### POST /api/v1/characters/generate-interaction
+**NEW** Generate images showing multiple characters interacting.
+
+**Request Body**:
+```json
+{
+  "primaryCharacterId": "char-1",
+  "secondaryCharacterIds": ["char-2", "char-3"],
+  "interactionType": "confrontation",
+  "sceneDescription": "Heated argument in a restaurant",
+  "environmentContext": "upscale restaurant",
+  "mood": "tense",
+  "lightingStyle": "dramatic",
+  "style": "character_interaction"
+}
+```
+
+**Response**:
+```json
+{
+  "success": true,
+  "message": "Interaction image generated successfully",
+  "data": {
+    "imageId": "interaction_image_id",
+    "primaryCharacterId": "char-1",
+    "secondaryCharacterIds": ["char-2", "char-3"],
+    "interactionType": "confrontation",
+    "qualityScore": 0.87,
+    "publicUrl": "https://...",
+    "filename": "character_confrontation.jpg"
+  }
+}
+```
+
+#### POST /api/v1/characters/generate-relationship-image
+**NEW** Generate images that showcase character relationships with visual cues.
+
+**Request Body**:
+```json
+{
+  "characterIds": ["char-1", "char-2"],
+  "relationshipContext": "Mentor teaching student",
+  "visualStyle": "character_relationship",
+  "environmentContext": "training ground",
+  "mood": "inspiring",
+  "lightingStyle": "warm",
+  "emphasizeRelationship": true
+}
+```
+
+**Response**:
+```json
+{
+  "success": true,
+  "message": "Relationship image generated successfully",
+  "data": {
+    "imageId": "relationship_image_id",
+    "characterIds": ["char-1", "char-2"],
+    "relationshipContext": "Mentor teaching student",
+    "qualityScore": 0.89,
+    "publicUrl": "https://...",
+    "filename": "mentor_student_relationship.jpg"
+  }
+}
+```
+
+### 7. GraphQL API
 
 #### POST /api/graphql
 GraphQL endpoint for complex queries and mutations.
@@ -333,7 +682,7 @@ interface Character {
 ```javascript
 // Query character knowledge
 const queryCharacters = async (query) => {
-  const response = await fetch('http://localhost:3000/api/characters/query', {
+  const response = await fetch('http://localhost:3000/api/v1/characters/query', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -346,30 +695,78 @@ const queryCharacters = async (query) => {
       }
     })
   });
-  
+
   const result = await response.json();
   return result.data.result;
 };
 
-// Generate character image
-const generateImage = async (characterId, prompt) => {
-  const response = await fetch(`http://localhost:3000/api/characters/${characterId}/generate-image`, {
+// Generate smart character image (recommended)
+const generateSmartImage = async (characterId, prompt) => {
+  const response = await fetch(`http://localhost:3000/api/v1/characters/${characterId}/generate-smart-image`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       prompt: prompt,
-      style: 'character_production'
+      style: 'character_production',
+      maxRetries: 3,
+      qualityThreshold: 75
     })
   });
-  
+
+  return await response.json();
+};
+
+// Generate scene-specific image
+const generateSceneImage = async (characterId, sceneData) => {
+  const response = await fetch(`http://localhost:3000/api/v1/characters/${characterId}/generate-scene-image`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      sceneContext: sceneData.context,
+      sceneType: sceneData.type,
+      mood: sceneData.mood,
+      lightingStyle: sceneData.lighting,
+      style: 'character_scene'
+    })
+  });
+
+  return await response.json();
+};
+
+// Validate multiple characters
+const batchValidate = async (characterIds) => {
+  const response = await fetch('http://localhost:3000/api/v1/characters/batch-validate', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      characterIds: characterIds,
+      validationType: 'complete',
+      includeRecommendations: true
+    })
+  });
+
+  return await response.json();
+};
+
+// Get relationship graph
+const getRelationshipGraph = async (projectId) => {
+  const url = projectId
+    ? `http://localhost:3000/api/v1/characters/relationships/graph?projectId=${projectId}`
+    : 'http://localhost:3000/api/v1/characters/relationships/graph';
+
+  const response = await fetch(url);
   return await response.json();
 };
 
 // Get all characters
 const getCharacters = async () => {
-  const response = await fetch('http://localhost:3000/api/characters');
+  const response = await fetch('http://localhost:3000/api/v1/characters');
   return await response.json();
 };
 ```
@@ -382,9 +779,9 @@ import json
 class CharacterLibraryClient:
     def __init__(self, base_url="http://localhost:3000"):
         self.base_url = base_url
-    
+
     def query_characters(self, query, response_type="Multiple Paragraphs"):
-        url = f"{self.base_url}/api/characters/query"
+        url = f"{self.base_url}/api/v1/characters/query"
         payload = {
             "query": query,
             "options": {
@@ -392,29 +789,86 @@ class CharacterLibraryClient:
                 "topK": 20
             }
         }
-        
+
         response = requests.post(url, json=payload)
         return response.json()
-    
-    def generate_image(self, character_id, prompt, style="character_production"):
-        url = f"{self.base_url}/api/characters/{character_id}/generate-image"
+
+    def generate_smart_image(self, character_id, prompt, style="character_production"):
+        url = f"{self.base_url}/api/v1/characters/{character_id}/generate-smart-image"
         payload = {
             "prompt": prompt,
-            "style": style
+            "style": style,
+            "maxRetries": 3,
+            "qualityThreshold": 75
         }
-        
+
         response = requests.post(url, json=payload)
         return response.json()
-    
-    def get_characters(self):
-        url = f"{self.base_url}/api/characters"
+
+    def generate_scene_image(self, character_id, scene_context, scene_type, mood=None):
+        url = f"{self.base_url}/api/v1/characters/{character_id}/generate-scene-image"
+        payload = {
+            "sceneContext": scene_context,
+            "sceneType": scene_type,
+            "mood": mood,
+            "style": "character_scene"
+        }
+
+        response = requests.post(url, json=payload)
+        return response.json()
+
+    def batch_validate_characters(self, character_ids, validation_type="complete"):
+        url = f"{self.base_url}/api/v1/characters/batch-validate"
+        payload = {
+            "characterIds": character_ids,
+            "validationType": validation_type,
+            "includeRecommendations": True
+        }
+
+        response = requests.post(url, json=payload)
+        return response.json()
+
+    def get_relationship_graph(self, project_id=None):
+        url = f"{self.base_url}/api/v1/characters/relationships/graph"
+        if project_id:
+            url += f"?projectId={project_id}"
+
         response = requests.get(url)
         return response.json()
 
-# Usage
+    def create_novel_movie_character(self, project_id, character_data):
+        url = f"{self.base_url}/api/v1/characters/novel-movie"
+        payload = {
+            "novelMovieProjectId": project_id,
+            "characterData": character_data,
+            "syncSettings": {
+                "autoSync": True,
+                "conflictResolution": "novel-movie-wins"
+            }
+        }
+
+        response = requests.post(url, json=payload)
+        return response.json()
+
+    def get_characters(self):
+        url = f"{self.base_url}/api/v1/characters"
+        response = requests.get(url)
+        return response.json()
+
+# Usage Examples
 client = CharacterLibraryClient()
+
+# Query characters
 result = client.query_characters("Tell me about warrior characters")
 print(result['data']['result'])
+
+# Generate smart image
+smart_image = client.generate_smart_image("char-123", "Character in battle armor")
+print(f"Generated image: {smart_image['data']['publicUrl']}")
+
+# Validate multiple characters
+validation = client.batch_validate_characters(["char-1", "char-2", "char-3"])
+print(f"Validation results: {validation['summary']}")
 ```
 
 ## Error Handling
@@ -470,21 +924,40 @@ print(result['data']['result'])
 
 1. **Query character knowledge**:
 ```bash
-curl -X POST http://localhost:3000/api/characters/query \
+curl -X POST http://localhost:3000/api/v1/characters/query \
   -H "Content-Type: application/json" \
   -d '{"query": "Tell me about characters with magical abilities"}'
 ```
 
 2. **Get all characters**:
 ```bash
-curl http://localhost:3000/api/characters
+curl http://localhost:3000/api/v1/characters
 ```
 
-3. **Generate character image**:
+3. **Generate smart character image** (recommended):
 ```bash
-curl -X POST http://localhost:3000/api/characters/CHARACTER_ID/generate-image \
+curl -X POST http://localhost:3000/api/v1/characters/CHARACTER_ID/generate-smart-image \
   -H "Content-Type: application/json" \
-  -d '{"prompt": "Character in battle armor"}'
+  -d '{"prompt": "Character in battle armor", "style": "character_production"}'
+```
+
+4. **Generate scene-specific image**:
+```bash
+curl -X POST http://localhost:3000/api/v1/characters/CHARACTER_ID/generate-scene-image \
+  -H "Content-Type: application/json" \
+  -d '{"sceneContext": "Character in a dark forest", "sceneType": "action", "mood": "mysterious"}'
+```
+
+5. **Validate multiple characters**:
+```bash
+curl -X POST http://localhost:3000/api/v1/characters/batch-validate \
+  -H "Content-Type: application/json" \
+  -d '{"characterIds": ["char-1", "char-2"], "validationType": "complete"}'
+```
+
+6. **Get relationship graph**:
+```bash
+curl http://localhost:3000/api/v1/characters/relationships/graph
 ```
 
 ### Basic Workflow
@@ -493,15 +966,57 @@ curl -X POST http://localhost:3000/api/characters/CHARACTER_ID/generate-image \
 2. **Upload a master reference image** to establish the character's visual identity
 3. **Generate a 360° core set** for comprehensive reference angles
 4. **Query character information** using natural language
-5. **Generate additional images** as needed for your project
-6. **Validate consistency** across all character images
+5. **Generate additional images** using smart generation for best results
+6. **Set up character relationships** if working with multiple characters
+7. **Use scene-specific generation** for production-ready images
+8. **Validate consistency** across all character images
+
+### Advanced Workflow for Production Teams
+
+1. **Set up Novel Movie project** with proper sync configuration
+2. **Bulk import characters** using the bulk operations API
+3. **Establish character relationships** and dynamics
+4. **Generate scene-specific images** for production workflows
+5. **Use batch validation** to ensure project-wide consistency
+6. **Generate interaction images** for multi-character scenes
+7. **Monitor quality metrics** and optimize based on recommendations
+
+## Latest Features & Enhancements
+
+### Smart Image Generation
+- **Intelligent Reference Selection**: Automatically selects the best reference image based on prompt analysis
+- **Adaptive Retry Logic**: Automatically retries with different approaches if initial generation fails
+- **Enhanced Quality Control**: Improved validation with configurable thresholds
+
+### Scene-Specific Generation
+- **Context-Aware Generation**: Generates images tailored for specific scenes with environmental context
+- **Mood and Lighting Control**: Applies appropriate mood and lighting based on scene requirements
+- **Multi-Character Support**: Handles character interactions with relationship dynamics
+
+### Batch Operations & Validation
+- **Batch Character Validation**: Validate multiple characters simultaneously with aggregated results
+- **Project-Wide Consistency**: Comprehensive project validation with detailed reporting
+- **Bulk Character Operations**: Efficient handling of multiple characters for large projects
+
+### Novel Movie Integration
+- **Enhanced Project Management**: Specialized endpoints for Novel Movie production workflows
+- **Bidirectional Synchronization**: Seamless sync between Novel Movie and Character Library
+- **Advanced Relationship Management**: Complex relationship modeling with visual cues
+
+### Relationship Management
+- **Dynamic Relationship Modeling**: Complex relationship types with strength and conflict metrics
+- **Relationship Graph Visualization**: Comprehensive network analysis and visualization
+- **Interaction Generation**: Multi-character image generation with relationship awareness
 
 ## Rate Limits and Constraints
 
-- **Image Generation**: Limited by external AI service capacity
+- **Image Generation**: 30-60 seconds per image (single), batch operations optimized
+- **Smart Generation**: 45-90 seconds per image (includes analysis and retry logic)
+- **Scene Generation**: 60-120 seconds per image (includes context processing)
 - **PathRAG Queries**: No explicit rate limits, but consider reasonable usage
 - **File Uploads**: Limited by server configuration and storage capacity
 - **Concurrent Operations**: Image generation and validation are resource-intensive
+- **Batch Operations**: Configurable concurrency limits for optimal performance
 
 ## Novel Movie Integration
 
@@ -509,11 +1024,11 @@ The Character Library provides specialized endpoints for seamless integration wi
 
 ### Novel Movie Character Management
 
-#### Create Novel Movie Character
-```http
-POST /api/v1/characters/novel-movie
-Content-Type: application/json
+#### POST /api/v1/characters/novel-movie
+**NEW** Create characters specifically for Novel Movie projects with enhanced integration.
 
+**Request Body**:
+```json
 {
   "novelMovieProjectId": "project-123",
   "projectName": "My Movie Project",
@@ -530,14 +1045,38 @@ Content-Type: application/json
       {
         "characterId": "other-char-id",
         "relationshipType": "friend",
+        "relationshipDynamic": "Close childhood friend",
+        "storyContext": "Grew up together in the same neighborhood",
+        "visualCues": ["comfortable body language", "shared jokes"],
         "strength": 8,
         "conflictLevel": 2
+      }
+    ],
+    "skills": [
+      {
+        "skill": "Combat",
+        "level": "advanced",
+        "description": "Trained in martial arts"
       }
     ]
   },
   "syncSettings": {
     "autoSync": true,
     "conflictResolution": "novel-movie-wins"
+  }
+}
+```
+
+**Response**:
+```json
+{
+  "success": true,
+  "message": "Novel Movie character created successfully",
+  "data": {
+    "characterId": "char-123",
+    "novelMovieProjectId": "project-123",
+    "syncStatus": "synced",
+    "createdAt": "2025-09-07T05:34:51.566Z"
   }
 }
 ```
@@ -555,24 +1094,73 @@ Content-Type: application/json
 }
 ```
 
-#### Bulk Character Operations
-```http
-POST /api/v1/characters/bulk/novel-movie
-Content-Type: application/json
+#### POST /api/v1/characters/bulk/novel-movie
+**NEW** Perform bulk character operations for Novel Movie projects.
 
+**Request Body**:
+```json
 {
   "projectId": "project-123",
   "operation": "create",
   "characters": [
     {
-      "characterData": { /* Character 1 data */ }
+      "characterData": {
+        "name": "Character One",
+        "status": "in_development",
+        "age": 25,
+        "biography": { /* RichText content */ },
+        "personality": { /* RichText content */ }
+      }
     },
     {
-      "characterData": { /* Character 2 data */ }
+      "characterData": {
+        "name": "Character Two",
+        "status": "draft",
+        "age": 30,
+        "biography": { /* RichText content */ },
+        "personality": { /* RichText content */ }
+      }
     }
   ],
   "syncSettings": {
-    "conflictResolution": "manual"
+    "conflictResolution": "manual",
+    "autoSync": true
+  }
+}
+```
+
+**Parameters**:
+- `projectId` (string, required): Novel Movie project ID
+- `operation` (string, required): "create" | "update" | "sync"
+- `characters` (array, required): Array of character data
+- `syncSettings` (object, optional): Synchronization configuration
+
+**Response**:
+```json
+{
+  "success": true,
+  "message": "Bulk operation completed successfully",
+  "data": {
+    "projectId": "project-123",
+    "operation": "create",
+    "totalCharacters": 2,
+    "successfulOperations": 2,
+    "failedOperations": 0,
+    "results": [
+      {
+        "characterId": "char-124",
+        "name": "Character One",
+        "success": true,
+        "syncStatus": "synced"
+      },
+      {
+        "characterId": "char-125",
+        "name": "Character Two",
+        "success": true,
+        "syncStatus": "synced"
+      }
+    ],
+    "processingTime": 5000
   }
 }
 ```
@@ -609,11 +1197,11 @@ Content-Type: application/json
 }
 ```
 
-#### Batch Scene Generation
-```http
-POST /api/v1/characters/batch-generate-scenes
-Content-Type: application/json
+#### POST /api/v1/characters/batch-generate-scenes
+**NEW** Generate images for multiple scenes efficiently with batch processing.
 
+**Request Body**:
+```json
 {
   "projectId": "project-123",
   "scenes": [
@@ -622,12 +1210,58 @@ Content-Type: application/json
       "characters": ["char-1", "char-2"],
       "sceneDescription": "Opening dialogue scene",
       "requiredShots": ["medium_shot", "close_up"],
-      "sceneType": "dialogue"
+      "sceneType": "dialogue",
+      "environmentContext": "coffee shop",
+      "mood": "casual",
+      "lightingStyle": "natural"
+    },
+    {
+      "sceneId": "scene-002",
+      "characters": ["char-1"],
+      "sceneDescription": "Character alone in contemplation",
+      "requiredShots": ["close_up"],
+      "sceneType": "emotional"
     }
   ],
   "batchSettings": {
     "maxConcurrent": 3,
+    "style": "character_scene",
     "qualityThreshold": 80
+  }
+}
+```
+
+**Parameters**:
+- `projectId` (string, required): Project identifier
+- `scenes` (array, required): Array of scene definitions
+- `batchSettings` (object, optional): Batch processing configuration
+
+**Response**:
+```json
+{
+  "success": true,
+  "message": "Batch scene generation completed",
+  "data": {
+    "projectId": "project-123",
+    "totalScenes": 2,
+    "successfulScenes": 2,
+    "failedScenes": 0,
+    "results": [
+      {
+        "sceneId": "scene-001",
+        "success": true,
+        "generatedImages": [
+          {
+            "imageId": "img-001",
+            "shotType": "medium_shot",
+            "qualityScore": 0.88,
+            "publicUrl": "https://..."
+          }
+        ]
+      }
+    ],
+    "processingTime": 180000,
+    "averageQuality": 0.87
   }
 }
 ```
@@ -720,6 +1354,22 @@ Content-Type: application/json
 
 - **GraphQL Playground**: `/api/graphql-playground` for interactive API exploration
 - **Admin Panel**: `/admin` for visual character management
-- **Health Checks**: Use `/api/v1/characters/query?action=health` to verify service status
+- **Health Checks**:
+  - Service health: `GET /api/health`
+  - PathRAG health: `GET /api/v1/characters/query?action=health`
+  - PathRAG stats: `GET /api/v1/characters/query?action=stats`
+  - PathRAG management: `GET /api/v1/pathrag/manage`
+- **API Testing**: Use the comprehensive endpoint list in `/src/lib/api-endpoints.ts` for testing
+- **Quality Assurance**: Monitor QA configuration at `GET /api/v1/qa/config`
+
+### API Versioning
+All new endpoints use the `/api/v1/` prefix for versioning. Legacy endpoints without versioning are still supported but new features are only available in versioned endpoints.
+
+### Best Practices for New Features
+1. **Use Smart Generation**: Prefer `/generate-smart-image` over `/generate-image` for better results
+2. **Batch Operations**: Use batch endpoints for multiple operations to improve performance
+3. **Scene Context**: Use scene-specific generation for production workflows
+4. **Relationship Management**: Establish relationships before generating interaction images
+5. **Quality Monitoring**: Regularly validate characters and monitor quality metrics
 
 For additional support or questions about integrating with the Character Library API, please refer to the project documentation or contact the development team.
