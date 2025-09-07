@@ -3,7 +3,6 @@ import { withPayload } from '@payloadcms/next/withPayload'
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Your Next.js config here
-  output: 'standalone', // Required for Docker deployment
   trailingSlash: false, // Ensure no trailing slashes to prevent redirect loops
   webpack: (webpackConfig) => {
     webpackConfig.resolve.extensionAlias = {

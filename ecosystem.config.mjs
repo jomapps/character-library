@@ -2,8 +2,9 @@ export default {
   apps: [
     {
       name: 'character-library',
-      script: 'server.js',
-      cwd: '/opt/character-library/.next/standalone',
+      script: 'npm',
+      args: 'start',
+      cwd: '/opt/character-library',
       instances: 1,
       exec_mode: 'fork',
       watch: false,
