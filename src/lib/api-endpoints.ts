@@ -635,6 +635,151 @@ export const apiEndpoints: ApiEndpoint[] = [
     ]
   },
   {
+    id: 'get-project-characters',
+    name: 'Get Project Characters',
+    method: 'GET',
+    path: '/api/v1/characters/by-project/{projectId}',
+    description: 'Get all characters associated with a Novel Movie project',
+    category: 'Novel Movie Integration',
+    fields: [
+      {
+        name: 'projectId',
+        type: 'string',
+        required: true,
+        description: 'Novel Movie project ID',
+        placeholder: 'project-123'
+      },
+      {
+        name: 'limit',
+        type: 'number',
+        required: false,
+        description: 'Maximum number of characters to return',
+        placeholder: '50'
+      },
+      {
+        name: 'includeImages',
+        type: 'boolean',
+        required: false,
+        description: 'Include image gallery data',
+        placeholder: 'true'
+      }
+    ]
+  },
+  {
+    id: 'update-reference-image',
+    name: 'Update Reference Image',
+    method: 'PUT',
+    path: '/api/v1/characters/{id}/reference-image',
+    description: 'Update character\'s master reference image',
+    category: 'Novel Movie Integration',
+    fields: [
+      {
+        name: 'id',
+        type: 'string',
+        required: true,
+        description: 'Character ID',
+        placeholder: 'character-id'
+      },
+      {
+        name: 'imageUrl',
+        type: 'string',
+        required: false,
+        description: 'Image URL (if using external image)',
+        placeholder: 'https://example.com/image.jpg'
+      },
+      {
+        name: 'mediaId',
+        type: 'string',
+        required: false,
+        description: 'Media ID (if using uploaded media)',
+        placeholder: 'media-id'
+      }
+    ]
+  },
+  {
+    id: 'generate-360-set',
+    name: 'Generate 360° Image Set',
+    method: 'POST',
+    path: '/api/v1/characters/{id}/generate-360-set',
+    description: 'Generate complete 360° reference image set for character',
+    category: 'Novel Movie Integration',
+    fields: [
+      {
+        name: 'id',
+        type: 'string',
+        required: true,
+        description: 'Character ID',
+        placeholder: 'character-id'
+      },
+      {
+        name: 'style',
+        type: 'select',
+        required: false,
+        description: 'Image generation style',
+        options: ['character_production', 'cinematic', 'realistic']
+      },
+      {
+        name: 'qualityThreshold',
+        type: 'number',
+        required: false,
+        description: 'Minimum quality threshold (0-100)',
+        placeholder: '75'
+      },
+      {
+        name: 'imageCount',
+        type: 'number',
+        required: false,
+        description: 'Number of images to generate',
+        placeholder: '8'
+      }
+    ]
+  },
+  {
+    id: 'search-characters',
+    name: 'Search Characters',
+    method: 'POST',
+    path: '/api/v1/characters/search',
+    description: 'Search for similar characters to avoid duplication',
+    category: 'Novel Movie Integration',
+    fields: [
+      {
+        name: 'query',
+        type: 'string',
+        required: true,
+        description: 'Search query text',
+        placeholder: 'tall dark-haired detective'
+      },
+      {
+        name: 'similarityThreshold',
+        type: 'number',
+        required: false,
+        description: 'Similarity threshold (0-1)',
+        placeholder: '0.7'
+      },
+      {
+        name: 'includePhysical',
+        type: 'boolean',
+        required: false,
+        description: 'Include physical attributes in search',
+        placeholder: 'true'
+      },
+      {
+        name: 'includePersonality',
+        type: 'boolean',
+        required: false,
+        description: 'Include personality traits in search',
+        placeholder: 'true'
+      },
+      {
+        name: 'projectId',
+        type: 'string',
+        required: false,
+        description: 'Limit search to specific project',
+        placeholder: 'project-123'
+      }
+    ]
+  },
+  {
     id: 'novel-movie-sync',
     name: 'Sync Novel Movie Character',
     method: 'PUT',

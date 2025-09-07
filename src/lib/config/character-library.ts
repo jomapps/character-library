@@ -27,6 +27,11 @@ export interface CharacterLibraryEndpoints {
   qualityMetrics: '/api/v1/characters/{id}/quality-metrics'
   relationships: '/api/v1/characters/{id}/relationships'
   relationshipGraph: '/api/v1/characters/relationships/graph'
+  // Newly implemented endpoints
+  getProjectCharacters: '/api/v1/characters/by-project/{projectId}'
+  updateReferenceImage: '/api/v1/characters/{id}/reference-image'
+  generate360Set: '/api/v1/characters/{id}/generate-360-set'
+  searchCharacters: '/api/v1/characters/search'
 }
 
 export const ENDPOINTS: CharacterLibraryEndpoints = {
@@ -41,7 +46,12 @@ export const ENDPOINTS: CharacterLibraryEndpoints = {
   batchValidate: '/api/v1/characters/batch-validate',
   qualityMetrics: '/api/v1/characters/{id}/quality-metrics',
   relationships: '/api/v1/characters/{id}/relationships',
-  relationshipGraph: '/api/v1/characters/relationships/graph'
+  relationshipGraph: '/api/v1/characters/relationships/graph',
+  // Newly implemented endpoints
+  getProjectCharacters: '/api/v1/characters/by-project/{projectId}',
+  updateReferenceImage: '/api/v1/characters/{id}/reference-image',
+  generate360Set: '/api/v1/characters/{id}/generate-360-set',
+  searchCharacters: '/api/v1/characters/search'
 }
 
 export interface CharacterLibraryEnvironment {
