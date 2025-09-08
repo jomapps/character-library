@@ -70,6 +70,7 @@ export class DinoOrchestrator {
    */
   async uploadAndExtract(imageBuffer: Buffer, filename: string): Promise<{
     dinoAssetId: string
+    dinoMediaUrl?: string
     features?: number[]
     status: string
     error?: string
@@ -84,9 +85,10 @@ export class DinoOrchestrator {
 
       // Step 2: Extract features
       const featuresResult = await this.extractFeatures(uploadResult.asset_id)
-      
+
       return {
         dinoAssetId: uploadResult.asset_id,
+        dinoMediaUrl: uploadResult.media_url,
         features: featuresResult.features,
         status: 'processing',
       }
@@ -176,13 +178,11 @@ export class DinoOrchestrator {
    * Extract DINOv3 features from uploaded asset
    */
   private async extractFeatures(assetId: string): Promise<DinoFeaturesResponse> {
-    const response = await fetch(`${this.baseUrl}/api/v1/extract-features`, {
+    const response = await fetch(`${this.baseUrl}/api/v1/extract-features?asset_id=${encodeURIComponent(assetId)}`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
         'Authorization': `Bearer ${this.apiKey}`,
       },
-      body: JSON.stringify({ asset_id: assetId }),
     })
 
     if (!response.ok) {
@@ -196,7 +196,7 @@ export class DinoOrchestrator {
    * Analyze image quality using DINOv3
    */
   private async analyzeQuality(assetId: string): Promise<DinoQualityResponse> {
-    const response = await fetch(`${this.baseUrl}/analyze-quality`, {
+    const response = await fetch(`${this.baseUrl}/api/v1/analyze-quality`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -219,7 +219,7 @@ export class DinoOrchestrator {
     testAssetId: string, 
     referenceAssetId: string
   ): Promise<DinoConsistencyResponse> {
-    const response = await fetch(`${this.baseUrl}/validate-consistency`, {
+    const response = await fetch(`${this.baseUrl}/api/v1/validate-consistency`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

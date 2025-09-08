@@ -33,13 +33,13 @@ export class ImageGenerationService {
   private falApiKey: string
   private textToImageModel: string
   private imageToImageModel: string
-  private baseUrl = 'https://fal.run/fal-ai'
+  private baseUrl = 'https://fal.run'
 
   constructor() {
     this.falApiKey = process.env.FAL_KEY || ''
-    this.textToImageModel = process.env.FAL_TEXT_TO_IMAGE_MODEL || 'fal-ai/flux/schnell'
-    this.imageToImageModel = process.env.FAL_IMAGE_TO_IMAGE_MODEL || 'fal-ai/flux/schnell'
-    
+    this.textToImageModel = process.env.FAL_TEXT_TO_IMAGE_MODEL || 'fal-ai/nano-banana'
+    this.imageToImageModel = process.env.FAL_IMAGE_TO_IMAGE_MODEL || 'fal-ai/nano-banana/edit'
+
     if (!this.falApiKey) {
       console.warn('FAL_KEY not set - Image generation will not function')
     }
@@ -121,12 +121,13 @@ export class ImageGenerationService {
     prompt: string,
     options: GenerationOptions
   ): Promise<Record<string, any>> {
+    // Determine if we need image-to-image or text-to-image
+    const useImageToImage = !!options.referenceImageAssetId
+
     const parameters: Record<string, any> = {
       prompt: this.enhancePrompt(prompt, options.style),
-      image_size: this.getImageSize(options),
-      num_inference_steps: options.steps || this.getDefaultSteps(options.style),
-      guidance_scale: options.guidance || this.getDefaultGuidance(options.style),
-      enable_safety_checker: true,
+      num_images: 1, // nano-banana uses num_images instead of batch_size
+      output_format: 'jpeg', // nano-banana specific parameter
     }
 
     // Add seed if specified
@@ -135,24 +136,23 @@ export class ImageGenerationService {
     }
 
     // Handle reference images for image-to-image generation
-    if (options.referenceImageAssetId) {
+    if (useImageToImage && options.referenceImageAssetId) {
       const referenceImageUrl = await this.getDinoAssetUrl(options.referenceImageAssetId)
       if (referenceImageUrl) {
-        parameters.image_url = referenceImageUrl
-        parameters.strength = this.getStrengthForStyle(options.style)
-      }
-    }
+        // For nano-banana/edit, we need image_urls array
+        parameters.image_urls = [referenceImageUrl]
 
-    // Handle additional reference images (for IP-Adapter or similar)
-    if (options.additionalReferenceIds && options.additionalReferenceIds.length > 0) {
-      const additionalUrls = await Promise.all(
-        options.additionalReferenceIds.map(id => this.getDinoAssetUrl(id))
-      )
-      const validUrls = additionalUrls.filter(url => url !== null)
-      
-      if (validUrls.length > 0) {
-        parameters.reference_images = validUrls
-        parameters.reference_strength = 0.7 // Moderate influence from reference images
+        // Add additional reference images if available
+        if (options.additionalReferenceIds && options.additionalReferenceIds.length > 0) {
+          const additionalUrls = await Promise.all(
+            options.additionalReferenceIds.map(id => this.getDinoAssetUrl(id))
+          )
+          const validUrls = additionalUrls.filter(url => url !== null)
+
+          if (validUrls.length > 0) {
+            parameters.image_urls.push(...validUrls.slice(0, 9)) // Max 10 images total
+          }
+        }
       }
     }
 
@@ -161,23 +161,21 @@ export class ImageGenerationService {
 
   /**
    * Enhance prompt based on style and context
+   * Note: nano-banana uses Gemini, so we use natural language descriptions
    */
   private enhancePrompt(prompt: string, style?: string): string {
     let enhancedPrompt = prompt
 
     switch (style) {
       case 'character_turnaround':
-        enhancedPrompt += ', professional character sheet, clean background, consistent lighting, high quality, detailed'
+        enhancedPrompt += '. Create a professional character reference sheet with clean background, consistent lighting, high quality and detailed features.'
         break
       case 'character_production':
-        enhancedPrompt += ', cinematic quality, professional lighting, high detail, production ready'
+        enhancedPrompt += '. Create a cinematic quality image with professional lighting, high detail, and production-ready quality.'
         break
       default:
-        enhancedPrompt += ', high quality, detailed'
+        enhancedPrompt += '. Create a high quality, detailed image.'
     }
-
-    // Add negative prompt elements
-    enhancedPrompt += ' | negative: blurry, low quality, distorted, deformed, extra limbs, bad anatomy'
 
     return enhancedPrompt
   }

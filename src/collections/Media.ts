@@ -26,6 +26,16 @@ export const Media: CollectionConfig = {
       },
     },
     {
+      name: 'dinoMediaUrl',
+      type: 'text',
+      label: 'DINOv3 Media URL',
+      admin: {
+        readOnly: true,
+        description: 'The public URL for the media asset from DINOv3 service.',
+        position: 'sidebar',
+      },
+    },
+    {
       name: 'dinoProcessingStatus',
       type: 'select',
       label: 'DINOv3 Processing Status',
@@ -136,6 +146,7 @@ export const Media: CollectionConfig = {
           // Update the document with DINOv3 results
           const updateData: Record<string, any> = {
             dinoAssetId: result.dinoAssetId,
+            dinoMediaUrl: result.dinoMediaUrl,
             dinoProcessingStatus: result.status === 'error' ? 'error' : 'validation_success',
             dinoProcessedAt: new Date().toISOString(),
           }

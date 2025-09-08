@@ -132,8 +132,8 @@ export async function POST(
       }, { status: 500 })
     }
 
-    // Get the public URL for the image
-    const publicUrl = getPublicImageUrl(updatedMedia.dinoAssetId)
+    // Get the public URL for the image from DINOv3 media URL
+    const publicUrl = updatedMedia.dinoMediaUrl || getPublicImageUrl(updatedMedia.dinoAssetId)
 
     // Update the character with the master reference image
     await payload.update({
@@ -276,11 +276,10 @@ async function waitForDinoProcessing(
 }
 
 /**
- * Get public URL for the image from DINOv3 asset ID
+ * Get public URL for the image from DINOv3 asset ID (fallback)
  */
 function getPublicImageUrl(dinoAssetId: string): string {
-  // The DINOv3 service stores images in Cloudflare R2
-  // The asset ID is the R2 object key, so we can construct the public URL
+  // Fallback URL construction - add .jpg extension since DINOv3 stores as JPEG
   const baseUrl = process.env.CLOUDFLARE_R2_PUBLIC_URL || 'https://media.rumbletv.com'
-  return `${baseUrl}/${dinoAssetId}`
+  return `${baseUrl}/${dinoAssetId}.jpg`
 }

@@ -524,8 +524,9 @@ export class SmartImageGenerationService {
    * Get public URL for an image
    */
   private getPublicImageUrl(dinoAssetId: string): string {
-    const baseUrl = process.env.DINO_SERVICE_URL || 'https://dino.ft.tc'
-    return `${baseUrl}/media/${dinoAssetId}`
+    // Fallback URL construction if dinoMediaUrl is not available
+    const baseUrl = process.env.CLOUDFLARE_R2_PUBLIC_URL || 'https://media.rumbletv.com'
+    return `${baseUrl}/${dinoAssetId}.jpg`
   }
 }
 

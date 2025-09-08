@@ -150,6 +150,10 @@ export interface Media {
    * The unique asset ID from the DINOv3 service (R2 object key).
    */
   dinoAssetId?: string | null;
+  /**
+   * The public URL for the media asset from DINOv3 service.
+   */
+  dinoMediaUrl?: string | null;
   dinoProcessingStatus?: ('pending' | 'processing' | 'validation_failed' | 'validation_success' | 'error') | null;
   /**
    * 384-dimensional feature vector from DINOv3 model.
@@ -698,6 +702,7 @@ export interface UsersSelect<T extends boolean = true> {
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
   dinoAssetId?: T;
+  dinoMediaUrl?: T;
   dinoProcessingStatus?: T;
   dinoFeatures?: T;
   qualityScore?: T;
