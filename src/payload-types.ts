@@ -183,6 +183,7 @@ export interface Media {
    * Timestamp when DINOv3 processing was completed.
    */
   dinoProcessedAt?: string | null;
+  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -709,6 +710,7 @@ export interface MediaSelect<T extends boolean = true> {
   consistencyScore?: T;
   validationNotes?: T;
   dinoProcessedAt?: T;
+  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
