@@ -172,3 +172,105 @@ export async function GET(
     }, { status: 500 })
   }
 }
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+): Promise<NextResponse<ReferenceImageResponse>> {
+  try {
+    const payload = await getPayload({ config })
+    const { id } = await params
+
+    console.log(`Deleting master reference image and all derived content for character: ${id}`)
+
+    // Check if character exists
+    const existingCharacter = await payload.findByID({
+      collection: 'characters',
+      id,
+      depth: 2, // Include media details
+    })
+
+    if (!existingCharacter) {
+      return NextResponse.json({
+        success: false,
+        updated: false,
+        error: 'Character not found',
+      }, { status: 404 })
+    }
+
+    console.log(`Character found: ${existingCharacter.name}`)
+
+    // Reset all master reference related data and derived content
+    // This is a complete reset - new master reference means starting over
+    const resetData = {
+      // Master Reference Image
+      masterReferenceImage: null,
+      masterReferenceProcessed: false,
+      masterReferenceQuality: null,
+
+      // Core Set (360° reference images) - all based on master reference
+      coreSetGenerated: false,
+      coreSetGeneratedAt: null,
+      coreSetQuality: null,
+
+      // Image Gallery - all generated images are based on master reference
+      imageGallery: [],
+
+      // Quality Metrics - all consistency is measured against master reference
+      enhancedQualityMetrics: {
+        narrativeConsistency: null,
+        crossSceneConsistency: null,
+        relationshipVisualConsistency: null,
+        lastValidated: null,
+        validationHistory: [],
+      },
+
+      // Consistency Validation - no longer valid without master reference
+      lastConsistencyValidation: null,
+      consistencyValidationSummary: null,
+
+      // Scene Contexts - clear generated images as they're based on master reference
+      sceneContexts: (existingCharacter.sceneContexts || []).map((context: any) => ({
+        ...context,
+        generatedImages: [], // Clear all generated images
+        qualityScores: [],   // Clear quality scores
+        lastGenerated: null, // Reset generation timestamp
+      })),
+    }
+
+    const updatedCharacter = await payload.update({
+      collection: 'characters',
+      id,
+      data: resetData,
+    })
+
+    console.log(`Successfully reset character ${existingCharacter.name} - all derived content cleared`)
+
+    return NextResponse.json({
+      success: true,
+      updated: true,
+      message: 'Master reference image and all derived content deleted successfully. Character reset to base state.',
+      resetFields: [
+        'masterReferenceImage',
+        'masterReferenceProcessed',
+        'masterReferenceQuality',
+        'coreSetGenerated',
+        'coreSetGeneratedAt',
+        'coreSetQuality',
+        'imageGallery',
+        'enhancedQualityMetrics',
+        'lastConsistencyValidation',
+        'consistencyValidationSummary',
+        'sceneContexts.generatedImages'
+      ]
+    })
+
+  } catch (error) {
+    console.error('Master reference deletion error:', error)
+    return NextResponse.json({
+      success: false,
+      updated: false,
+      error: error instanceof Error ? error.message : 'Failed to delete master reference image',
+    }, { status: 500 })
+  }
+}

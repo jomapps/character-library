@@ -78,6 +78,37 @@
    └── Scene-specific variations
 ```
 
+### Master Reference Reset Workflow
+```
+⚠️ CRITICAL OPERATION: Complete Character Reset
+
+1. Delete Master Reference
+   DELETE /api/v1/characters/{id}/reference-image
+   ├── Removes master reference image
+   ├── Resets processing status
+   └── Clears quality metrics
+
+2. Cascade Reset (Automatic)
+   ├── Core set generation status → false
+   ├── Image gallery → cleared
+   ├── Quality metrics → reset
+   ├── Scene context images → cleared
+   └── Validation history → cleared
+
+3. Character State After Reset
+   ├── Character data preserved (name, bio, etc.)
+   ├── Novel Movie integration preserved
+   ├── Relationships preserved
+   └── All visual content removed
+
+4. Recovery Path
+   Must restart image generation workflow:
+   ├── POST /api/v1/characters/{id}/generate-initial-image
+   ├── PUT /api/v1/characters/{id}/reference-image
+   ├── POST /api/v1/characters/{id}/generate-360-set
+   └── POST /api/v1/characters/{id}/generate-scene-image
+```
+
 ### Image Quality Workflow
 ```
 1. Generation with Quality Threshold
@@ -282,4 +313,50 @@
    ├── Issue identification and flagging
    ├── Suggested resolution actions
    └── Manual review workflows
+```
+
+## 9. ID Consistency & Data Integrity Workflows
+
+### ID Type Management
+```
+1. Character Identification
+   ├── MongoDB ObjectId (id) → Database operations
+   ├── Business ID (characterId) → Human-readable references
+   ├── External Service IDs → DINOv3, PathRAG, FAL.ai
+   └── Project IDs → Novel Movie integration
+
+2. API Response Consistency
+   All character endpoints return:
+   ├── id: MongoDB ObjectId
+   ├── characterId: Business identifier
+   ├── External service IDs when applicable
+   └── Proper error handling for ID mismatches
+
+3. Service Integration ID Mapping
+   ├── DINOv3: dinoAssetId for media assets
+   ├── PathRAG: characterId for knowledge base
+   ├── FAL.ai: Request IDs for image generation
+   └── Novel Movie: projectId for project association
+```
+
+### Data Integrity Validation
+```
+1. ID Consistency Checks
+   ├── Validate MongoDB ObjectId format
+   ├── Verify characterId uniqueness
+   ├── Check external service ID mapping
+   └── Ensure relationship ID validity
+
+2. Cascade Validation
+   When master reference deleted:
+   ├── Verify all dependent data cleared
+   ├── Check external service cleanup
+   ├── Validate relationship integrity
+   └── Confirm quality metric reset
+
+3. Recovery Procedures
+   ├── ID mismatch resolution
+   ├── Orphaned reference cleanup
+   ├── Service synchronization repair
+   └── Data consistency restoration
 ```

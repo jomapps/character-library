@@ -697,6 +697,23 @@ export const apiEndpoints: ApiEndpoint[] = [
     ]
   },
   {
+    id: 'delete-reference-image',
+    name: 'Delete Reference Image',
+    method: 'DELETE',
+    path: '/api/v1/characters/{id}/reference-image',
+    description: 'Delete character\'s master reference image and reset all derived content (core set, gallery, quality metrics)',
+    category: 'Novel Movie Integration',
+    fields: [
+      {
+        name: 'id',
+        type: 'string',
+        required: true,
+        description: 'Character ID',
+        placeholder: 'character-id'
+      }
+    ]
+  },
+  {
     id: 'generate-360-set',
     name: 'Generate 360° Image Set',
     method: 'POST',

@@ -1,5 +1,16 @@
 # Character Library API Endpoints Summary
 
+## 📋 Documentation Index
+- **[Endpoint Usage Examples](character-library-2-endpoint-usage-examples.md)** - Detailed examples with request/response
+- **[Endpoint Connections](character-library-3-endpoint-connections.md)** - Data flow and dependencies
+- **[Workflows](character-library-4-workflows.md)** - Complete workflow documentation
+- **[ID Consistency Guide](../ids-and-their-role.md)** - Comprehensive ID management documentation
+
+## ⚠️ Important Notes
+- **Master Reference Deletion**: `DELETE /api/v1/characters/{id}/reference-image` performs complete reset
+- **ID Types**: Use MongoDB ObjectId for database operations, characterId for business logic
+- **Dependencies**: Many endpoints require master reference image processing
+
 ## Health & System
 - `GET /api/health` - Service health check and status
 
@@ -29,6 +40,7 @@
 - `POST /api/v1/characters/{id}/generate-smart-image` - Generate image using smart AI prompting
 - `PUT /api/v1/characters/{id}/reference-image` - Update character's master reference image
 - `GET /api/v1/characters/{id}/reference-image` - Get character's current reference image
+- `DELETE /api/v1/characters/{id}/reference-image` - Delete master reference image and reset all derived content
 
 ## Character Relationships
 - `GET /api/v1/characters/{id}/relationships` - Get character's relationships

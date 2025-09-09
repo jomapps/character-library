@@ -176,6 +176,30 @@ curl -X PUT https://character.ft.tc/api/v1/characters/CHARACTER_ID/reference-ima
   }'
 ```
 
+### DELETE /api/v1/characters/{id}/reference-image
+**Purpose**: Delete master reference image and reset all derived content
+**⚠️ Warning**: This performs a complete reset - deletes master reference, core set, gallery, quality metrics, and scene images
+```bash
+curl -X DELETE https://character.ft.tc/api/v1/characters/CHARACTER_ID/reference-image
+```
+**Response**:
+```json
+{
+  "success": true,
+  "updated": true,
+  "message": "Master reference image and all derived content deleted successfully. Character reset to base state.",
+  "resetFields": [
+    "masterReferenceImage",
+    "masterReferenceProcessed",
+    "masterReferenceQuality",
+    "coreSetGenerated",
+    "imageGallery",
+    "enhancedQualityMetrics",
+    "sceneContexts.generatedImages"
+  ]
+}
+```
+
 ### POST /api/v1/characters/{id}/generate-scene-image
 **Purpose**: Generate character image for specific scene
 ```bash

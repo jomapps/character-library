@@ -817,7 +817,7 @@ export const Characters: CollectionConfig = {
               if (mediaDoc && mediaDoc.dinoAssetId) {
                 // Process master reference with workflow service
                 const result = await characterWorkflowService.processMasterReference(
-                  doc.characterId || doc.id,
+                  doc.id, // Always use MongoDB ObjectId for database operations
                   Buffer.from([]), // We'll get the buffer from the media file
                   mediaDoc.filename || 'master_reference.jpg',
                   req.payload,

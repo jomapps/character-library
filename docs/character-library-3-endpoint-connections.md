@@ -51,6 +51,13 @@ Reference Image → PUT /api/v1/characters/{id}/reference-image
 360° Set → POST /api/v1/characters/{id}/generate-360-set
          ↓
 Scene Images → POST /api/v1/characters/{id}/generate-scene-image
+
+⚠️ RESET FLOW:
+DELETE /api/v1/characters/{id}/reference-image → Clears ALL derived content
+                                               ↓
+                                    Character reset to base state
+                                               ↓
+                                    Must restart from generate-initial-image
 ```
 
 ## Endpoint Dependencies
@@ -81,6 +88,14 @@ reference-image (Set master reference)
 generate-360-set (Complete reference set)
     ↓
 generate-scene-image (Context-specific images)
+
+⚠️ CRITICAL DEPENDENCY:
+DELETE reference-image → RESETS ALL:
+- Core set (360° images)
+- Image gallery
+- Quality metrics
+- Scene images
+- Validation history
 ```
 
 ### Quality & Validation Layer
