@@ -8,7 +8,7 @@
 export interface GenerationOptions {
   referenceImageAssetId?: string
   additionalReferenceIds?: string[]
-  style?: 'character_turnaround' | 'character_production' | 'custom'
+  style?: 'character_turnaround' | 'character_production' | 'custom' | 'none'
   width?: number
   height?: number
   steps?: number
@@ -63,7 +63,11 @@ export class ImageGenerationService {
 
       // Prepare generation parameters
       const parameters = await this.prepareGenerationParameters(prompt, options)
-      
+
+      // Enhanced debugging for request
+      console.log('Fal.ai request model:', model)
+      console.log('Fal.ai request parameters:', JSON.stringify(parameters, null, 2))
+
       // Call Fal.ai API
       const response = await fetch(`${this.baseUrl}/${model}`, {
         method: 'POST',
@@ -80,8 +84,13 @@ export class ImageGenerationService {
       }
 
       const result = await response.json()
-      
+
+      // Enhanced debugging for Fal.ai response
+      console.log('Fal.ai response status:', response.status)
+      console.log('Fal.ai response body:', JSON.stringify(result, null, 2))
+
       if (!result.images || result.images.length === 0) {
+        console.error('Fal.ai response missing images array:', result)
         throw new Error('No images returned from Fal.ai')
       }
 
@@ -124,8 +133,12 @@ export class ImageGenerationService {
     // Determine if we need image-to-image or text-to-image
     const useImageToImage = !!options.referenceImageAssetId
 
+    // Enhance the prompt and log the final version
+    const finalPrompt = this.enhancePrompt(prompt, options.style)
+    console.log(`🎨 FINAL PROMPT SENT TO FAL.AI: "${finalPrompt}"`)
+
     const parameters: Record<string, any> = {
-      prompt: this.enhancePrompt(prompt, options.style),
+      prompt: finalPrompt,
       num_images: 1, // nano-banana uses num_images instead of batch_size
       output_format: 'jpeg', // nano-banana specific parameter
     }
@@ -164,6 +177,15 @@ export class ImageGenerationService {
    * Note: nano-banana uses Gemini, so we use natural language descriptions
    */
   private enhancePrompt(prompt: string, style?: string): string {
+    console.log(`📝 PROMPT ENHANCEMENT - Input: "${prompt}"`)
+    console.log(`🎭 PROMPT ENHANCEMENT - Style: "${style || 'default'}"`)
+
+    // If style is 'none', return the original prompt without any modifications
+    if (style === 'none') {
+      console.log(`🚫 PROMPT ENHANCEMENT DISABLED - Returning original prompt unchanged`)
+      return prompt
+    }
+
     let enhancedPrompt = prompt
 
     switch (style) {
@@ -177,6 +199,7 @@ export class ImageGenerationService {
         enhancedPrompt += '. Create a high quality, detailed image.'
     }
 
+    console.log(`✨ PROMPT ENHANCEMENT - Output: "${enhancedPrompt}"`)
     return enhancedPrompt
   }
 

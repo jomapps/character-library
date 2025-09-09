@@ -111,10 +111,23 @@ export async function POST(
 
     // Get the public URL for the image
     // Priority: 1) DINOv3 media URL, 2) Original PayloadCMS URL, 3) Fallback construction
-    const publicUrl = updatedMedia.dinoMediaUrl || updatedMedia.url || getPublicImageUrl(updatedMedia.dinoAssetId)
+    let publicUrl: string
+    let urlSource: string
 
-    // Log URL generation for debugging (can be removed in production)
-    console.log(`URL generation: Using ${updatedMedia.dinoMediaUrl ? 'DINOv3' : updatedMedia.url ? 'PayloadCMS' : 'fallback'} URL: ${publicUrl}`)
+    if (updatedMedia.dinoMediaUrl) {
+      publicUrl = updatedMedia.dinoMediaUrl
+      urlSource = 'DINOv3'
+    } else if (updatedMedia.url) {
+      publicUrl = updatedMedia.url
+      urlSource = 'PayloadCMS'
+    } else {
+      publicUrl = getPublicImageUrl(updatedMedia.dinoAssetId)
+      urlSource = 'fallback'
+    }
+
+    // Log URL generation for debugging
+    console.log(`URL generation: Using ${urlSource} URL: ${publicUrl}`)
+    console.log(`Media record - dinoMediaUrl: ${updatedMedia.dinoMediaUrl || 'null'}, url: ${updatedMedia.url || 'null'}, dinoAssetId: ${updatedMedia.dinoAssetId}`)
 
     console.log(`✓ Standalone initial image generated successfully`)
 
@@ -261,7 +274,7 @@ function getPublicImageUrl(dinoAssetId: string): string {
     return `${baseUrl}/${dinoAssetId}`
   }
 
-  // For asset IDs without extension, construct URL without extension
-  // The DINOv3 service should handle the correct object key format
-  return `${baseUrl}/${dinoAssetId}`
+  // For asset IDs without extension, add .jpg extension
+  // Most generated images are JPEG format
+  return `${baseUrl}/${dinoAssetId}.jpg`
 }

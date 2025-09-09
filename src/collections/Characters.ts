@@ -799,51 +799,10 @@ export const Characters: CollectionConfig = {
     afterChange: [
       async ({ doc, req, operation, previousDoc }) => {
         try {
-          // Handle master reference image processing
+          // Master reference processing is now handled entirely by the Media collection hooks
+          // This prevents infinite loops and duplicate processing
           if (operation === 'update' && doc.masterReferenceImage) {
-            const previousMasterRef = previousDoc?.masterReferenceImage
-            const currentMasterRef = doc.masterReferenceImage
-
-            // Check if master reference image was added or changed
-            if (currentMasterRef && currentMasterRef !== previousMasterRef) {
-              console.log(`Processing new master reference for character: ${doc.name}`)
-
-              // Get the media document
-              const mediaDoc = await req.payload.findByID({
-                collection: 'media',
-                id: typeof currentMasterRef === 'string' ? currentMasterRef : currentMasterRef.id,
-              })
-
-              if (mediaDoc && mediaDoc.dinoAssetId) {
-                // Process master reference with workflow service
-                const result = await characterWorkflowService.processMasterReference(
-                  doc.id, // Always use MongoDB ObjectId for database operations
-                  Buffer.from([]), // We'll get the buffer from the media file
-                  mediaDoc.filename || 'master_reference.jpg',
-                  req.payload,
-                )
-
-                if (result.success) {
-                  console.log(`✓ Master reference processed successfully for ${doc.name}`)
-
-                  // Update the character document with processing results
-                  await req.payload.update({
-                    collection: 'characters',
-                    id: doc.id,
-                    data: {
-                      // Add a field to track master reference processing status
-                      masterReferenceProcessed: true,
-                      masterReferenceQuality: result.qualityScore,
-                    },
-                  })
-                } else {
-                  console.error(
-                    `✗ Master reference processing failed for ${doc.name}:`,
-                    result.error,
-                  )
-                }
-              }
-            }
+            console.log(`Character ${doc.name} updated with master reference, processing handled by Media collection`)
           }
 
           // PathRAG sync for character persona data

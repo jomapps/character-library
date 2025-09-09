@@ -42,9 +42,15 @@ If Similar Found → Use Existing Character
 If Not Found → Create New Character → POST /api/v1/characters/novel-movie
 ```
 
-### 3. Image Generation Pipeline
+### 3. Enhanced Image Generation Pipeline
 ```
 Character Data → POST /api/v1/characters/{id}/generate-initial-image
+              ↓
+Exact Prompt Processing (no modifications) → Fal.ai nano-banana
+              ↓
+Image Generated → R2 Storage Upload → Public URL Created
+              ↓
+DINOv3 Integration → Feature Extraction → Asset ID Assignment
               ↓
 Reference Image → PUT /api/v1/characters/{id}/reference-image
                 ↓
@@ -154,6 +160,76 @@ DELETE reference-image → RESETS ALL:
 - Bulk endpoints for multiple character operations
 - Async processing for image generation
 - Progress tracking for long-running operations
+
+## 🆕 DINOv3 Integration Architecture
+
+### Service Integration Flow
+```
+Character Library API ←→ DINOv3 Service (https://dino.ft.tc)
+                    ↓
+Image Processing Pipeline:
+1. Image Generation Complete
+2. R2 Storage Upload
+3. DINOv3 Upload & Processing
+4. Feature Extraction
+5. Asset ID Assignment
+6. Media Record Update
+```
+
+### Data Flow with DINOv3
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   Image         │    │   DINOv3        │    │   Media         │
+│   Generation    │───►│   Processing    │───►│   Management    │
+│                 │    │                 │    │                 │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         ▼                       ▼                       ▼
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   R2 Storage    │    │   Feature       │    │   URL           │
+│   Upload        │    │   Extraction    │    │   Prioritization│
+│                 │    │                 │    │                 │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+```
+
+### Error Handling & Fallbacks
+```
+DINOv3 Processing Success:
+├── Asset ID assigned
+├── DINOv3 media URL available
+├── Feature extraction complete
+└── Smart reference selection enabled
+
+DINOv3 Processing Failure:
+├── Graceful degradation to PayloadCMS URLs
+├── Error logging and monitoring
+├── Retry mechanisms for transient failures
+└── Manual recovery procedures available
+```
+
+## 🎯 Prompt Control Integration
+
+### Processing Flow
+```
+User Prompt Input → Prompt Control System → Image Generation
+                 ↓
+Style Detection: 'none' for initial images
+                 ↓
+Bypass Enhancement → Exact Prompt Preservation
+                 ↓
+Fal.ai API Call → Image Generation → DINOv3 Processing
+```
+
+### Logging & Debugging
+```
+Console Output Chain:
+1. "Original user prompt: [exact text]"
+2. "🚫 PROMPT MODIFICATION DISABLED"
+3. "🎨 FINAL PROMPT SENT TO FAL.AI: [exact text]"
+4. "Fal.ai request parameters: {...}"
+5. "DINOv3 processing: processing - Asset ID: [id]"
+6. "✓ Image generated successfully"
+```
 
 ### Rate Limiting
 - Image generation endpoints have rate limits

@@ -150,6 +150,60 @@ curl -X POST https://character.ft.tc/api/v1/characters/query \
 
 ## Image Generation
 
+### POST /api/v1/characters/{id}/generate-initial-image
+**Purpose**: Generate character's first reference image using exact user prompt (no modifications)
+```bash
+curl -X POST https://character.ft.tc/api/v1/characters/CHARACTER_ID/generate-initial-image \
+  -H "Content-Type: application/json" \
+  -d '{
+    "prompt": "A fierce dragon warrior with golden scales and emerald eyes",
+    "style": "character_turnaround",
+    "width": 768,
+    "height": 1024
+  }'
+```
+**Response**:
+```json
+{
+  "success": true,
+  "message": "Initial character image generated successfully",
+  "data": {
+    "characterId": "CHARACTER_ID",
+    "characterName": "Dragon Warrior",
+    "imageId": "image-id",
+    "dinoAssetId": "dino-asset-id",
+    "publicUrl": "https://media.rumbletv.com/media/character_initial_123.jpg"
+  }
+}
+```
+
+### POST /api/v1/characters/generate-initial-image
+**Purpose**: Generate standalone initial image without character association
+```bash
+curl -X POST https://character.ft.tc/api/v1/characters/generate-initial-image \
+  -H "Content-Type: application/json" \
+  -d '{
+    "prompt": "A simple red apple on a white table",
+    "style": "character_turnaround",
+    "width": 768,
+    "height": 1024,
+    "alt": "Red apple reference image"
+  }'
+```
+**Response**:
+```json
+{
+  "success": true,
+  "message": "Standalone initial image generated successfully",
+  "data": {
+    "imageId": "image-id",
+    "dinoAssetId": "dino-asset-id",
+    "publicUrl": "https://media.rumbletv.com/media/standalone_initial_123.jpg",
+    "filename": "standalone_initial_123.jpg"
+  }
+}
+```
+
 ### POST /api/v1/characters/{id}/generate-360-set
 **Purpose**: Generate complete 360° reference image set
 ```bash
@@ -255,4 +309,58 @@ curl https://character.ft.tc/api/v1/characters/CHARACTER_ID/relationships
 **Purpose**: Get relationship graph for all characters
 ```bash
 curl https://character.ft.tc/api/v1/characters/relationships/graph
+```
+
+## 🆕 New Features & Enhancements
+
+### Prompt Control System
+**Feature**: Initial image generation now uses exact user prompts without modifications
+- **Style Option**: Use `"style": "none"` to disable all prompt enhancements
+- **Default Behavior**: `generate-initial-image` endpoints automatically use unmodified prompts
+- **Logging**: Detailed console logs show prompt transformation chain for debugging
+
+**Example with exact prompt**:
+```bash
+curl -X POST https://character.ft.tc/api/v1/characters/CHARACTER_ID/generate-initial-image \
+  -H "Content-Type: application/json" \
+  -d '{
+    "prompt": "A simple red apple on a white table"
+  }'
+```
+**Console Output**:
+```
+Original user prompt: "A simple red apple on a white table"
+🚫 PROMPT MODIFICATION DISABLED - Using exact user prompt
+🎨 FINAL PROMPT SENT TO FAL.AI: "A simple red apple on a white table"
+```
+
+### DINOv3 Integration
+**Feature**: Automatic image processing and feature extraction
+- **Automatic Upload**: All generated images are uploaded to DINOv3 service
+- **Asset IDs**: Each image receives a unique DINOv3 asset ID for tracking
+- **Feature Extraction**: Enables similarity matching and smart reference selection
+- **Quality Validation**: Detects corrupted or invalid images during processing
+- **URL Management**: Prioritizes DINOv3 URLs with PayloadCMS fallbacks
+
+**DINOv3 Processing Flow**:
+```
+1. Image Generated → 2. Upload to R2 → 3. DINOv3 Processing → 4. Asset ID Assignment → 5. Feature Extraction Complete
+```
+
+### Enhanced Media URL System
+**Feature**: Intelligent URL prioritization for optimal image delivery
+- **Priority 1**: DINOv3 media URL (when available)
+- **Priority 2**: PayloadCMS URL (fallback)
+- **Priority 3**: Constructed fallback URL (emergency fallback)
+
+**Example Response with DINOv3 Integration**:
+```json
+{
+  "success": true,
+  "data": {
+    "imageId": "image-id",
+    "dinoAssetId": "61cd63e4-e406-481f-b317-202e9b158fad",
+    "publicUrl": "https://media.rumbletv.com/media/character_123.jpg"
+  }
+}
 ```

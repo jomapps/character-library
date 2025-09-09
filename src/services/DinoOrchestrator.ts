@@ -155,6 +155,13 @@ export class DinoOrchestrator {
    * Upload media file to DINOv3 service
    */
   private async uploadMedia(imageBuffer: Buffer, filename: string): Promise<DinoUploadResponse> {
+    console.log(`DINOv3 upload request:`, {
+      url: `${this.baseUrl}/api/v1/upload-media`,
+      filename,
+      bufferSize: imageBuffer.length,
+      hasApiKey: !!this.apiKey
+    })
+
     const formData = new FormData()
     const blob = new Blob([imageBuffer], { type: 'image/jpeg' })
     formData.append('file', blob, filename)
@@ -168,7 +175,15 @@ export class DinoOrchestrator {
     })
 
     if (!response.ok) {
-      throw new Error(`DINOv3 upload failed: ${response.status} ${response.statusText}`)
+      const errorText = await response.text()
+      console.error(`DINOv3 upload error details:`, {
+        status: response.status,
+        statusText: response.statusText,
+        errorBody: errorText,
+        url: `${this.baseUrl}/api/v1/upload-media`,
+        hasApiKey: !!this.apiKey
+      })
+      throw new Error(`DINOv3 upload failed: ${response.status} ${response.statusText} - ${errorText}`)
     }
 
     return await response.json()

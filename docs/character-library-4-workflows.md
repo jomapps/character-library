@@ -25,8 +25,12 @@
 
 4. Optional: Initial Image Generation
    POST /api/v1/characters/{id}/generate-initial-image
-   ├── Creates first reference image
-   ├── Updates character record
+   ├── Uses exact user prompt (no modifications)
+   ├── Generates image via Fal.ai nano-banana model
+   ├── Uploads to R2 storage
+   ├── Processes with DINOv3 for feature extraction
+   ├── Assigns unique DINOv3 asset ID
+   ├── Updates character record with master reference
    └── Triggers quality recalculation
 ```
 
@@ -359,4 +363,101 @@
    ├── Orphaned reference cleanup
    ├── Service synchronization repair
    └── Data consistency restoration
+```
+
+## 8. DINOv3 Integration Workflow
+
+### Image Processing Pipeline
+```
+1. Image Generation Complete
+   ├── Image stored in R2 with public URL
+   ├── Image buffer available for processing
+   └── Character record updated with media reference
+
+2. DINOv3 Upload Process
+   POST https://dino.ft.tc/api/v1/upload-media
+   ├── Download image from R2 public URL
+   ├── Validate image format and integrity
+   ├── Upload to DINOv3 service
+   └── Receive unique asset ID
+
+3. Feature Extraction
+   DINOv3 Processing Pipeline:
+   ├── Image analysis and feature extraction
+   ├── Quality assessment and validation
+   ├── Similarity vector generation
+   └── Asset metadata creation
+
+4. Integration Complete
+   ├── Update media record with DINOv3 asset ID
+   ├── Store DINOv3 media URL (if provided)
+   ├── Enable similarity matching capabilities
+   └── Ready for smart reference selection
+```
+
+### Error Handling & Recovery
+```
+1. Upload Failures
+   ├── Invalid image format detection
+   ├── Corrupted file handling
+   ├── Network timeout recovery
+   └── Retry mechanism with exponential backoff
+
+2. Processing Failures
+   ├── DINOv3 service unavailable
+   ├── Feature extraction errors
+   ├── Asset ID assignment failures
+   └── Graceful degradation to PayloadCMS URLs
+
+3. URL Prioritization System
+   Priority 1: DINOv3 media URL
+   ├── Best performance and features
+   └── Direct access to processed assets
+
+   Priority 2: PayloadCMS URL
+   ├── Reliable fallback option
+   └── Standard media delivery
+
+   Priority 3: Constructed fallback URL
+   ├── Emergency access method
+   └── Ensures image availability
+```
+
+## 9. Prompt Control System Workflow
+
+### Exact Prompt Processing
+```
+1. User Prompt Received
+   ├── Original prompt logged for tracking
+   ├── Style parameter set to 'none' (automatic)
+   └── No modifications applied
+
+2. Image Generation Request
+   POST Fal.ai nano-banana model
+   ├── Exact user prompt sent to AI model
+   ├── No style-based enhancements added
+   ├── No reference sheet formatting applied
+   └── Pure user intent preserved
+
+3. Detailed Logging
+   Console Output:
+   ├── "Original user prompt: [exact text]"
+   ├── "🚫 PROMPT MODIFICATION DISABLED"
+   ├── "🎨 FINAL PROMPT SENT TO FAL.AI: [exact text]"
+   └── Full request parameters logged
+
+4. Quality Assurance
+   ├── Prompt integrity verification
+   ├── Character encoding preservation
+   ├── Special character handling
+   └── Length validation (within model limits)
+```
+
+### Legacy Compatibility
+```
+For other endpoints (non-initial image generation):
+├── Standard prompt enhancement still available
+├── Style-based modifications preserved
+├── Reference sheet formatting maintained
+└── Backward compatibility ensured
 ```

@@ -4,12 +4,16 @@
 - **[Endpoint Usage Examples](character-library-2-endpoint-usage-examples.md)** - Detailed examples with request/response
 - **[Endpoint Connections](character-library-3-endpoint-connections.md)** - Data flow and dependencies
 - **[Workflows](character-library-4-workflows.md)** - Complete workflow documentation
+- **[Recent Updates](character-library-5-recent-updates.md)** - Latest changes, fixes, and enhancements
 - **[ID Consistency Guide](../ids-and-their-role.md)** - Comprehensive ID management documentation
 
 ## ⚠️ Important Notes
 - **Master Reference Deletion**: `DELETE /api/v1/characters/{id}/reference-image` performs complete reset
 - **ID Types**: Use MongoDB ObjectId for database operations, characterId for business logic
 - **Dependencies**: Many endpoints require master reference image processing
+- **DINOv3 Integration**: All images are automatically processed with DINOv3 for feature extraction and similarity matching
+- **Prompt Control**: Initial image generation uses exact user prompts without modifications (style: 'none')
+- **Media URLs**: System prioritizes DINOv3 media URLs, falls back to PayloadCMS URLs, then constructs fallback URLs
 
 ## Health & System
 - `GET /api/health` - Service health check and status
@@ -32,12 +36,13 @@
 - `GET /api/v1/characters/query` - Get query stats and health information
 
 ## Image Generation
-- `POST /api/v1/characters/{id}/generate-image` - Generate basic character image
-- `POST /api/v1/characters/{id}/generate-initial-image` - Generate character's first reference image
+- `POST /api/v1/characters/{id}/generate-image` - Generate basic character image with reference consistency
+- `POST /api/v1/characters/{id}/generate-initial-image` - Generate character's first reference image (uses exact prompt, no modifications)
+- `POST /api/v1/characters/generate-initial-image` - Generate standalone initial image without character association
 - `POST /api/v1/characters/{id}/generate-scene-image` - Generate character image for specific scene context
-- `POST /api/v1/characters/{id}/generate-core-set` - Generate core reference image set
+- `POST /api/v1/characters/{id}/generate-core-set` - Generate core reference image set with quality validation
 - `POST /api/v1/characters/{id}/generate-360-set` - Generate complete 360° reference image set
-- `POST /api/v1/characters/{id}/generate-smart-image` - Generate image using smart AI prompting
+- `POST /api/v1/characters/{id}/generate-smart-image` - Generate image using smart AI prompting with reference selection
 - `PUT /api/v1/characters/{id}/reference-image` - Update character's master reference image
 - `GET /api/v1/characters/{id}/reference-image` - Get character's current reference image
 - `DELETE /api/v1/characters/{id}/reference-image` - Delete master reference image and reset all derived content
@@ -46,6 +51,13 @@
 - `GET /api/v1/characters/{id}/relationships` - Get character's relationships
 - `POST /api/v1/characters/{id}/relationships` - Create or update character relationships
 - `GET /api/v1/characters/relationships/graph` - Get relationship graph for all characters
+
+## Media & DINOv3 Integration
+- **Automatic Processing**: All generated images are automatically uploaded to DINOv3 for feature extraction
+- **Asset Management**: Each image gets a unique DINOv3 asset ID for similarity matching and retrieval
+- **URL Prioritization**: System uses DINOv3 media URLs when available, with PayloadCMS and fallback URLs as backup
+- **Quality Validation**: DINOv3 processing includes image quality validation and corruption detection
+- **Feature Extraction**: Enables advanced similarity matching and smart reference image selection
 
 ## Quality & Validation
 - `GET /api/v1/characters/{id}/quality-metrics` - Get comprehensive quality metrics for character

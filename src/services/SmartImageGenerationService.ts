@@ -188,7 +188,16 @@ export class SmartImageGenerationService {
               collection: 'media',
               id: mediaResult.imageId,
             })
-            const publicUrl = media.dinoMediaUrl || media.url || this.getPublicImageUrl(mediaResult.dinoAssetId)
+            let publicUrl: string
+            if (media.dinoMediaUrl) {
+              publicUrl = media.dinoMediaUrl
+            } else if (media.url) {
+              publicUrl = media.url
+            } else {
+              publicUrl = this.getPublicImageUrl(mediaResult.dinoAssetId)
+            }
+
+            console.log(`Smart generation URL: Using ${media.dinoMediaUrl ? 'DINOv3' : media.url ? 'PayloadCMS' : 'fallback'} URL: ${publicUrl}`)
 
             return {
               success: true,
@@ -540,9 +549,9 @@ export class SmartImageGenerationService {
       return `${baseUrl}/${dinoAssetId}`
     }
 
-    // For asset IDs without extension, return URL without extension
-    // The DINOv3 service should handle the correct object key format
-    return `${baseUrl}/${dinoAssetId}`
+    // For asset IDs without extension, add .jpg extension
+    // Most generated images are JPEG format
+    return `${baseUrl}/${dinoAssetId}.jpg`
   }
 }
 

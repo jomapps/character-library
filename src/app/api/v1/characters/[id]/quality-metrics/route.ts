@@ -148,7 +148,7 @@ export async function GET(
     return NextResponse.json({
       success: true,
       id: character.id,                    // MongoDB ObjectId for database operations
-      characterId: character.characterId, // Human-readable business identifier
+      characterId: character.characterId || character.id, // Human-readable business identifier, fallback to id
       characterName: character.name,
       metrics,
     })

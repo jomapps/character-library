@@ -172,7 +172,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<NovelMovi
       success: true,
       character: character,
       id: character.id,                    // MongoDB ObjectId for database operations
-      characterId: character.characterId, // Human-readable business identifier
+      characterId: character.characterId || undefined, // Human-readable business identifier, convert null to undefined
       syncStatus: 'synced',
     }, { status: 201 })
 

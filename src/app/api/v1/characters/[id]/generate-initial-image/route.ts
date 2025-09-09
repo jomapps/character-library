@@ -15,7 +15,7 @@ import { imageGenerationService } from '../../../../../../services/ImageGenerati
 
 interface GenerateInitialImageRequest {
   prompt: string
-  style?: 'character_turnaround' | 'character_production' | 'custom'
+  style?: 'character_turnaround' | 'character_production' | 'custom' | 'none'
   width?: number
   height?: number
 }
@@ -76,14 +76,12 @@ export async function POST(
       }, { status: 400 })
     }
 
-    // Enhance the prompt for reference image generation
-    const enhancedPrompt = enhancePromptForReferenceImage(body.prompt)
-    
-    console.log(`Enhanced prompt: "${enhancedPrompt}"`)
+    console.log(`Original user prompt: "${body.prompt}"`)
+    console.log(`🚫 PROMPT MODIFICATION DISABLED - Using exact user prompt`)
 
-    // Generate the initial image using text-to-image (no reference images)
-    const generationResult = await imageGenerationService.generateImage(enhancedPrompt, {
-      style: body.style || 'character_turnaround',
+    // Generate the initial image using the exact user prompt without any modifications
+    const generationResult = await imageGenerationService.generateImage(body.prompt, {
+      style: 'none', // Disable style-based prompt enhancement
       width: body.width || 768,
       height: body.height || 1024,
       steps: 35, // Higher quality for reference image
@@ -134,10 +132,23 @@ export async function POST(
 
     // Get the public URL for the image
     // Priority: 1) DINOv3 media URL, 2) Original PayloadCMS URL, 3) Fallback construction
-    const publicUrl = updatedMedia.dinoMediaUrl || updatedMedia.url || getPublicImageUrl(updatedMedia.dinoAssetId)
+    let publicUrl: string
+    let urlSource: string
 
-    // Log URL generation for debugging (can be removed in production)
-    console.log(`URL generation: Using ${updatedMedia.dinoMediaUrl ? 'DINOv3' : updatedMedia.url ? 'PayloadCMS' : 'fallback'} URL: ${publicUrl}`)
+    if (updatedMedia.dinoMediaUrl) {
+      publicUrl = updatedMedia.dinoMediaUrl
+      urlSource = 'DINOv3'
+    } else if (updatedMedia.url) {
+      publicUrl = updatedMedia.url
+      urlSource = 'PayloadCMS'
+    } else {
+      publicUrl = getPublicImageUrl(updatedMedia.dinoAssetId)
+      urlSource = 'fallback'
+    }
+
+    // Log URL generation for debugging
+    console.log(`URL generation: Using ${urlSource} URL: ${publicUrl}`)
+    console.log(`Media record - dinoMediaUrl: ${updatedMedia.dinoMediaUrl || 'null'}, url: ${updatedMedia.url || 'null'}, dinoAssetId: ${updatedMedia.dinoAssetId}`)
 
     // Update the character with the master reference image
     await payload.update({
@@ -295,7 +306,7 @@ function getPublicImageUrl(dinoAssetId: string): string {
     return `${baseUrl}/${dinoAssetId}`
   }
 
-  // For asset IDs without extension, construct URL without extension
-  // The DINOv3 service should handle the correct object key format
-  return `${baseUrl}/${dinoAssetId}`
+  // For asset IDs without extension, add .jpg extension
+  // Most generated images are JPEG format
+  return `${baseUrl}/${dinoAssetId}.jpg`
 }
