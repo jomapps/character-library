@@ -183,8 +183,12 @@ export class SmartImageGenerationService {
               payload
             )
 
-            // Get public URL
-            const publicUrl = this.getPublicImageUrl(mediaResult.dinoAssetId)
+            // Get public URL - priority: DINOv3 URL, original PayloadCMS URL, fallback
+            const media = await payload.findByID({
+              collection: 'media',
+              id: mediaResult.imageId,
+            })
+            const publicUrl = media.dinoMediaUrl || media.url || this.getPublicImageUrl(mediaResult.dinoAssetId)
 
             return {
               success: true,
@@ -524,9 +528,21 @@ export class SmartImageGenerationService {
    * Get public URL for an image
    */
   private getPublicImageUrl(dinoAssetId: string): string {
-    // Fallback URL construction if dinoMediaUrl is not available
     const baseUrl = process.env.CLOUDFLARE_R2_PUBLIC_URL || 'https://media.rumbletv.com'
-    return `${baseUrl}/${dinoAssetId}.jpg`
+
+    // If the asset ID is already a complete URL, return it as-is
+    if (dinoAssetId.startsWith('http://') || dinoAssetId.startsWith('https://')) {
+      return dinoAssetId
+    }
+
+    // If the asset ID contains a file extension, use it as-is
+    if (dinoAssetId.includes('.')) {
+      return `${baseUrl}/${dinoAssetId}`
+    }
+
+    // For asset IDs without extension, return URL without extension
+    // The DINOv3 service should handle the correct object key format
+    return `${baseUrl}/${dinoAssetId}`
   }
 }
 

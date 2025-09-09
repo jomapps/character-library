@@ -1,7 +1,5 @@
 import type { CollectionConfig } from 'payload'
 import { dinoOrchestrator } from '../services/DinoOrchestrator'
-import fs from 'fs'
-import path from 'path'
 
 export const Media: CollectionConfig = {
   slug: 'media',
@@ -118,15 +116,22 @@ export const Media: CollectionConfig = {
         }
 
         try {
-          // Get the uploaded file buffer
-          const filePath = doc.filename ? path.join(process.cwd(), 'media', doc.filename) : null
-
-          if (!filePath || !fs.existsSync(filePath)) {
-            console.warn(`Media file not found for DINOv3 processing: ${doc.filename}`)
+          // For R2 storage, we need to download the file from the URL
+          if (!doc.url) {
+            console.warn(`Media URL not available for DINOv3 processing: ${doc.filename}`)
             return doc
           }
 
-          const imageBuffer = fs.readFileSync(filePath)
+          console.log(`Downloading image from R2 for DINOv3 processing: ${doc.url}`)
+
+          // Download the image from R2
+          const response = await fetch(doc.url)
+          if (!response.ok) {
+            console.warn(`Failed to download image from R2: ${response.status} ${response.statusText}`)
+            return doc
+          }
+
+          const imageBuffer = Buffer.from(await response.arrayBuffer())
 
           // Update status to processing
           await req.payload.update({
@@ -142,6 +147,8 @@ export const Media: CollectionConfig = {
             imageBuffer,
             doc.filename || 'unknown',
           )
+
+          console.log(`DINOv3 processing: ${result.status} - Asset ID: ${result.dinoAssetId}`)
 
           // Update the document with DINOv3 results
           const updateData: Record<string, any> = {

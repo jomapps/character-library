@@ -132,8 +132,12 @@ export async function POST(
       }, { status: 500 })
     }
 
-    // Get the public URL for the image from DINOv3 media URL
-    const publicUrl = updatedMedia.dinoMediaUrl || getPublicImageUrl(updatedMedia.dinoAssetId)
+    // Get the public URL for the image
+    // Priority: 1) DINOv3 media URL, 2) Original PayloadCMS URL, 3) Fallback construction
+    const publicUrl = updatedMedia.dinoMediaUrl || updatedMedia.url || getPublicImageUrl(updatedMedia.dinoAssetId)
+
+    // Log URL generation for debugging (can be removed in production)
+    console.log(`URL generation: Using ${updatedMedia.dinoMediaUrl ? 'DINOv3' : updatedMedia.url ? 'PayloadCMS' : 'fallback'} URL: ${publicUrl}`)
 
     // Update the character with the master reference image
     await payload.update({
@@ -279,7 +283,19 @@ async function waitForDinoProcessing(
  * Get public URL for the image from DINOv3 asset ID (fallback)
  */
 function getPublicImageUrl(dinoAssetId: string): string {
-  // Fallback URL construction - add .jpg extension since DINOv3 stores as JPEG
   const baseUrl = process.env.CLOUDFLARE_R2_PUBLIC_URL || 'https://media.rumbletv.com'
-  return `${baseUrl}/${dinoAssetId}.jpg`
+
+  // If the asset ID is already a complete URL, return it as-is
+  if (dinoAssetId.startsWith('http://') || dinoAssetId.startsWith('https://')) {
+    return dinoAssetId
+  }
+
+  // If the asset ID contains a file extension, use it as-is
+  if (dinoAssetId.includes('.')) {
+    return `${baseUrl}/${dinoAssetId}`
+  }
+
+  // For asset IDs without extension, construct URL without extension
+  // The DINOv3 service should handle the correct object key format
+  return `${baseUrl}/${dinoAssetId}`
 }

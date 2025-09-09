@@ -2,6 +2,7 @@
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import { payloadCloudPlugin } from '@payloadcms/payload-cloud'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { s3Storage } from '@payloadcms/storage-s3'
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
@@ -13,6 +14,30 @@ import { Characters } from './collections/Characters'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+
+// Configure Cloudflare R2 storage adapter
+const s3Adapter = s3Storage({
+  config: {
+    endpoint: process.env.CLOUDFLARE_R2_ENDPOINT,
+    region: 'auto', // Required for Cloudflare R2
+    credentials: {
+      accessKeyId: process.env.CLOUDFLARE_R2_ACCESS_KEY_ID!,
+      secretAccessKey: process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY!,
+    },
+    forcePathStyle: true, // Required for R2
+  },
+  bucket: process.env.CLOUDFLARE_R2_BUCKET_NAME!,
+  collections: {
+    media: {
+      prefix: 'media', // Optional: organize files in a folder
+      generateFileURL: ({ filename }) => {
+        // Generate the public URL using the custom domain
+        const baseUrl = process.env.CLOUDFLARE_R2_PUBLIC_URL || 'https://media.rumbletv.com'
+        return `${baseUrl}/media/${filename}`
+      },
+    },
+  },
+})
 
 export default buildConfig({
   admin: {
@@ -33,6 +58,6 @@ export default buildConfig({
   sharp,
   plugins: [
     payloadCloudPlugin(),
-    // storage-adapter-placeholder
+    s3Adapter,
   ],
 })
