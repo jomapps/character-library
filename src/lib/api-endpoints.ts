@@ -172,7 +172,7 @@ export const apiEndpoints: ApiEndpoint[] = [
     name: 'Generate Image',
     method: 'POST',
     path: '/api/v1/characters/{id}/generate-image',
-    description: 'Generate a new image for a character',
+    description: 'Generate a new image for a character using existing reference images and a text prompt',
     category: 'Character Management',
     fields: [
       {
@@ -185,16 +185,24 @@ export const apiEndpoints: ApiEndpoint[] = [
       {
         name: 'prompt',
         type: 'string',
-        required: false,
-        description: 'Custom prompt for image generation',
-        placeholder: 'Enter custom prompt'
+        required: true,
+        description: 'Text prompt describing the desired image (required for generation)',
+        placeholder: 'e.g., "Character walking in a forest, golden hour lighting, cinematic"'
       },
       {
         name: 'style',
         type: 'string',
         required: false,
-        description: 'Image style',
-        placeholder: 'realistic, anime, cartoon, etc.'
+        description: 'Image style preference',
+        placeholder: 'realistic, anime, cartoon, cinematic, etc.'
+      },
+      {
+        name: 'count',
+        type: 'number',
+        required: false,
+        description: 'Number of images to generate (1-5)',
+        placeholder: '1',
+        defaultValue: 1
       }
     ]
   },
@@ -203,7 +211,7 @@ export const apiEndpoints: ApiEndpoint[] = [
     name: 'Generate Smart Image',
     method: 'POST',
     path: '/api/v1/characters/{id}/generate-smart-image',
-    description: 'Generate an intelligent image using reference selection',
+    description: 'Generate an intelligent image using AI-powered reference selection and prompt optimization',
     category: 'Character Management',
     fields: [
       {
@@ -216,16 +224,32 @@ export const apiEndpoints: ApiEndpoint[] = [
       {
         name: 'prompt',
         type: 'string',
-        required: false,
-        description: 'Custom prompt for image generation',
-        placeholder: 'Enter custom prompt'
+        required: true,
+        description: 'Text prompt describing the desired image (required for generation)',
+        placeholder: 'e.g., "Character sitting at a desk, reading a book, warm lighting"'
       },
       {
         name: 'useSmartSelection',
         type: 'boolean',
         required: false,
-        description: 'Use smart reference selection',
+        description: 'Use AI-powered smart reference selection for optimal results',
         defaultValue: true
+      },
+      {
+        name: 'style',
+        type: 'select',
+        required: false,
+        description: 'Image generation style',
+        options: ['character_turnaround', 'character_production', 'custom'],
+        defaultValue: 'character_production'
+      },
+      {
+        name: 'maxRetries',
+        type: 'number',
+        required: false,
+        description: 'Maximum retry attempts for quality assurance',
+        placeholder: '3',
+        defaultValue: 3
       }
     ]
   },
@@ -234,7 +258,7 @@ export const apiEndpoints: ApiEndpoint[] = [
     name: 'Generate Initial Image',
     method: 'POST',
     path: '/api/v1/characters/{id}/generate-initial-image',
-    description: 'Generate the first image for a character',
+    description: 'Generate the first reference image for a character using AI from a text prompt',
     category: 'Character Management',
     fields: [
       {
@@ -247,9 +271,33 @@ export const apiEndpoints: ApiEndpoint[] = [
       {
         name: 'prompt',
         type: 'string',
+        required: true,
+        description: 'Text prompt describing the character appearance (required for image generation)',
+        placeholder: 'e.g., "A young woman with long brown hair, wearing a blue dress, standing confidently"'
+      },
+      {
+        name: 'style',
+        type: 'select',
         required: false,
-        description: 'Custom prompt for image generation',
-        placeholder: 'Enter custom prompt'
+        description: 'Image generation style',
+        options: ['character_turnaround', 'character_production', 'custom'],
+        defaultValue: 'character_turnaround'
+      },
+      {
+        name: 'width',
+        type: 'number',
+        required: false,
+        description: 'Image width in pixels',
+        placeholder: '768',
+        defaultValue: 768
+      },
+      {
+        name: 'height',
+        type: 'number',
+        required: false,
+        description: 'Image height in pixels',
+        placeholder: '1024',
+        defaultValue: 1024
       }
     ]
   },
