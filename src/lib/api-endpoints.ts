@@ -52,15 +52,15 @@ export const apiEndpoints: ApiEndpoint[] = [
     name: 'Get Character',
     method: 'GET',
     path: '/api/v1/characters/{id}',
-    description: 'Get a specific character by ID',
+    description: 'Get a specific character by MongoDB ObjectId (database ID)',
     category: 'Character Management',
     fields: [
       {
         name: 'id',
         type: 'string',
         required: true,
-        description: 'Character ID',
-        placeholder: 'Enter character ID'
+        description: 'MongoDB ObjectId (database ID, not characterId)',
+        placeholder: 'e.g., 68c07c4305803df129909509'
       }
     ]
   },
@@ -107,8 +107,8 @@ export const apiEndpoints: ApiEndpoint[] = [
         name: 'id',
         type: 'string',
         required: true,
-        description: 'Character ID',
-        placeholder: 'Enter character ID'
+        description: 'MongoDB ObjectId (database ID, not characterId)',
+        placeholder: 'e.g., 68c07c4305803df129909509'
       },
       {
         name: 'name',
@@ -138,8 +138,8 @@ export const apiEndpoints: ApiEndpoint[] = [
         name: 'id',
         type: 'string',
         required: true,
-        description: 'Character ID',
-        placeholder: 'Enter character ID'
+        description: 'MongoDB ObjectId (database ID, not characterId)',
+        placeholder: 'e.g., 68c07c4305803df129909509'
       }
     ]
   },
@@ -155,8 +155,8 @@ export const apiEndpoints: ApiEndpoint[] = [
         name: 'id',
         type: 'string',
         required: true,
-        description: 'Character ID',
-        placeholder: 'Enter character ID'
+        description: 'MongoDB ObjectId (database ID, not characterId)',
+        placeholder: 'e.g., 68c07c4305803df129909509'
       },
       {
         name: 'options',
@@ -179,8 +179,8 @@ export const apiEndpoints: ApiEndpoint[] = [
         name: 'id',
         type: 'string',
         required: true,
-        description: 'Character ID',
-        placeholder: 'Enter character ID'
+        description: 'MongoDB ObjectId (database ID, not characterId)',
+        placeholder: 'e.g., 68c07c4305803df129909509'
       },
       {
         name: 'prompt',
@@ -218,8 +218,8 @@ export const apiEndpoints: ApiEndpoint[] = [
         name: 'id',
         type: 'string',
         required: true,
-        description: 'Character ID',
-        placeholder: 'Enter character ID'
+        description: 'MongoDB ObjectId (database ID, not characterId)',
+        placeholder: 'e.g., 68c07c4305803df129909509'
       },
       {
         name: 'prompt',
@@ -265,8 +265,8 @@ export const apiEndpoints: ApiEndpoint[] = [
         name: 'id',
         type: 'string',
         required: true,
-        description: 'Character ID',
-        placeholder: 'Enter character ID'
+        description: 'MongoDB ObjectId (database ID, not characterId)',
+        placeholder: 'e.g., 68c07c4305803df129909509'
       },
       {
         name: 'prompt',
@@ -313,8 +313,8 @@ export const apiEndpoints: ApiEndpoint[] = [
         name: 'id',
         type: 'string',
         required: true,
-        description: 'Character ID',
-        placeholder: 'Enter character ID'
+        description: 'MongoDB ObjectId (database ID, not characterId)',
+        placeholder: 'e.g., 68c07c4305803df129909509'
       },
       {
         name: 'threshold',
@@ -423,8 +423,8 @@ export const apiEndpoints: ApiEndpoint[] = [
         name: 'characterId',
         type: 'string',
         required: false,
-        description: 'Character ID (required for sync_character)',
-        placeholder: 'Enter character ID'
+        description: 'Business characterId (human-readable ID, required for sync_character)',
+        placeholder: 'e.g., 68bc1741-leo-1757445189931-190445-8a70d8f1-389'
       },
       {
         name: 'entityName',
@@ -725,8 +725,8 @@ export const apiEndpoints: ApiEndpoint[] = [
         name: 'id',
         type: 'string',
         required: true,
-        description: 'Character ID',
-        placeholder: 'character-id'
+        description: 'MongoDB ObjectId (database ID, not characterId)',
+        placeholder: 'e.g., 68c07c4305803df129909509'
       },
       {
         name: 'imageUrl',
@@ -756,8 +756,8 @@ export const apiEndpoints: ApiEndpoint[] = [
         name: 'id',
         type: 'string',
         required: true,
-        description: 'Character ID',
-        placeholder: 'character-id'
+        description: 'MongoDB ObjectId (database ID, not characterId)',
+        placeholder: 'e.g., 68c07c4305803df129909509'
       }
     ]
   },
@@ -773,8 +773,8 @@ export const apiEndpoints: ApiEndpoint[] = [
         name: 'id',
         type: 'string',
         required: true,
-        description: 'Character ID',
-        placeholder: 'character-id'
+        description: 'MongoDB ObjectId (database ID, not characterId)',
+        placeholder: 'e.g., 68c07c4305803df129909509'
       },
       {
         name: 'style',
@@ -856,8 +856,8 @@ export const apiEndpoints: ApiEndpoint[] = [
         name: 'id',
         type: 'string',
         required: true,
-        description: 'Character ID',
-        placeholder: 'character-id'
+        description: 'MongoDB ObjectId (database ID, not characterId)',
+        placeholder: 'e.g., 68c07c4305803df129909509'
       },
       {
         name: 'characterData',
@@ -924,8 +924,8 @@ export const apiEndpoints: ApiEndpoint[] = [
         name: 'id',
         type: 'string',
         required: true,
-        description: 'Character ID',
-        placeholder: 'character-id'
+        description: 'MongoDB ObjectId (database ID, not characterId)',
+        placeholder: 'e.g., 68c07c4305803df129909509'
       },
       {
         name: 'sceneContext',
@@ -969,14 +969,14 @@ export const apiEndpoints: ApiEndpoint[] = [
         name: 'primaryCharacterId',
         type: 'string',
         required: true,
-        description: 'Primary character ID',
-        placeholder: 'character-1'
+        description: 'Primary character MongoDB ObjectId (database ID, not characterId)',
+        placeholder: 'e.g., 68c07c4305803df129909509'
       },
       {
         name: 'secondaryCharacterIds',
         type: 'array',
         required: true,
-        description: 'Array of secondary character IDs'
+        description: 'Array of secondary character MongoDB ObjectIds (database IDs, not characterIds)'
       },
       {
         name: 'interactionType',
@@ -1038,15 +1038,15 @@ export const apiEndpoints: ApiEndpoint[] = [
         name: 'id',
         type: 'string',
         required: true,
-        description: 'Character ID',
-        placeholder: 'character-id'
+        description: 'MongoDB ObjectId (database ID, not characterId)',
+        placeholder: 'e.g., 68c07c4305803df129909509'
       },
       {
         name: 'relatedCharacterId',
         type: 'string',
         required: true,
-        description: 'Related character ID',
-        placeholder: 'other-character-id'
+        description: 'Related character MongoDB ObjectId (database ID, not characterId)',
+        placeholder: 'e.g., 68c07c4305803df129909509'
       },
       {
         name: 'relationshipType',
@@ -1083,8 +1083,8 @@ export const apiEndpoints: ApiEndpoint[] = [
         name: 'id',
         type: 'string',
         required: true,
-        description: 'Character ID',
-        placeholder: 'character-id'
+        description: 'MongoDB ObjectId (database ID, not characterId)',
+        placeholder: 'e.g., 68c07c4305803df129909509'
       }
     ]
   },
@@ -1117,7 +1117,7 @@ export const apiEndpoints: ApiEndpoint[] = [
         name: 'characterIds',
         type: 'array',
         required: true,
-        description: 'Array of character IDs'
+        description: 'Array of MongoDB ObjectIds (database IDs, not characterIds)'
       },
       {
         name: 'relationshipContext',
@@ -1149,8 +1149,8 @@ export const apiEndpoints: ApiEndpoint[] = [
         name: 'id',
         type: 'string',
         required: true,
-        description: 'Character ID',
-        placeholder: 'character-id'
+        description: 'MongoDB ObjectId (database ID, not characterId)',
+        placeholder: 'e.g., 68c07c4305803df129909509'
       }
     ]
   },
@@ -1204,7 +1204,7 @@ export const apiEndpoints: ApiEndpoint[] = [
         name: 'characterIds',
         type: 'array',
         required: true,
-        description: 'Array of character IDs to validate'
+        description: 'Array of MongoDB ObjectIds (database IDs, not characterIds) to validate'
       },
       {
         name: 'validationType',

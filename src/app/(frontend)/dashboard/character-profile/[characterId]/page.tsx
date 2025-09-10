@@ -170,7 +170,8 @@ export default function CharacterProfileDetailPage() {
             Back to Search
           </button>
           <h2 className="text-lg font-semibold text-gray-900 truncate">{character.name}</h2>
-          <p className="text-sm text-gray-500">ID: {character.characterId}</p>
+          <p className="text-sm text-gray-500">CharacterID: {character.characterId}</p>
+          <p className="text-xs text-gray-400">DB ID: {character.id}</p>
           <p className="text-xs text-gray-400 mt-1">{organizedMedia.length} images</p>
         </div>
 

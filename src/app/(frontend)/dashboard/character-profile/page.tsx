@@ -88,7 +88,7 @@ export default function CharacterProfilePage() {
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <input
               type="text"
-              placeholder="Search by name or character ID..."
+              placeholder="Search by name or characterId (business ID)..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -143,7 +143,10 @@ export default function CharacterProfilePage() {
                         {character.name}
                       </p>
                       <p className="text-xs text-gray-500 truncate">
-                        ID: {character.characterId}
+                        CharacterID: {character.characterId}
+                      </p>
+                      <p className="text-xs text-gray-400 truncate">
+                        DB ID: {character.id}
                       </p>
                     </div>
                   </div>
@@ -156,7 +159,7 @@ export default function CharacterProfilePage() {
             <div className="p-8 text-center text-gray-500">
               <User className="h-12 w-12 mx-auto mb-4 text-gray-300" />
               <h3 className="text-lg font-medium text-gray-900 mb-2">Select a Character</h3>
-              <p className="text-sm">Search for a character by name or ID to view their profile and media gallery.</p>
+              <p className="text-sm">Search for a character by name or characterId (business ID) to view their profile and media gallery.</p>
             </div>
           )}
         </div>

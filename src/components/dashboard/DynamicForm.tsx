@@ -211,6 +211,12 @@ export function DynamicForm({ endpoint, onSubmit, isLoading = false }: DynamicFo
                 {field.description}
               </p>
             )}
+            {field.name === 'id' && field.description?.includes('MongoDB ObjectId') && (
+              <div className="mt-1 p-2 bg-blue-50 border border-blue-200 rounded text-xs">
+                <p className="text-blue-800 font-medium">💡 Tip: Use the "DB ID" from Character Profile, not the "CharacterID"</p>
+                <p className="text-blue-600 mt-1">Example: 68c07c4305803df129909509 (24-character MongoDB ObjectId)</p>
+              </div>
+            )}
             {error && (
               <p className="text-xs text-red-600">
                 {error.message}

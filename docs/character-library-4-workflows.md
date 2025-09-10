@@ -324,23 +324,29 @@
 ### ID Type Management
 ```
 1. Character Identification
-   ├── MongoDB ObjectId (id) → Database operations
-   ├── Business ID (characterId) → Human-readable references
+   ├── MongoDB ObjectId (id) → Database operations (24-char hex: 68c07c4305803df129909509)
+   ├── Business ID (characterId) → Human-readable references (68bc1741-leo-1757445189931-190445-8a70d8f1-389)
    ├── External Service IDs → DINOv3, PathRAG, FAL.ai
    └── Project IDs → Novel Movie integration
 
 2. API Response Consistency
    All character endpoints return:
-   ├── id: MongoDB ObjectId
-   ├── characterId: Business identifier
+   ├── id: MongoDB ObjectId (for database operations)
+   ├── characterId: Business identifier (for display/search)
    ├── External service IDs when applicable
    └── Proper error handling for ID mismatches
 
 3. Service Integration ID Mapping
    ├── DINOv3: dinoAssetId for media assets
-   ├── PathRAG: characterId for knowledge base
+   ├── PathRAG: characterId (business ID) for knowledge base
    ├── FAL.ai: Request IDs for image generation
    └── Novel Movie: projectId for project association
+
+4. UI/API Consistency Rules
+   ├── Character Profile shows both "CharacterID" and "DB ID"
+   ├── API testing forms specify which ID type to use
+   ├── Documentation examples use real MongoDB ObjectId format
+   └── Error messages guide users to correct ID type
 ```
 
 ### Data Integrity Validation
@@ -460,4 +466,84 @@ For other endpoints (non-initial image generation):
 ├── Style-based modifications preserved
 ├── Reference sheet formatting maintained
 └── Backward compatibility ensured
+```
+
+## 10. Migration & Upgrade Workflow
+
+### For Existing Users
+```
+Migration Path (No Breaking Changes):
+1. Existing Functionality Preserved
+   ├── All current API endpoints work unchanged
+   ├── Existing prompt enhancement behavior maintained
+   ├── Current image generation workflows continue
+   └── No code changes required
+
+2. Enhanced Features Available
+   ├── Improved error handling and recovery
+   ├── Better DINOv3 integration reliability
+   ├── Enhanced logging for troubleshooting
+   └── Opt-in prompt control features
+
+3. UI Improvements
+   ├── Character Profile shows both ID types clearly
+   ├── API testing forms include helpful guidance
+   ├── Search functionality clarified
+   └── Error messages provide actionable guidance
+```
+
+### For Developers
+```
+Development Workflow Updates:
+1. New Style Option Available
+   ├── Use style: 'none' for unmodified prompts
+   ├── Automatic application for initial image generation
+   ├── Detailed logging for prompt transformation
+   └── Backward compatibility maintained
+
+2. Enhanced Debugging Capabilities
+   ├── Comprehensive request/response logging
+   ├── DINOv3 processing status tracking
+   ├── Step-by-step prompt modification logs
+   └── Rich error context with actionable information
+
+3. DINOv3 Integration Benefits
+   ├── Automatic asset ID management
+   ├── Improved upload success rates (100%)
+   ├── Quality validation and error handling
+   └── Intelligent URL prioritization system
+```
+
+## 11. Future Enhancement Roadmap
+
+### Planned Features
+```
+Short-term (Next Quarter):
+├── Batch image processing with DINOv3
+├── Advanced similarity matching algorithms
+├── Custom prompt enhancement profiles
+└── Real-time processing status updates
+
+Medium-term (6 months):
+├── Enhanced quality metrics integration
+├── DINOv3 processing metrics dashboard
+├── Prompt modification analytics
+└── Image quality trend analysis
+
+Long-term (1 year):
+├── Error rate monitoring and alerting
+├── Advanced workflow automation
+├── Multi-model image generation support
+└── Enhanced relationship visualization
+```
+
+### Monitoring & Observability
+```
+Planned Monitoring Features:
+├── DINOv3 processing metrics dashboard
+├── Prompt modification analytics
+├── Image quality trend analysis
+├── Error rate monitoring and alerting
+├── Performance metrics tracking
+└── User workflow analytics
 ```
