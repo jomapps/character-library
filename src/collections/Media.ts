@@ -116,6 +116,12 @@ export const Media: CollectionConfig = {
         }
 
         try {
+          // Skip DINOv3 processing for audio files
+          if (doc.mimeType && doc.mimeType.startsWith('audio/')) {
+            console.log(`Skipping DINOv3 processing for audio file: ${doc.filename}`)
+            return doc
+          }
+
           // For R2 storage, we need to download the file from the URL
           if (!doc.url) {
             console.warn(`Media URL not available for DINOv3 processing: ${doc.filename}`)

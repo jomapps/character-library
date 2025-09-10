@@ -1221,6 +1221,40 @@ export const apiEndpoints: ApiEndpoint[] = [
         defaultValue: true
       }
     ]
+  },
+  {
+    id: 'project-preview-deletion',
+    name: 'Preview Project Deletion',
+    method: 'GET',
+    path: '/api/v1/characters/projects/{projectId}',
+    description: 'Preview what would be deleted for a project (dry run)',
+    category: 'Project Management',
+    fields: [
+      {
+        name: 'projectId',
+        type: 'string',
+        required: true,
+        description: 'Novel Movie project ID',
+        placeholder: 'e.g., project-123'
+      }
+    ]
+  },
+  {
+    id: 'project-delete',
+    name: 'Delete Project Data',
+    method: 'DELETE',
+    path: '/api/v1/characters/projects/{projectId}',
+    description: 'Delete all characters and data belonging to a project',
+    category: 'Project Management',
+    fields: [
+      {
+        name: 'projectId',
+        type: 'string',
+        required: true,
+        description: 'Novel Movie project ID',
+        placeholder: 'e.g., project-123'
+      }
+    ]
   }
 ]
 

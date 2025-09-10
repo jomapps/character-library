@@ -547,3 +547,167 @@ Planned Monitoring Features:
 ├── Performance metrics tracking
 └── User workflow analytics
 ```
+
+## 12. Project Data Management Workflow
+
+### Safe Project Cleanup Process
+```
+1. Preview Deletion (Dry Run)
+   ├── GET /api/v1/characters/projects/{projectId}
+   ├── Review characters and media count
+   ├── Verify project scope is correct
+   └── Confirm deletion is intended
+
+2. Execute Deletion
+   ├── DELETE /api/v1/characters/projects/{projectId}
+   ├── Characters deleted from database
+   ├── Media files removed from storage
+   ├── PathRAG entities cleaned up
+   └── Detailed summary provided
+
+3. Verification
+   ├── Check deletion summary for errors
+   ├── Verify character count is zero
+   ├── Confirm media cleanup completed
+   └── Validate PathRAG cleanup success
+```
+
+### Project Cleanup Use Cases
+```
+Development Cleanup:
+├── Remove corrupted test data
+├── Clean up failed experiments
+├── Reset development environment
+└── Remove abandoned prototypes
+
+Production Maintenance:
+├── Archive completed projects
+├── Remove deprecated characters
+├── Clean up unused media assets
+└── Maintain database hygiene
+
+Emergency Recovery:
+├── Remove corrupted project data
+├── Clean up after failed imports
+├── Reset project to known good state
+└── Recover from data corruption
+```
+
+### Safety Features
+```
+Built-in Protections:
+├── Preview mode shows exact deletion scope
+├── Detailed logging of all operations
+├── Error handling with partial success reporting
+├── No cascading deletions beyond project scope
+└── Comprehensive operation summary
+
+Best Practices:
+├── Always preview before deletion
+├── Backup critical projects before cleanup
+├── Use during low-traffic periods
+├── Monitor logs for any errors
+└── Verify results after completion
+```
+
+## 13. Voice & Dialogue Management Workflow
+
+### Character Voice Development Process
+```
+1. Character Creation with Voice Profile
+   ├── Define basic character traits
+   ├── Set narrative role and archetype
+   ├── Establish psychology and character arc
+   └── Create initial voice description
+
+2. Dialogue Voice Profile Setup
+   ├── POST /api/v1/characters/novel-movie
+   ├── Define voice style and characteristics
+   ├── Set speech patterns and vocabulary
+   └── Document voice description details
+
+3. Voice Model Integration
+   ├── Add voice models (ElevenLabs, OpenAI TTS)
+   ├── Set voice IDs for each model
+   ├── Upload voice samples to media collection
+   └── Link samples to voice models
+
+4. Voice Sample Management
+   ├── Upload audio files via media collection
+   ├── Associate samples with voice models
+   ├── Test voice generation with different models
+   └── Refine voice IDs based on results
+```
+
+### Voice Generation Workflow
+```
+Voice Model Setup:
+├── Character created with dialogueVoice profile
+├── Voice models added with model names
+├── Voice IDs configured for each model
+├── Voice samples uploaded and linked
+└── Ready for TTS integration
+
+TTS Integration Process:
+├── Select appropriate voice model
+├── Use voice ID for generation
+├── Apply speech patterns from profile
+├── Generate audio with character voice
+└── Validate against voice samples
+
+Quality Assurance:
+├── Compare generated voice to samples
+├── Verify speech patterns are followed
+├── Check vocabulary consistency
+├── Test different dialogue contexts
+└── Refine voice profile as needed
+```
+
+### Voice Data Structure
+```
+Character Voice Fields:
+├── dialogueVoice (group)
+│   ├── voiceDescription (rich text)
+│   ├── style (text)
+│   ├── patterns (array of speech patterns)
+│   └── vocabulary (textarea)
+├── voiceModels (array)
+│   ├── modelName (ElevenLabs, OpenAI TTS, etc.)
+│   ├── voiceId (model-specific identifier)
+│   └── voiceSample (media relationship)
+└── voiceDescription (legacy field)
+
+Media Collection Support:
+├── Audio file upload capability
+├── Voice sample storage
+├── DINOv3 processing skipped for audio
+├── Direct URL access for playback
+└── Relationship linking to characters
+```
+
+### Voice Workflow Use Cases
+```
+Character Development:
+├── Create consistent character voice
+├── Define speech patterns and style
+├── Document vocabulary preferences
+└── Establish voice evolution arc
+
+Production Workflow:
+├── Generate dialogue audio
+├── Maintain voice consistency
+├── Apply character-specific patterns
+└── Quality check against samples
+
+Voice Model Management:
+├── Test multiple TTS services
+├── Compare voice quality
+├── Switch between voice models
+└── Maintain backup voice options
+
+Audio Asset Management:
+├── Store reference voice samples
+├── Organize by character and model
+├── Version control voice changes
+└── Archive unused voice assets
+```

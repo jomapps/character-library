@@ -53,6 +53,10 @@
 - `PUT /api/v1/characters/{id}/novel-movie-sync` - Sync character data with Novel Movie project
 - `GET /api/v1/characters/by-project/{projectId}` - Get all characters for a specific Novel Movie project
 
+## Project Management
+- `GET /api/v1/characters/projects/{projectId}` - Preview project deletion (dry run)
+- `DELETE /api/v1/characters/projects/{projectId}` - Delete all characters and data belonging to a project
+
 ## Character Search & Discovery
 - `POST /api/v1/characters/search` - Search characters with similarity matching to avoid duplication
 - `POST /api/v1/characters/query` - Query character knowledge base with natural language (PathRAG)
@@ -127,3 +131,28 @@
 - **DINOv3 Asset ID**: Unique identifier for media assets in DINOv3 service
 - **PathRAG Document ID**: Uses business characterId for knowledge base entities
 - **Novel Movie Project ID**: External project identifier for integration
+
+## Character Data Structure
+
+### Core Character Fields
+- **Basic Info**: name, characterId, status, biography, personality, motivations, backstory
+- **Character Development**:
+  - `role`: Narrative role (protagonist/antagonist/supporting/minor)
+  - `archetype`: Classical or story archetype (e.g., Mentor, Trickster)
+  - `psychology`: Core motivation, fears, desires, and notable flaws
+  - `characterArc`: Start state → Transformation → End state
+- **Physical**: age, height, weight, eyeColor, hairColor, physicalDescription, clothing
+- **Voice & Dialogue**:
+  - `dialogueVoice`: Structured voice profile with voiceDescription, style, speech patterns, vocabulary
+  - `voiceModels`: Array of voice generation models (ElevenLabs, OpenAI TTS, etc.) with voice IDs and samples
+  - `voiceDescription`: Legacy field for backward compatibility
+- **Skills**: Array of skills with levels (beginner to master) and descriptions
+- **Relationships**: Enhanced relationship system with visual cues and dynamics
+- **Media**: Master reference image and image gallery with DINOv3 processing (supports audio files for voice samples)
+- **Quality Metrics**: Narrative and visual consistency tracking
+
+### Voice & Audio Support
+- **Audio File Upload**: Media collection supports audio files for voice samples
+- **Voice Model Integration**: Ready for TTS service integration (ElevenLabs, OpenAI TTS)
+- **Speech Pattern Analysis**: Structured dialogue voice profiles for consistent character voice
+- **Voice Sample Management**: Link voice samples to specific voice models

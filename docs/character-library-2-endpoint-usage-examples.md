@@ -93,12 +93,139 @@ curl -X POST https://character.ft.tc/api/v1/characters/novel-movie \
   }'
 ```
 
+### POST /api/v1/characters/novel-movie (Enhanced Voice Features)
+**Purpose**: Create character with enhanced voice and character development features
+```bash
+curl -X POST https://character.ft.tc/api/v1/characters/novel-movie \
+  -H "Content-Type: application/json" \
+  -d '{
+    "novelMovieProjectId": "voice-project-123",
+    "projectName": "Voice-Enhanced Movie",
+    "characterData": {
+      "name": "Mentor Character",
+      "biography": "A wise guide with a distinctive voice",
+      "personality": "Thoughtful and articulate",
+      "role": "supporting",
+      "archetype": "The Mentor",
+      "psychology": {
+        "motivation": "To guide the hero",
+        "fears": "Being ignored or misunderstood",
+        "desires": "To see others succeed",
+        "flaws": "Sometimes overly cryptic"
+      },
+      "characterArc": {
+        "startState": "Mysterious hermit",
+        "transformation": "Reveals wisdom and purpose",
+        "endState": "Trusted advisor"
+      },
+      "age": 65,
+      "height": "5ft 10in",
+      "eyeColor": "gray",
+      "hairColor": "white",
+      "dialogueVoice": {
+        "voiceDescription": "Deep, resonant voice with measured cadence",
+        "style": "Formal yet warm, uses metaphors",
+        "patterns": [
+          {"pattern": "Speaks in parables and metaphors"},
+          {"pattern": "Long pauses for emphasis"},
+          {"pattern": "Uses archaic terms occasionally"}
+        ],
+        "vocabulary": "Sophisticated with philosophical terms"
+      },
+      "voiceModels": [
+        {
+          "modelName": "ElevenLabs",
+          "voiceId": "mentor-voice-deep"
+        },
+        {
+          "modelName": "OpenAI TTS",
+          "voiceId": "onyx"
+        }
+      ]
+    }
+  }'
+```
+
 ### GET /api/v1/characters/by-project/{projectId}
 **Purpose**: Get all characters for a project
 **Params**: `limit`, `page`, `includeImages`
 ```bash
 curl "https://character.ft.tc/api/v1/characters/by-project/project-123?includeImages=true"
 ```
+
+## Project Management
+
+### GET /api/v1/characters/projects/{projectId}
+**Purpose**: Preview project deletion (dry run)
+**Returns**: Summary of what would be deleted without actually deleting
+```bash
+curl "https://character.ft.tc/api/v1/characters/projects/project-123"
+```
+
+**Example Response**:
+```json
+{
+  "projectId": "project-123",
+  "charactersFound": 5,
+  "characters": [
+    {
+      "id": "68c07c4305803df129909509",
+      "name": "Hero Character",
+      "characterId": "hero-main-character",
+      "status": "ready",
+      "mediaFiles": 12,
+      "createdAt": "2025-09-10T10:30:00.000Z"
+    }
+  ],
+  "estimatedDeletions": {
+    "characters": 5,
+    "mediaFiles": 47,
+    "pathragEntities": 5
+  }
+}
+```
+
+### DELETE /api/v1/characters/projects/{projectId}
+**Purpose**: Delete all characters and data belonging to a project
+**⚠️ Warning**: This operation is irreversible and will delete:
+- All characters associated with the project
+- All media files (images) for those characters
+- All PathRAG knowledge base entries
+- All related data
+
+```bash
+curl -X DELETE "https://character.ft.tc/api/v1/characters/projects/project-123"
+```
+
+**Example Response**:
+```json
+{
+  "success": true,
+  "projectId": "project-123",
+  "summary": {
+    "charactersFound": 5,
+    "charactersDeleted": 5,
+    "mediaFilesDeleted": 47,
+    "pathragEntitiesDeleted": 5,
+    "errors": []
+  },
+  "deletedCharacters": [
+    {
+      "id": "68c07c4305803df129909509",
+      "name": "Hero Character",
+      "characterId": "hero-main-character",
+      "mediaDeleted": 12,
+      "pathragDeleted": true
+    }
+  ]
+}
+```
+
+**Use Cases**:
+- Clean up corrupted project data during development
+- Remove test projects and characters
+- Reset project state for fresh start
+- Bulk cleanup of abandoned projects
 
 ## Character Search
 

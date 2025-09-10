@@ -48,7 +48,7 @@ export async function GET(
     console.log(`Found ${characters.docs.length} characters for project ${projectId}`)
 
     // Transform the response to match the expected format
-    const transformedCharacters = characters.docs.map(character => ({
+    const transformedCharacters = characters.docs.map((character: any) => ({
       id: character.id,
       characterId: character.characterId,
       name: character.name,
@@ -57,13 +57,29 @@ export async function GET(
       personality: character.personality,
       motivations: character.motivations,
       backstory: character.backstory,
+
+      // New character development fields
+      role: character.role,
+      archetype: character.archetype,
+      psychology: character.psychology,
+      characterArc: character.characterArc,
+
+      // Physical description
       physicalDescription: character.physicalDescription,
-      voiceDescription: character.voiceDescription,
       clothing: character.clothing,
       age: character.age,
       height: character.height,
       eyeColor: character.eyeColor,
       hairColor: character.hairColor,
+
+      // Voice and dialogue fields
+      dialogueVoice: character.dialogueVoice,
+      voiceModels: character.voiceModels,
+
+      // Legacy voice field (for backward compatibility)
+      voiceDescription: character.voiceDescription,
+
+      // Other fields
       relationships: character.relationships,
       skills: character.skills,
       masterReferenceImage: character.masterReferenceImage,

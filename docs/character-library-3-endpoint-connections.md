@@ -78,6 +78,10 @@ DELETE /api/v1/characters/{id}/reference-image → Clears ALL derived content
 - **Sync**: `PUT /api/v1/characters/{id}/novel-movie-sync` - Requires existing character
 - **Bulk**: `POST /api/v1/characters/bulk/novel-movie` - Batch version of novel-movie creation
 
+### Project Management Layer
+- **Preview**: `GET /api/v1/characters/projects/{projectId}` - Safe preview of deletion scope
+- **Cleanup**: `DELETE /api/v1/characters/projects/{projectId}` - Complete project data removal
+
 ### Search & Discovery Layer
 - **Similarity Search**: `POST /api/v1/characters/search` - Analyzes existing characters
 - **Knowledge Query**: `POST /api/v1/characters/query` - Requires PathRAG sync

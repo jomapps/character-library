@@ -13,13 +13,28 @@ export interface NovelMovieCharacterData {
   name: string
   characterId?: string
   status?: 'draft' | 'in_development' | 'ready' | 'in_production' | 'archived'
-  
+
   // Character Development Fields
   biography?: any // RichText
   personality?: any // RichText
   motivations?: any // RichText
   backstory?: any // RichText
-  
+
+  // New Character Development Fields
+  role?: 'protagonist' | 'antagonist' | 'supporting' | 'minor'
+  archetype?: string
+  psychology?: {
+    motivation?: string
+    fears?: string
+    desires?: string
+    flaws?: string
+  }
+  characterArc?: {
+    startState?: string
+    transformation?: string
+    endState?: string
+  }
+
   // Physical Description
   age?: number
   height?: string
@@ -27,16 +42,28 @@ export interface NovelMovieCharacterData {
   eyeColor?: string
   hairColor?: string
   physicalDescription?: any // RichText
-  voiceDescription?: any // RichText
   clothing?: any // RichText
-  
+
+  // Voice and Dialogue
+  dialogueVoice?: {
+    voiceDescription?: any // RichText
+    style?: string
+    patterns?: Array<{ pattern: string }>
+    vocabulary?: string
+  }
+  voiceModels?: Array<{
+    modelName: string
+    voiceId?: string
+    voiceSample?: string // Media ID
+  }>
+
   // Skills and abilities
   skills?: Array<{
     skill: string
     level: 'beginner' | 'intermediate' | 'advanced' | 'expert' | 'master'
     description?: string
   }>
-  
+
   // Relationships (will be mapped to enhancedRelationships)
   relationships?: Array<{
     characterId: string
@@ -99,13 +126,19 @@ export async function POST(request: NextRequest): Promise<NextResponse<NovelMovi
       name: body.characterData.name,
       characterId: characterId,
       status: body.characterData.status || 'draft',
-      
+
       // Character development fields
       biography: body.characterData.biography,
       personality: body.characterData.personality,
       motivations: body.characterData.motivations,
       backstory: body.characterData.backstory,
-      
+
+      // New character development fields
+      role: body.characterData.role,
+      archetype: body.characterData.archetype,
+      psychology: body.characterData.psychology,
+      characterArc: body.characterData.characterArc,
+
       // Physical description
       age: body.characterData.age,
       height: body.characterData.height,
@@ -113,9 +146,12 @@ export async function POST(request: NextRequest): Promise<NextResponse<NovelMovi
       eyeColor: body.characterData.eyeColor,
       hairColor: body.characterData.hairColor,
       physicalDescription: body.characterData.physicalDescription,
-      voiceDescription: body.characterData.voiceDescription,
       clothing: body.characterData.clothing,
-      
+
+      // Voice and dialogue
+      dialogueVoice: body.characterData.dialogueVoice,
+      voiceModels: body.characterData.voiceModels || [],
+
       // Skills
       skills: body.characterData.skills || [],
       

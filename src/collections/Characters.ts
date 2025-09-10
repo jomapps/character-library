@@ -138,6 +138,45 @@ export const Characters: CollectionConfig = {
                 },
               ],
             },
+            {
+              name: 'role',
+              type: 'select',
+              label: 'Narrative Role',
+              options: [
+                { label: 'Protagonist', value: 'protagonist' },
+                { label: 'Antagonist', value: 'antagonist' },
+                { label: 'Supporting', value: 'supporting' },
+                { label: 'Minor', value: 'minor' },
+              ],
+            },
+            {
+              name: 'archetype',
+              type: 'text',
+              label: 'Archetype',
+              admin: { description: 'Classical or story archetype (e.g., Mentor, Trickster).' },
+            },
+            {
+              name: 'psychology',
+              type: 'group',
+              label: 'Psychology',
+              fields: [
+                { name: 'motivation', type: 'textarea', label: 'Core Motivation' },
+                { name: 'fears', type: 'textarea', label: 'Primary Fears' },
+                { name: 'desires', type: 'textarea', label: 'Key Desires' },
+                { name: 'flaws', type: 'textarea', label: 'Notable Flaws' },
+              ],
+            },
+            {
+              name: 'characterArc',
+              type: 'group',
+              label: 'Character Arc',
+              admin: { description: 'Start → Transformation → End states.' },
+              fields: [
+                { name: 'startState', type: 'textarea', label: 'Start State' },
+                { name: 'transformation', type: 'textarea', label: 'Transformation' },
+                { name: 'endState', type: 'textarea', label: 'End State' },
+              ],
+            },
           ],
         },
         {
@@ -193,20 +232,51 @@ export const Characters: CollectionConfig = {
               },
             },
             {
-              name: 'voiceDescription',
-              type: 'richText',
-              label: 'Voice & Speech',
-              admin: {
-                description: 'Voice characteristics, accent, speech patterns, and mannerisms.',
-              },
-            },
-            {
               name: 'clothing',
               type: 'richText',
               label: 'Clothing & Style',
               admin: {
                 description: 'Typical clothing style, fashion preferences, and signature looks.',
               },
+            },
+            {
+              name: 'dialogueVoice',
+              type: 'group',
+              label: 'Dialogue Voice Profile',
+              admin: {
+                description: 'Structured voice profile used for voice-generation and dialogue rendering.',
+              },
+              fields: [
+                {
+                  name: 'voiceDescription',
+                  type: 'richText',
+                  label: 'Voice & Speech',
+                  admin: {
+                    description: 'Voice characteristics, accent, speech patterns, and mannerisms.',
+                  },
+                },
+                { name: 'style', type: 'text', label: 'Voice Style' },
+                {
+                  name: 'patterns',
+                  type: 'array',
+                  label: 'Speech Patterns',
+                  fields: [ { name: 'pattern', type: 'text', required: true } ],
+                },
+                { name: 'vocabulary', type: 'textarea', label: 'Vocabulary Profile' },
+              ],
+            },
+            {
+              name: 'voiceModels',
+              type: 'array',
+              label: 'Voice Generation Models',
+              admin: {
+                description: 'List of models and their voice IDs usable for TTS/dialogue generation. Multiple entries supported. voiceId may be empty initially.',
+              },
+              fields: [
+                { name: 'modelName', type: 'text', required: true, label: 'Model Name' },
+                { name: 'voiceId', type: 'text', required: false, label: 'Voice ID' },
+                { name: 'voiceSample', type: 'relationship', label: 'Voice Sample', relationTo: 'media' },
+              ],
             },
           ],
         },
@@ -836,8 +906,13 @@ async function syncCharacterToPathRAG(doc: any, operation: string, previousDoc?:
       'relationships',
       'backstory',
       'skills',
+      'role',
+      'archetype',
+      'psychology',
+      'characterArc',
       'physicalDescription',
-      'voiceDescription',
+      'dialogueVoice',
+      'voiceModels',
       'clothing',
       'age',
       'height',
