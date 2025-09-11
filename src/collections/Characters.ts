@@ -73,7 +73,7 @@ export const Characters: CollectionConfig = {
           fields: [
             {
               name: 'biography',
-              type: 'richText',
+              type: 'text',
               label: 'Character Biography',
               admin: {
                 description: 'Detailed background story and history of the character.',
@@ -81,7 +81,7 @@ export const Characters: CollectionConfig = {
             },
             {
               name: 'personality',
-              type: 'richText',
+              type: 'text',
               label: 'Personality & Traits',
               admin: {
                 description: 'Character personality, behavioral traits, and psychological profile.',
@@ -89,7 +89,7 @@ export const Characters: CollectionConfig = {
             },
             {
               name: 'motivations',
-              type: 'richText',
+              type: 'text',
               label: 'Motivations & Goals',
               admin: {
                 description: 'What drives this character, their goals and desires.',
@@ -97,7 +97,7 @@ export const Characters: CollectionConfig = {
             },
             {
               name: 'relationships',
-              type: 'richText',
+              type: 'text',
               label: 'Relationships & Connections',
               admin: {
                 description: 'Key relationships with other characters and entities.',
@@ -105,7 +105,7 @@ export const Characters: CollectionConfig = {
             },
             {
               name: 'backstory',
-              type: 'richText',
+              type: 'text',
               label: 'Backstory & Origin',
               admin: {
                 description: 'Origin story and formative experiences.',
@@ -224,7 +224,7 @@ export const Characters: CollectionConfig = {
             },
             {
               name: 'physicalDescription',
-              type: 'richText',
+              type: 'text',
               label: 'Physical Description',
               admin: {
                 description:
@@ -233,7 +233,7 @@ export const Characters: CollectionConfig = {
             },
             {
               name: 'clothing',
-              type: 'richText',
+              type: 'text',
               label: 'Clothing & Style',
               admin: {
                 description: 'Typical clothing style, fashion preferences, and signature looks.',
@@ -249,7 +249,7 @@ export const Characters: CollectionConfig = {
               fields: [
                 {
                   name: 'voiceDescription',
-                  type: 'richText',
+                  type: 'text',
                   label: 'Voice & Speech',
                   admin: {
                     description: 'Voice characteristics, accent, speech patterns, and mannerisms.',
