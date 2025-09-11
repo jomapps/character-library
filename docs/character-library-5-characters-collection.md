@@ -71,7 +71,7 @@ export const Characters: CollectionConfig = {
           fields: [
             {
               name: 'biography',
-              type: 'richText',
+              type: 'text',
               label: 'Character Biography',
               admin: {
                 description: 'Detailed background story and history of the character.',
@@ -79,7 +79,7 @@ export const Characters: CollectionConfig = {
             },
             {
               name: 'personality',
-              type: 'richText',
+              type: 'text',
               label: 'Personality & Traits',
               admin: {
                 description: 'Character personality, behavioral traits, and psychological profile.',
@@ -87,7 +87,7 @@ export const Characters: CollectionConfig = {
             },
             {
               name: 'motivations',
-              type: 'richText',
+              type: 'text',
               label: 'Motivations & Goals',
               admin: {
                 description: 'What drives this character, their goals and desires.',
@@ -95,7 +95,7 @@ export const Characters: CollectionConfig = {
             },
             {
               name: 'relationships',
-              type: 'richText',
+              type: 'text',
               label: 'Relationships & Connections',
               admin: {
                 description: 'Key relationships with other characters and entities.',
@@ -103,7 +103,7 @@ export const Characters: CollectionConfig = {
             },
             {
               name: 'backstory',
-              type: 'richText',
+              type: 'text',
               label: 'Backstory & Origin',
               admin: {
                 description: 'Origin story and formative experiences.',
@@ -136,45 +136,45 @@ export const Characters: CollectionConfig = {
                 },
               ],
             },
-                {
-                  name: 'role',
-                  type: 'select',
-                  label: 'Narrative Role',
-                  options: [
-                    { label: 'Protagonist', value: 'protagonist' },
-                    { label: 'Antagonist', value: 'antagonist' },
-                    { label: 'Supporting', value: 'supporting' },
-                    { label: 'Minor', value: 'minor' },
-                  ],
-                },
-                {
-                  name: 'archetype',
-                  type: 'text',
-                  label: 'Archetype',
-                  admin: { description: 'Classical or story archetype (e.g., Mentor, Trickster).' },
-                },
-                {
-                  name: 'psychology',
-                  type: 'group',
-                  label: 'Psychology',
-                  fields: [
-                    { name: 'motivation', type: 'textarea', label: 'Core Motivation' },
-                    { name: 'fears', type: 'textarea', label: 'Primary Fears' },
-                    { name: 'desires', type: 'textarea', label: 'Key Desires' },
-                    { name: 'flaws', type: 'textarea', label: 'Notable Flaws' },
-                  ],
-                },
-                {
-                  name: 'characterArc',
-                  type: 'group',
-                  label: 'Character Arc',
-                  admin: { description: 'Start → Transformation → End states.' },
-                  fields: [
-                    { name: 'startState', type: 'textarea', label: 'Start State' },
-                    { name: 'transformation', type: 'textarea', label: 'Transformation' },
-                    { name: 'endState', type: 'textarea', label: 'End State' },
-                  ],
-                }
+            {
+              name: 'role',
+              type: 'select',
+              label: 'Narrative Role',
+              options: [
+                { label: 'Protagonist', value: 'protagonist' },
+                { label: 'Antagonist', value: 'antagonist' },
+                { label: 'Supporting', value: 'supporting' },
+                { label: 'Minor', value: 'minor' },
+              ],
+            },
+            {
+              name: 'archetype',
+              type: 'text',
+              label: 'Archetype',
+              admin: { description: 'Classical or story archetype (e.g., Mentor, Trickster).' },
+            },
+            {
+              name: 'psychology',
+              type: 'group',
+              label: 'Psychology',
+              fields: [
+                { name: 'motivation', type: 'textarea', label: 'Core Motivation' },
+                { name: 'fears', type: 'textarea', label: 'Primary Fears' },
+                { name: 'desires', type: 'textarea', label: 'Key Desires' },
+                { name: 'flaws', type: 'textarea', label: 'Notable Flaws' },
+              ],
+            },
+            {
+              name: 'characterArc',
+              type: 'group',
+              label: 'Character Arc',
+              admin: { description: 'Start → Transformation → End states.' },
+              fields: [
+                { name: 'startState', type: 'textarea', label: 'Start State' },
+                { name: 'transformation', type: 'textarea', label: 'Transformation' },
+                { name: 'endState', type: 'textarea', label: 'End State' },
+              ],
+            },
           ],
         },
         {
@@ -222,7 +222,7 @@ export const Characters: CollectionConfig = {
             },
             {
               name: 'physicalDescription',
-              type: 'richText',
+              type: 'text',
               label: 'Physical Description',
               admin: {
                 description:
@@ -231,7 +231,7 @@ export const Characters: CollectionConfig = {
             },
             {
               name: 'clothing',
-              type: 'richText',
+              type: 'text',
               label: 'Clothing & Style',
               admin: {
                 description: 'Typical clothing style, fashion preferences, and signature looks.',
@@ -247,7 +247,7 @@ export const Characters: CollectionConfig = {
               fields: [
                 {
                   name: 'voiceDescription',
-                  type: 'richText',
+                  type: 'text',
                   label: 'Voice & Speech',
                   admin: {
                     description: 'Voice characteristics, accent, speech patterns, and mannerisms.',
@@ -275,7 +275,7 @@ export const Characters: CollectionConfig = {
                 { name: 'voiceId', type: 'text', required: false, label: 'Voice ID' },
                 { name: 'voiceSample', type: 'relationship', label: 'Voice Sample', relationTo: 'media' },
               ],
-            }
+            },
           ],
         },
         {
@@ -311,9 +311,6 @@ export const Characters: CollectionConfig = {
                   label: 'Last Sync Time',
                   admin: {
                     readOnly: true,
-                    description: 'Timestamp of the last successful sync with Novel Movie.',
-                  },
-                }
                     description: 'Timestamp of the last successful sync with Novel Movie.',
                   },
                 },
@@ -870,51 +867,10 @@ export const Characters: CollectionConfig = {
     afterChange: [
       async ({ doc, req, operation, previousDoc }) => {
         try {
-          // Handle master reference image processing
+          // Master reference processing is now handled entirely by the Media collection hooks
+          // This prevents infinite loops and duplicate processing
           if (operation === 'update' && doc.masterReferenceImage) {
-            const previousMasterRef = previousDoc?.masterReferenceImage
-            const currentMasterRef = doc.masterReferenceImage
-
-            // Check if master reference image was added or changed
-            if (currentMasterRef && currentMasterRef !== previousMasterRef) {
-              console.log(`Processing new master reference for character: ${doc.name}`)
-
-              // Get the media document
-              const mediaDoc = await req.payload.findByID({
-                collection: 'media',
-                id: typeof currentMasterRef === 'string' ? currentMasterRef : currentMasterRef.id,
-              })
-
-              if (mediaDoc && mediaDoc.dinoAssetId) {
-                // Process master reference with workflow service
-                const result = await characterWorkflowService.processMasterReference(
-                  doc.id, // Always use MongoDB ObjectId for database operations
-                  Buffer.from([]), // We'll get the buffer from the media file
-                  mediaDoc.filename || 'master_reference.jpg',
-                  req.payload,
-                )
-
-                if (result.success) {
-                  console.log(`✓ Master reference processed successfully for ${doc.name}`)
-
-                  // Update the character document with processing results
-                  await req.payload.update({
-                    collection: 'characters',
-                    id: doc.id,
-                    data: {
-                      // Add a field to track master reference processing status
-                      masterReferenceProcessed: true,
-                      masterReferenceQuality: result.qualityScore,
-                    },
-                  })
-                } else {
-                  console.error(
-                    `✗ Master reference processing failed for ${doc.name}:`,
-                    result.error,
-                  )
-                }
-              }
-            }
+            console.log(`Character ${doc.name} updated with master reference, processing handled by Media collection`)
           }
 
           // PathRAG sync for character persona data
@@ -948,8 +904,13 @@ async function syncCharacterToPathRAG(doc: any, operation: string, previousDoc?:
       'relationships',
       'backstory',
       'skills',
+      'role',
+      'archetype',
+      'psychology',
+      'characterArc',
       'physicalDescription',
-      'voiceDescription',
+      'dialogueVoice',
+      'voiceModels',
       'clothing',
       'age',
       'height',
@@ -993,4 +954,5 @@ async function syncCharacterToPathRAG(doc: any, operation: string, previousDoc?:
     console.error(`PathRAG sync error for character ${doc.name}:`, error)
   }
 }
+
 ```
