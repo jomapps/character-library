@@ -261,7 +261,7 @@ function buildRelationshipPrompt(
     
     // Add physical description
     if (character.physicalDescription) {
-      const physicalDesc = extractTextFromRichText(character.physicalDescription)
+      const physicalDesc = extractTextFromField(character.physicalDescription)
       prompt += ` (${physicalDesc})`
     }
     
@@ -354,15 +354,16 @@ function buildRelationshipPrompt(
   return prompt
 }
 
-function extractTextFromRichText(richText: any): string {
-  if (!richText || !richText.root || !richText.root.children) {
+function extractTextFromField(field: any): string {
+  if (!field) {
     return ''
   }
-  
-  return richText.root.children
-    .map((child: any) => child.text || '')
-    .join(' ')
-    .trim()
+
+  if (typeof field === 'string') {
+    return field.trim()
+  }
+
+  throw new Error(`Expected string field but received ${typeof field}. RichText format is no longer supported.`)
 }
 
 async function uploadGeneratedImage(

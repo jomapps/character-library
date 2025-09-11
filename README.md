@@ -239,17 +239,17 @@ interface Character {
   status: 'draft' | 'in_development' | 'ready' | 'in_production' | 'archived'
 
   // Character Development
-  biography: RichText
-  personality: RichText
-  motivations: RichText
-  backstory: RichText
+  biography: string
+  personality: string
+  motivations: string
+  backstory: string
 
   // Physical Description
   age: number
   height: string
   eyeColor: string
   hairColor: string
-  physicalDescription: RichText
+  physicalDescription: string
 
   // Novel Movie Integration
   novelMovieIntegration: {

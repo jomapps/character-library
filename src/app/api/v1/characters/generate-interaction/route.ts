@@ -202,7 +202,7 @@ function buildInteractionPrompt(characters: any[], request: InteractionImageRequ
   // Add primary character description
   prompt += `${primaryCharacter.name}`
   if (primaryCharacter.physicalDescription) {
-    const physicalDesc = extractTextFromRichText(primaryCharacter.physicalDescription)
+    const physicalDesc = extractTextFromField(primaryCharacter.physicalDescription)
     prompt += ` (${physicalDesc})`
   }
   if (primaryCharacter.age) prompt += `, age ${primaryCharacter.age}`
@@ -215,7 +215,7 @@ function buildInteractionPrompt(characters: any[], request: InteractionImageRequ
     if (index > 0) prompt += ' and '
     prompt += `${character.name}`
     if (character.physicalDescription) {
-      const physicalDesc = extractTextFromRichText(character.physicalDescription)
+      const physicalDesc = extractTextFromField(character.physicalDescription)
       prompt += ` (${physicalDesc})`
     }
     if (character.age) prompt += `, age ${character.age}`
@@ -246,15 +246,16 @@ function buildInteractionPrompt(characters: any[], request: InteractionImageRequ
   return prompt
 }
 
-function extractTextFromRichText(richText: any): string {
-  if (!richText || !richText.root || !richText.root.children) {
+function extractTextFromField(field: any): string {
+  if (!field) {
     return ''
   }
-  
-  return richText.root.children
-    .map((child: any) => child.text || '')
-    .join(' ')
-    .trim()
+
+  if (typeof field === 'string') {
+    return field.trim()
+  }
+
+  throw new Error(`Expected string field but received ${typeof field}. RichText format is no longer supported.`)
 }
 
 async function uploadGeneratedImage(

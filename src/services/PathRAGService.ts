@@ -336,44 +336,44 @@ export class PathRAGService {
     if (character.eyeColor) profileParts.push(`Eye Color: ${character.eyeColor}`)
     if (character.hairColor) profileParts.push(`Hair Color: ${character.hairColor}`)
 
-    // Add rich text content
+    // Add text content
     if (character.biography) {
-      const bioText = this.extractTextFromRichText(character.biography)
+      const bioText = this.extractTextFromField(character.biography)
       if (bioText) profileParts.push(`Biography: ${bioText}`)
     }
 
     if (character.personality) {
-      const personalityText = this.extractTextFromRichText(character.personality)
+      const personalityText = this.extractTextFromField(character.personality)
       if (personalityText) profileParts.push(`Personality: ${personalityText}`)
     }
 
     if (character.motivations) {
-      const motivationsText = this.extractTextFromRichText(character.motivations)
+      const motivationsText = this.extractTextFromField(character.motivations)
       if (motivationsText) profileParts.push(`Motivations: ${motivationsText}`)
     }
 
     if (character.relationships) {
-      const relationshipsText = this.extractTextFromRichText(character.relationships)
+      const relationshipsText = this.extractTextFromField(character.relationships)
       if (relationshipsText) profileParts.push(`Relationships: ${relationshipsText}`)
     }
 
     if (character.backstory) {
-      const backstoryText = this.extractTextFromRichText(character.backstory)
+      const backstoryText = this.extractTextFromField(character.backstory)
       if (backstoryText) profileParts.push(`Backstory: ${backstoryText}`)
     }
 
     if (character.physicalDescription) {
-      const physicalText = this.extractTextFromRichText(character.physicalDescription)
+      const physicalText = this.extractTextFromField(character.physicalDescription)
       if (physicalText) profileParts.push(`Physical Description: ${physicalText}`)
     }
 
     if (character.voiceDescription) {
-      const voiceText = this.extractTextFromRichText(character.voiceDescription)
+      const voiceText = this.extractTextFromField(character.voiceDescription)
       if (voiceText) profileParts.push(`Voice & Speech: ${voiceText}`)
     }
 
     if (character.clothing) {
-      const clothingText = this.extractTextFromRichText(character.clothing)
+      const clothingText = this.extractTextFromField(character.clothing)
       if (clothingText) profileParts.push(`Clothing & Style: ${clothingText}`)
     }
 
@@ -393,44 +393,19 @@ export class PathRAGService {
   }
 
   /**
-   * Extract plain text from Payload rich text field
+   * Extract text from field - expects string format only
    */
-  private extractTextFromRichText(richText: any): string {
-    if (!richText) return ''
-    
-    if (typeof richText === 'string') {
-      return richText
+  private extractTextFromField(field: any): string {
+    if (!field) return ''
+
+    if (typeof field === 'string') {
+      return field
     }
 
-    // Handle Lexical rich text format
-    if (richText.root && richText.root.children) {
-      return this.extractTextFromLexicalNodes(richText.root.children)
-    }
-
-    return ''
+    throw new Error(`Expected string field but received ${typeof field}. RichText format is no longer supported.`)
   }
 
-  /**
-   * Extract text from Lexical nodes recursively
-   */
-  private extractTextFromLexicalNodes(nodes: any[]): string {
-    let text = ''
-    
-    for (const node of nodes) {
-      if (node.type === 'text') {
-        text += node.text || ''
-      } else if (node.children) {
-        text += this.extractTextFromLexicalNodes(node.children)
-      }
-      
-      // Add space between paragraphs
-      if (node.type === 'paragraph') {
-        text += ' '
-      }
-    }
-    
-    return text.trim()
-  }
+
 
   /**
    * Get service configuration

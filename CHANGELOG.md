@@ -5,6 +5,21 @@ All notable changes to the Character Library project will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.1] - 2025-09-11
+
+### 🔧 Changed
+- **BREAKING**: Converted richText fields to text fields for simplified data handling
+  - `biography`, `personality`, `motivations`, `relationships`, `backstory`
+  - `physicalDescription`, `clothing`, `voiceDescription` (within dialogueVoice)
+- Updated TypeScript types to reflect text field changes
+- Updated richText extraction functions for backward compatibility
+- Cleared Characters collection data as part of schema migration
+
+### 🛠️ Technical
+- Regenerated payload-types.ts with updated field definitions
+- Enhanced text extraction functions to handle both text and legacy richText formats
+- Updated documentation to reflect schema changes
+
 ## [2.0.0] - 2025-09-07
 
 ### 🎉 Major Release: Novel Movie Integration
@@ -87,7 +102,7 @@ This major release introduces comprehensive Novel Movie integration capabilities
 
 #### Character Data Model
 - Extended character schema with 50+ new fields
-- Rich text support for all narrative content
+- Text field support for all narrative content (simplified from richText in v2.0.1)
 - Comprehensive physical description tracking
 - Skills and abilities with proficiency levels
 - Status workflow management (draft → development → production → archived)

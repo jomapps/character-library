@@ -15,10 +15,10 @@ export interface NovelMovieCharacterData {
   status?: 'draft' | 'in_development' | 'ready' | 'in_production' | 'archived'
 
   // Character Development Fields
-  biography?: any // RichText
-  personality?: any // RichText
-  motivations?: any // RichText
-  backstory?: any // RichText
+  biography?: string
+  personality?: string
+  motivations?: string
+  backstory?: string
 
   // New Character Development Fields
   role?: 'protagonist' | 'antagonist' | 'supporting' | 'minor'

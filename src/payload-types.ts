@@ -214,93 +214,23 @@ export interface Character {
   /**
    * Detailed background story and history of the character.
    */
-  biography?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
+  biography?: string | null;
   /**
    * Character personality, behavioral traits, and psychological profile.
    */
-  personality?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
+  personality?: string | null;
   /**
    * What drives this character, their goals and desires.
    */
-  motivations?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
+  motivations?: string | null;
   /**
    * Key relationships with other characters and entities.
    */
-  relationships?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
+  relationships?: string | null;
   /**
    * Origin story and formative experiences.
    */
-  backstory?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
+  backstory?: string | null;
   skills?:
     | {
         skill: string;
@@ -309,6 +239,25 @@ export interface Character {
         id?: string | null;
       }[]
     | null;
+  role?: ('protagonist' | 'antagonist' | 'supporting' | 'minor') | null;
+  /**
+   * Classical or story archetype (e.g., Mentor, Trickster).
+   */
+  archetype?: string | null;
+  psychology?: {
+    motivation?: string | null;
+    fears?: string | null;
+    desires?: string | null;
+    flaws?: string | null;
+  };
+  /**
+   * Start → Transformation → End states.
+   */
+  characterArc?: {
+    startState?: string | null;
+    transformation?: string | null;
+    endState?: string | null;
+  };
   age?: number | null;
   height?: string | null;
   weight?: string | null;
@@ -317,57 +266,39 @@ export interface Character {
   /**
    * Detailed physical appearance, distinguishing features, and overall look.
    */
-  physicalDescription?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  /**
-   * Voice characteristics, accent, speech patterns, and mannerisms.
-   */
-  voiceDescription?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
+  physicalDescription?: string | null;
   /**
    * Typical clothing style, fashion preferences, and signature looks.
    */
-  clothing?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
+  clothing?: string | null;
+  /**
+   * Structured voice profile used for voice-generation and dialogue rendering.
+   */
+  dialogueVoice?: {
+    /**
+     * Voice characteristics, accent, speech patterns, and mannerisms.
+     */
+    voiceDescription?: string | null;
+    style?: string | null;
+    patterns?:
+      | {
+          pattern: string;
+          id?: string | null;
+        }[]
+      | null;
+    vocabulary?: string | null;
+  };
+  /**
+   * List of models and their voice IDs usable for TTS/dialogue generation. Multiple entries supported. voiceId may be empty initially.
+   */
+  voiceModels?:
+    | {
+        modelName: string;
+        voiceId?: string | null;
+        voiceSample?: (string | null) | Media;
+        id?: string | null;
+      }[]
+    | null;
   /**
    * Integration settings and sync status with Novel Movie projects.
    */
@@ -744,14 +675,51 @@ export interface CharactersSelect<T extends boolean = true> {
         description?: T;
         id?: T;
       };
+  role?: T;
+  archetype?: T;
+  psychology?:
+    | T
+    | {
+        motivation?: T;
+        fears?: T;
+        desires?: T;
+        flaws?: T;
+      };
+  characterArc?:
+    | T
+    | {
+        startState?: T;
+        transformation?: T;
+        endState?: T;
+      };
   age?: T;
   height?: T;
   weight?: T;
   eyeColor?: T;
   hairColor?: T;
   physicalDescription?: T;
-  voiceDescription?: T;
   clothing?: T;
+  dialogueVoice?:
+    | T
+    | {
+        voiceDescription?: T;
+        style?: T;
+        patterns?:
+          | T
+          | {
+              pattern?: T;
+              id?: T;
+            };
+        vocabulary?: T;
+      };
+  voiceModels?:
+    | T
+    | {
+        modelName?: T;
+        voiceId?: T;
+        voiceSample?: T;
+        id?: T;
+      };
   novelMovieIntegration?:
     | T
     | {

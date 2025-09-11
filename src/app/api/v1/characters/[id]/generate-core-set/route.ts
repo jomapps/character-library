@@ -169,8 +169,8 @@ function buildCharacterDescription(character: any): string {
   }
 
   if (character.physicalDescription) {
-    // Extract key physical traits from rich text
-    const physicalText = extractTextFromRichText(character.physicalDescription)
+    // Extract key physical traits from text
+    const physicalText = extractTextFromField(character.physicalDescription)
     if (physicalText) {
       parts.push(physicalText.substring(0, 200)) // Limit length
     }
@@ -188,7 +188,7 @@ function buildCharacterDescription(character: any): string {
 
   // Add clothing/style if available
   if (character.clothing) {
-    const clothingText = extractTextFromRichText(character.clothing)
+    const clothingText = extractTextFromField(character.clothing)
     if (clothingText) {
       parts.push(clothingText.substring(0, 100))
     }
@@ -198,41 +198,16 @@ function buildCharacterDescription(character: any): string {
 }
 
 /**
- * Extract plain text from Payload rich text field
+ * Extract text from field - expects string format only
  */
-function extractTextFromRichText(richText: any): string {
-  if (!richText) return ''
+function extractTextFromField(field: any): string {
+  if (!field) return ''
 
-  if (typeof richText === 'string') {
-    return richText
+  if (typeof field === 'string') {
+    return field
   }
 
-  // Handle Lexical rich text format
-  if (richText.root && richText.root.children) {
-    return extractTextFromLexicalNodes(richText.root.children)
-  }
-
-  return ''
+  throw new Error(`Expected string field but received ${typeof field}. RichText format is no longer supported.`)
 }
 
-/**
- * Extract text from Lexical nodes recursively
- */
-function extractTextFromLexicalNodes(nodes: any[]): string {
-  let text = ''
 
-  for (const node of nodes) {
-    if (node.type === 'text') {
-      text += node.text || ''
-    } else if (node.children) {
-      text += extractTextFromLexicalNodes(node.children)
-    }
-
-    // Add space between paragraphs
-    if (node.type === 'paragraph') {
-      text += ' '
-    }
-  }
-
-  return text.trim()
-}

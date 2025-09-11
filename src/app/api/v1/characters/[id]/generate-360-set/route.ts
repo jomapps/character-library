@@ -176,8 +176,8 @@ export async function POST(
 }
 
 function createAnglePrompt(character: any, angle: string, style: string): string {
-  const baseDescription = extractTextFromRichText(character.physicalDescription) || 
-                         extractTextFromRichText(character.biography) || 
+  const baseDescription = extractTextFromField(character.physicalDescription) ||
+                         extractTextFromField(character.biography) ||
                          `Character named ${character.name}`
   
   const styleModifiers: Record<string, string> = {
@@ -200,23 +200,16 @@ function createAnglePrompt(character: any, angle: string, style: string): string
   return `${baseDescription}, ${angleInstructions[angle] || angle}, ${styleModifiers[style] || styleModifiers['character_production']}`
 }
 
-function extractTextFromRichText(richText: any): string | null {
-  if (!richText || !richText.root || !richText.root.children) {
+function extractTextFromField(field: any): string | null {
+  if (!field) {
     return null
   }
-  
-  let text = ''
-  function extractText(node: any) {
-    if (node.text) {
-      text += node.text
-    }
-    if (node.children) {
-      node.children.forEach(extractText)
-    }
+
+  if (typeof field === 'string') {
+    return field.trim() || null
   }
-  
-  richText.root.children.forEach(extractText)
-  return text.trim() || null
+
+  throw new Error(`Expected string field but received ${typeof field}. RichText format is no longer supported.`)
 }
 
 async function generateImageForAngle(
