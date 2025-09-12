@@ -14,6 +14,15 @@ export interface GenerationOptions {
   steps?: number
   guidance?: number
   seed?: number
+  // Enhanced 360° system options
+  referenceShot?: any // ReferenceShot template data
+  characterData?: {
+    name: string
+    physicalDescription?: string
+    personality?: string
+    [key: string]: any
+  }
+  masterReferenceUrl?: string
 }
 
 export interface GenerationResult {
@@ -134,7 +143,7 @@ export class ImageGenerationService {
     const useImageToImage = !!options.referenceImageAssetId
 
     // Enhance the prompt and log the final version
-    const finalPrompt = this.enhancePrompt(prompt, options.style)
+    const finalPrompt = this.enhancePrompt(prompt, options)
     console.log(`🎨 FINAL PROMPT SENT TO FAL.AI: "${finalPrompt}"`)
 
     const parameters: Record<string, any> = {
@@ -174,21 +183,26 @@ export class ImageGenerationService {
 
   /**
    * Enhance prompt based on style and context
-   * Note: nano-banana uses Gemini, so we use natural language descriptions
+   * Now supports ReferenceShot template-based generation
    */
-  private enhancePrompt(prompt: string, style?: string): string {
+  private enhancePrompt(prompt: string, options: GenerationOptions): string {
     console.log(`📝 PROMPT ENHANCEMENT - Input: "${prompt}"`)
-    console.log(`🎭 PROMPT ENHANCEMENT - Style: "${style || 'default'}"`)
+    console.log(`🎭 PROMPT ENHANCEMENT - Style: "${options.style || 'default'}"`)
+
+    // If we have a reference shot template, use it for prompt generation
+    if (options.referenceShot && options.characterData) {
+      return this.generateTemplatePrompt(options.referenceShot, options.characterData, options.masterReferenceUrl)
+    }
 
     // If style is 'none', return the original prompt without any modifications
-    if (style === 'none') {
+    if (options.style === 'none') {
       console.log(`🚫 PROMPT ENHANCEMENT DISABLED - Returning original prompt unchanged`)
       return prompt
     }
 
     let enhancedPrompt = prompt
 
-    switch (style) {
+    switch (options.style) {
       case 'character_turnaround':
         enhancedPrompt += '. Create a professional character reference sheet with clean background, consistent lighting, high quality and detailed features.'
         break
@@ -201,6 +215,100 @@ export class ImageGenerationService {
 
     console.log(`✨ PROMPT ENHANCEMENT - Output: "${enhancedPrompt}"`)
     return enhancedPrompt
+  }
+
+  /**
+   * Generate prompt using ReferenceShot template with placeholder substitution
+   */
+  private generateTemplatePrompt(referenceShot: any, characterData: any, masterReferenceUrl?: string): string {
+    console.log(`🎯 TEMPLATE PROMPT GENERATION - Shot: ${referenceShot.shotName}`)
+
+    let prompt = referenceShot.promptTemplate
+
+    // Extract character traits
+    const physicalTraits = this.extractPhysicalTraits(characterData)
+    const personalityTraits = this.extractPersonalityTraits(characterData)
+
+    // Substitute placeholders
+    const substitutions = {
+      '{CHARACTER}': characterData.name || 'Character',
+      '{PHYSIQUE_TRAITS}': physicalTraits,
+      '{PERSONALITY}': personalityTraits,
+      '{LENS}': referenceShot.lensMm.toString(),
+      '{FSTOP}': referenceShot.fStop.toString(),
+      '{ISO}': referenceShot.iso.toString(),
+      '{SHUTTER}': referenceShot.shutterSpeed,
+      '{CROP}': referenceShot.crop,
+      '{ANGLE}': referenceShot.angle,
+      '{REF_URL}': masterReferenceUrl || '',
+      '{REF_WEIGHT}': referenceShot.referenceWeight.toString(),
+      '{POSE_INSTRUCTIONS}': this.getPoseInstructions(referenceShot.pose),
+    }
+
+    // Apply substitutions
+    for (const [placeholder, value] of Object.entries(substitutions)) {
+      prompt = prompt.replace(new RegExp(placeholder.replace(/[{}]/g, '\\$&'), 'g'), value)
+    }
+
+    console.log(`🎯 TEMPLATE PROMPT - Final: "${prompt.substring(0, 200)}..."`)
+    return prompt
+  }
+
+  /**
+   * Extract physical traits from character data
+   */
+  private extractPhysicalTraits(characterData: any): string {
+    const traits: string[] = []
+
+    if (characterData.physicalDescription) {
+      // Extract key physical descriptors (limit to ~100 chars)
+      const description = typeof characterData.physicalDescription === 'string'
+        ? characterData.physicalDescription
+        : characterData.physicalDescription.toString()
+      traits.push(description.substring(0, 100))
+    }
+
+    // Add specific physical attributes
+    if (characterData.eyeColor) traits.push(`${characterData.eyeColor} eyes`)
+    if (characterData.hairColor) traits.push(`${characterData.hairColor} hair`)
+    if (characterData.height) traits.push(`${characterData.height} tall`)
+    if (characterData.age) traits.push(`${characterData.age} years old`)
+
+    return traits.join(', ') || 'detailed physical features'
+  }
+
+  /**
+   * Extract personality traits from character data
+   */
+  private extractPersonalityTraits(characterData: any): string {
+    const traits: string[] = []
+
+    if (characterData.personality) {
+      const personality = typeof characterData.personality === 'string'
+        ? characterData.personality
+        : characterData.personality.toString()
+      traits.push(personality.substring(0, 100))
+    }
+
+    // Add other personality-related fields
+    if (characterData.motivations) traits.push(characterData.motivations.toString().substring(0, 50))
+    if (characterData.fears) traits.push(`fears: ${characterData.fears.toString().substring(0, 50)}`)
+
+    return traits.join(', ') || 'authentic personality expression'
+  }
+
+  /**
+   * Get pose-specific instructions
+   */
+  private getPoseInstructions(pose: string): string {
+    const poseInstructions: Record<string, string> = {
+      'a_pose': 'Pose: relaxed A pose, feet shoulder width, arms natural.',
+      't_pose': 'Pose: T pose, arms horizontal.',
+      'hand_centered': 'Pose: hands centered to frame.',
+      'relaxed': 'Pose: natural, relaxed posture.',
+    }
+
+    return poseInstructions[pose] || `Pose: ${pose}.`
   }
 
   /**
@@ -268,20 +376,28 @@ export class ImageGenerationService {
    */
   private async getDinoAssetUrl(dinoAssetId: string): Promise<string | null> {
     try {
-      // Get media URL from DINOv3 service
-      const response = await fetch(`${process.env.DINO_SERVICE_URL}/api/v1/media/${dinoAssetId}`, {
-        headers: {
-          'Authorization': `Bearer ${process.env.DINO_API_KEY}`,
+      // Get media URL from Payload media collection
+      const { getPayload } = await import('payload')
+      const config = await import('@payload-config').then(c => c.default)
+      const payload = await getPayload({ config })
+
+      const mediaResult = await payload.find({
+        collection: 'media',
+        where: {
+          dinoAssetId: {
+            equals: dinoAssetId,
+          },
         },
+        limit: 1,
       })
 
-      if (!response.ok) {
-        console.warn(`Failed to get DINOv3 asset URL for ${dinoAssetId}`)
-        return null
+      if (mediaResult.docs.length > 0) {
+        const media = mediaResult.docs[0]
+        return media.url || `https://media.rumbletv.com/media/${media.filename}`
       }
 
-      const result = await response.json()
-      return result.media_url || null
+      console.warn(`Could not find media with DINO asset ID: ${dinoAssetId}`)
+      return null
     } catch (error) {
       console.warn(`Error getting DINOv3 asset URL for ${dinoAssetId}:`, error)
       return null

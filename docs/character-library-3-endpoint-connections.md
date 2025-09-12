@@ -42,7 +42,7 @@ If Similar Found → Use Existing Character
 If Not Found → Create New Character → POST /api/v1/characters/novel-movie
 ```
 
-### 3. Enhanced Image Generation Pipeline
+### 3. Enhanced 360° Image Generation Pipeline
 ```
 Character Data → POST /api/v1/characters/{id}/generate-initial-image
               ↓
@@ -54,9 +54,20 @@ DINOv3 Integration → Feature Extraction → Asset ID Assignment
               ↓
 Reference Image → PUT /api/v1/characters/{id}/reference-image
                 ↓
-360° Set → POST /api/v1/characters/{id}/generate-360-set
-         ↓
+Enhanced 360° Core Set → POST /api/v1/characters/{id}/generate-core-set
+                       ↓
+Professional Reference Library (15+ shots):
+├── Core 9 Essential: 3 lenses × 3 angles
+│   ├── 35mm (Action/Body): Front, ¾ Left, ¾ Right
+│   ├── 50mm (Conversation): Front, ¾ Left, ¾ Right
+│   └── 85mm (Emotion): Front, ¾ Left, ¾ Right
+└── Add-on Shots: Profile L/R, Back, Hands, T-pose, Expressions
+                       ↓
+Structured Metadata → Technical specs, shot classification, quality metrics
+                    ↓
 Scene Images → POST /api/v1/characters/{id}/generate-scene-image
+             ↓
+Smart Image Generation → POST /api/v1/characters/{id}/generate-smart-image
 
 ⚠️ RESET FLOW:
 DELETE /api/v1/characters/{id}/reference-image → Clears ALL derived content
@@ -87,25 +98,34 @@ DELETE /api/v1/characters/{id}/reference-image → Clears ALL derived content
 - **Knowledge Query**: `POST /api/v1/characters/query` - Requires PathRAG sync
 - **Query Stats**: `GET /api/v1/characters/query` - PathRAG health check
 
-### Image Generation Layer
+### Enhanced Image Generation Layer
 ```
 Character Data (Required)
     ↓
-generate-initial-image (First image)
+generate-initial-image (First image with exact prompt)
     ↓
 reference-image (Set master reference)
     ↓
-generate-360-set (Complete reference set)
+generate-core-set (Enhanced 360° professional reference set)
+    ├── Core 9 Essential Shots (3 lenses × 3 angles)
+    ├── Add-on Shots (profiles, back, hands, poses)
+    ├── Technical Metadata (lens, f-stop, ISO, etc.)
+    └── Quality Metrics (consistency, validation scores)
+    ↓
+generate-360-set (Legacy endpoint, enhanced)
+    ↓
+generate-smart-image (AI-powered reference selection)
     ↓
 generate-scene-image (Context-specific images)
 
 ⚠️ CRITICAL DEPENDENCY:
 DELETE reference-image → RESETS ALL:
 - Core set (360° images)
-- Image gallery
+- Image gallery with metadata
 - Quality metrics
 - Scene images
 - Validation history
+- Technical specifications
 ```
 
 ### Quality & Validation Layer
@@ -131,10 +151,12 @@ DELETE reference-image → RESETS ALL:
 - **Conflict Resolution**: Configurable resolution strategies
 - **Project Isolation**: Characters grouped by Novel Movie project ID
 
-### Image Asset Management
-- **Reference Chain**: initial → reference → 360° set → scene images
-- **Quality Tracking**: Each generation updates quality metrics
-- **Asset Linking**: Images linked to character records and external asset IDs
+### Enhanced Image Asset Management
+- **Reference Chain**: initial → reference → enhanced 360° core set → scene images → smart images
+- **Professional Metadata**: Technical specs (lens, f-stop, ISO, shutter), composition details, shot classification
+- **Quality Tracking**: Individual image quality scores, consistency metrics, validation status
+- **Asset Linking**: Images linked to character records, DINOv3 asset IDs, and reference shot templates
+- **Smart File Naming**: Standardized naming convention: `{CHAR}_{LENS}{MODE}_{ANGLE}_{CROP}_{EXPR}_v{N}.jpg`
 
 ## Error Handling & Fallbacks
 

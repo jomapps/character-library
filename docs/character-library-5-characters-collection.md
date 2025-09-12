@@ -1,4 +1,11 @@
-# Character Collection
+# Character Collection (Updated v2.0.1)
+
+## Recent Changes
+- **Text Field Migration**: Converted richText fields to text fields for simplified data handling
+- **Enhanced Voice Features**: Added comprehensive voice model support and dialogue profiles
+- **360° Reference System**: Enhanced image gallery with professional metadata support
+- **Backward Compatibility**: Maintains support for legacy richText data
+
 ```typescript
 export const Characters: CollectionConfig = {
   slug: 'characters',
@@ -74,7 +81,7 @@ export const Characters: CollectionConfig = {
               type: 'text',
               label: 'Character Biography',
               admin: {
-                description: 'Detailed background story and history of the character.',
+                description: 'Detailed background story and history of the character. (Migrated from richText in v2.0.1)',
               },
             },
             {
@@ -82,7 +89,7 @@ export const Characters: CollectionConfig = {
               type: 'text',
               label: 'Personality & Traits',
               admin: {
-                description: 'Character personality, behavioral traits, and psychological profile.',
+                description: 'Character personality, behavioral traits, and psychological profile. (Migrated from richText in v2.0.1)',
               },
             },
             {
@@ -90,7 +97,7 @@ export const Characters: CollectionConfig = {
               type: 'text',
               label: 'Motivations & Goals',
               admin: {
-                description: 'What drives this character, their goals and desires.',
+                description: 'What drives this character, their goals and desires. (Migrated from richText in v2.0.1)',
               },
             },
             {
@@ -98,7 +105,7 @@ export const Characters: CollectionConfig = {
               type: 'text',
               label: 'Relationships & Connections',
               admin: {
-                description: 'Key relationships with other characters and entities.',
+                description: 'Key relationships with other characters and entities. (Migrated from richText in v2.0.1)',
               },
             },
             {
@@ -106,7 +113,7 @@ export const Characters: CollectionConfig = {
               type: 'text',
               label: 'Backstory & Origin',
               admin: {
-                description: 'Origin story and formative experiences.',
+                description: 'Origin story and formative experiences. (Migrated from richText in v2.0.1)',
               },
             },
             {
@@ -226,7 +233,7 @@ export const Characters: CollectionConfig = {
               label: 'Physical Description',
               admin: {
                 description:
-                  'Detailed physical appearance, distinguishing features, and overall look.',
+                  'Detailed physical appearance, distinguishing features, and overall look. (Migrated from richText in v2.0.1)',
               },
             },
             {
@@ -234,7 +241,7 @@ export const Characters: CollectionConfig = {
               type: 'text',
               label: 'Clothing & Style',
               admin: {
-                description: 'Typical clothing style, fashion preferences, and signature looks.',
+                description: 'Typical clothing style, fashion preferences, and signature looks. (Migrated from richText in v2.0.1)',
               },
             },
             {
@@ -268,12 +275,36 @@ export const Characters: CollectionConfig = {
               type: 'array',
               label: 'Voice Generation Models',
               admin: {
-                description: 'List of models and their voice IDs usable for TTS/dialogue generation. Multiple entries supported. voiceId may be empty initially.',
+                description: 'Enhanced voice model support for multiple TTS services (ElevenLabs, OpenAI TTS, etc.). Links voice samples to specific models for consistent character voice generation.',
               },
               fields: [
-                { name: 'modelName', type: 'text', required: true, label: 'Model Name' },
-                { name: 'voiceId', type: 'text', required: false, label: 'Voice ID' },
-                { name: 'voiceSample', type: 'relationship', label: 'Voice Sample', relationTo: 'media' },
+                {
+                  name: 'modelName',
+                  type: 'text',
+                  required: true,
+                  label: 'Model Name',
+                  admin: {
+                    description: 'TTS service name (e.g., ElevenLabs, OpenAI TTS, Azure Speech)'
+                  }
+                },
+                {
+                  name: 'voiceId',
+                  type: 'text',
+                  required: false,
+                  label: 'Voice ID',
+                  admin: {
+                    description: 'Model-specific voice identifier. May be empty initially and populated during voice training.'
+                  }
+                },
+                {
+                  name: 'voiceSample',
+                  type: 'relationship',
+                  label: 'Voice Sample',
+                  relationTo: 'media',
+                  admin: {
+                    description: 'Audio file sample for this voice model. Used for voice cloning and reference.'
+                  }
+                },
               ],
             },
           ],
@@ -774,6 +805,63 @@ export const Characters: CollectionConfig = {
                     description: 'Check this for the initial 360-degree turnaround images.',
                   },
                 },
+                // Enhanced 360° Reference System Metadata
+                {
+                  name: 'referenceShot',
+                  type: 'text',
+                  label: 'Reference Shot Template',
+                  admin: {
+                    description: 'Link to ReferenceShot template used for generation (e.g., 35mm_front_full, 50mm_3qleft_cu)',
+                  },
+                },
+                {
+                  name: 'lens',
+                  type: 'number',
+                  label: 'Camera Lens (mm)',
+                  admin: {
+                    description: 'Camera lens used: 35mm (Action/Body), 50mm (Conversation), 85mm (Emotion)',
+                  },
+                },
+                {
+                  name: 'angle',
+                  type: 'text',
+                  label: 'Camera Angle',
+                  admin: {
+                    description: 'Shot angle: front, 3q_left, 3q_right, profile_l, profile_r, back',
+                  },
+                },
+                {
+                  name: 'crop',
+                  type: 'text',
+                  label: 'Shot Crop',
+                  admin: {
+                    description: 'Framing crop: full, 3q (mid-thigh), mcu (shoulders up), cu (chest up), hands',
+                  },
+                },
+                {
+                  name: 'expression',
+                  type: 'text',
+                  label: 'Facial Expression',
+                  admin: {
+                    description: 'Character expression: neutral, determined, thoughtful, concerned, etc.',
+                  },
+                },
+                {
+                  name: 'pose',
+                  type: 'text',
+                  label: 'Character Pose',
+                  admin: {
+                    description: 'Body pose: a_pose, t_pose, natural, etc.',
+                  },
+                },
+                {
+                  name: 'referenceWeight',
+                  type: 'number',
+                  label: 'Reference Weight',
+                  admin: {
+                    description: 'Reference image influence strength (0.85-0.95 for professional shots)',
+                  },
+                },
                 // DINOv3 Validation Data
                 {
                   name: 'dinoAssetId',
@@ -956,3 +1044,24 @@ async function syncCharacterToPathRAG(doc: any, operation: string, previousDoc?:
 }
 
 ```
+
+## Summary of Recent Enhancements
+
+### v2.0.1 Changes (September 2025)
+- **Text Field Migration**: All narrative fields converted from richText to text for improved performance
+- **Enhanced Voice Support**: Comprehensive voice model integration with sample management
+- **360° Reference System**: Professional metadata support for enhanced image generation
+- **Backward Compatibility**: Maintains support for existing richText data
+
+### Key Features
+- **Professional Image Gallery**: Enhanced metadata for 360° reference sets with technical specifications
+- **Multi-Model Voice Support**: Integration with ElevenLabs, OpenAI TTS, and other voice services
+- **Character Development**: Comprehensive psychology, archetype, and character arc tracking
+- **Quality Metrics**: Advanced validation and consistency tracking systems
+- **Project Integration**: Novel Movie project association and sync capabilities
+
+### Migration Notes
+- Existing richText data is automatically handled by enhanced extraction functions
+- New text fields provide better API performance and simplified data handling
+- All existing functionality remains unchanged with improved reliability
+- Enhanced metadata fields are optional and backward compatible

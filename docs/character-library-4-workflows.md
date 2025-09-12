@@ -55,12 +55,12 @@
 
 ## 2. Character Image Generation Workflow
 
-### Complete Image Set Generation
+### Enhanced 360° Professional Reference Set Generation
 ```
 1. Initial Reference Image
    POST /api/v1/characters/{id}/generate-initial-image
-   ├── Uses character description
-   ├── Creates master reference
+   ├── Uses exact user prompt (no modifications)
+   ├── Creates master reference with DINOv3 processing
    └── Sets baseline visual identity
 
 2. Set Master Reference
@@ -69,13 +69,32 @@
    ├── Updates character record
    └── Enables advanced generation
 
-3. Generate 360° Reference Set
-   POST /api/v1/characters/{id}/generate-360-set
-   ├── Creates 8 angle views
-   ├── Maintains visual consistency
-   └── Builds complete reference library
+3. Generate Enhanced 360° Core Set
+   POST /api/v1/characters/{id}/generate-core-set
+   ├── Core 9 Essential Shots:
+   │   ├── 35mm (Action/Body): Front, ¾ Left, ¾ Right
+   │   ├── 50mm (Conversation): Front, ¾ Left, ¾ Right
+   │   └── 85mm (Emotion): Front, ¾ Left, ¾ Right
+   ├── Optional Add-on Shots:
+   │   ├── Profile L/R (85mm)
+   │   ├── Back Full (35mm)
+   │   ├── Hands Close-up (macro)
+   │   ├── T-pose Calibration (35mm)
+   │   └── Expression Variations (50mm)
+   ├── Technical Metadata:
+   │   ├── Camera settings (lens, f-stop, ISO, shutter)
+   │   ├── Composition details (angle, crop, expression)
+   │   └── Quality metrics (consistency, validation scores)
+   └── Professional File Naming: {CHAR}_{LENS}{MODE}_{ANGLE}_{CROP}_{EXPR}_v{N}.jpg
 
-4. Scene-Specific Images
+4. Smart Image Generation
+   POST /api/v1/characters/{id}/generate-smart-image
+   ├── AI-powered reference selection
+   ├── Intelligent prompt analysis
+   ├── Quality validation and retry logic
+   └── Optimal reference image matching
+
+5. Scene-Specific Images
    POST /api/v1/characters/{id}/generate-scene-image
    ├── Context-aware generation
    ├── Mood and lighting adaptation
@@ -106,32 +125,47 @@
    └── All visual content removed
 
 4. Recovery Path
-   Must restart image generation workflow:
+   Must restart enhanced image generation workflow:
    ├── POST /api/v1/characters/{id}/generate-initial-image
    ├── PUT /api/v1/characters/{id}/reference-image
-   ├── POST /api/v1/characters/{id}/generate-360-set
+   ├── POST /api/v1/characters/{id}/generate-core-set (Enhanced 360° system)
+   ├── POST /api/v1/characters/{id}/generate-smart-image (Optional)
    └── POST /api/v1/characters/{id}/generate-scene-image
 ```
 
-### Image Quality Workflow
+### Enhanced Image Quality Workflow
 ```
 1. Generation with Quality Threshold
    All image endpoints support qualityThreshold parameter
-   ├── Minimum quality: 75/100
-   ├── Retry on low quality
-   └── Track quality metrics
+   ├── Minimum quality: 75/100 (configurable)
+   ├── Individual shot quality tracking
+   ├── Consistency score validation
+   ├── Retry on low quality with different parameters
+   └── Track comprehensive quality metrics
 
-2. Quality Validation
+2. Professional Quality Validation
    GET /api/v1/characters/{id}/quality-metrics
-   ├── Visual consistency score
-   ├── Reference image quality
-   └── Generation success rate
+   ├── Visual consistency score across all shots
+   ├── Individual reference image quality scores
+   ├── Technical metadata validation
+   ├── Core set completion status
+   └── Generation success rate statistics
 
-3. Quality Improvement
+3. Quality Improvement Process
    If quality < threshold:
-   ├── Regenerate with adjusted parameters
-   ├── Update reference images
-   └── Recalculate metrics
+   ├── Analyze failed shots and reasons
+   ├── Regenerate with adjusted camera parameters
+   ├── Update reference images with better alternatives
+   ├── Recalculate comprehensive metrics
+   └── Validate against professional standards
+
+4. Core Set Quality Assurance
+   Enhanced 360° core set includes:
+   ├── Quality score per shot (0-100)
+   ├── Consistency score per shot (0-100)
+   ├── Technical validation (metadata completeness)
+   ├── Professional standards compliance
+   └── Overall set quality assessment
 ```
 
 ## 3. Character Discovery & Search Workflow
@@ -371,7 +405,70 @@
    └── Data consistency restoration
 ```
 
-## 8. DINOv3 Integration Workflow
+## 8. Enhanced 360° Professional Reference Workflow
+
+### Professional Shot Template System
+```
+1. Core 9 Essential Shots (3×3 Matrix)
+   Lenses: 35mm (Action/Body), 50mm (Conversation), 85mm (Emotion)
+   Angles: FRONT, ¾ LEFT, ¾ RIGHT
+
+   Technical Specifications:
+   ├── 35mm shots: f/4, ISO 200, 1/250s (full body clarity, wardrobe)
+   ├── 50mm shots: f/2.8, ISO 200, 1/250s (dialogue singles, conversation mode)
+   └── 85mm shots: f/2.5, ISO 200, 1/250s (emotional beats, micro expressions)
+
+2. Add-on Professional Shots (6+ Additional)
+   ├── Profile L/R (85mm): Character side views
+   ├── Back Full (35mm): Rear view for complete reference
+   ├── Hands Close-up (macro): Detail shots for animation reference
+   ├── T-pose Calibration (35mm): Technical reference pose
+   └── Expression Variations (50mm): Neutral, Determined, Concerned
+
+3. Universal Prompt Template System
+   Base Template:
+   "Ultra detailed, photorealistic studio reference of {CHARACTER};
+   physique/traits: {PHYSIQUE_TRAITS}; personality cues: {PERSONALITY};
+   neutral seamless studio background; natural/soft key fill; HDR;
+   camera: {LENS}mm, f/{FSTOP}, ISO {ISO}, 1/{SHUTTER}s;
+   composition: {CROP} crop, {ANGLE} angle, matched eye level;
+   reference_image: {REF_URL} | reference_weight: {0.85-0.95}
+   --negatives: CGI, 3D, illustration, cartoon, uncanny valley, extra limbs"
+```
+
+### Generation Execution Workflow
+```
+1. Pre-Generation Setup
+   ├── Validate master reference image exists
+   ├── Extract character traits and personality
+   ├── Prepare shot templates with metadata
+   └── Set quality thresholds and retry limits
+
+2. Core 9 Generation Process
+   For each shot in Core 9:
+   ├── Apply shot-specific template
+   ├── Generate with consistent reference weight (0.85-0.95)
+   ├── Validate quality and consistency scores
+   ├── Retry with adjusted parameters if needed
+   └── Store with structured metadata
+
+3. Add-on Shots (Optional)
+   If includeAddonShots = true:
+   ├── Generate profile shots (L/R)
+   ├── Generate back view and hands close-up
+   ├── Generate T-pose calibration
+   ├── Generate expression variations
+   └── Apply same quality validation process
+
+4. Post-Generation Processing
+   ├── Update character imageGallery with all shots
+   ├── Set coreSetGenerated = true
+   ├── Calculate overall quality metrics
+   ├── Store generation statistics and metadata
+   └── Enable advanced image generation features
+```
+
+## 9. DINOv3 Integration Workflow
 
 ### Image Processing Pipeline
 ```

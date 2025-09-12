@@ -20,6 +20,20 @@
 
 ## 🆕 Recent Enhancements (September 2025)
 
+### 360° Reference Generation System (Latest)
+- **Enhanced 360° Core Set**: Upgraded from basic 8-angle turnaround to comprehensive 15+ shot reference library
+- **Professional Camera System**: 3 lens modes (35mm Action/Body, 50mm Conversation, 85mm Emotion) × 3 angles (Front, ¾ Left, ¾ Right)
+- **Smart Reference Templates**: Structured metadata system with technical specs (lens, f-stop, ISO, shutter speed)
+- **Core 9 + Add-ons**: Essential 9-shot set plus optional profile, back view, hands close-up, T-pose, and expression variations
+- **Intelligent File Naming**: Standardized naming convention: `{CHAR}_{LENS}{MODE}_{ANGLE}_{CROP}_{EXPR}_v{N}.jpg`
+
+### Enhanced Voice & Character Development
+- **Structured Voice Profiles**: Comprehensive `dialogueVoice` group with voice description, style, speech patterns, and vocabulary
+- **Multi-Model Voice Support**: Integration with ElevenLabs, OpenAI TTS, and other voice generation services
+- **Voice Sample Management**: Audio file upload capability with direct linking to voice models
+- **Character Psychology**: Enhanced psychology fields (motivation, fears, desires, flaws) and character arc tracking
+- **Narrative Roles**: Structured role system (protagonist, antagonist, supporting, minor) with archetype classification
+
 ### Documentation & UI Consistency Fixes
 - **Issue Resolved**: Complete sync between documentation, UI, and API behavior for Character ID usage
 - **21 API Endpoints Updated**: Clear descriptions specify MongoDB ObjectId requirements with real examples
@@ -37,6 +51,11 @@
 - **Style Override**: Automatic `style: 'none'` parameter for generate-initial-image endpoints
 - **Backward Compatibility**: Other endpoints maintain existing prompt enhancement
 - **Enhanced Logging**: Complete prompt transformation chain visibility
+
+### Data Model Improvements
+- **Text Field Migration**: Converted richText fields to text fields for simplified data handling
+- **Backward Compatibility**: Enhanced text extraction functions handle both text and legacy richText formats
+- **Schema Optimization**: Updated TypeScript types and payload-types.ts with current field definitions
 
 ## Health & System
 - `GET /api/health` - Service health check and status
@@ -63,13 +82,19 @@
 - `GET /api/v1/characters/query` - Get query stats and health information
 
 ## Image Generation
+
+### Basic Image Generation
 - `POST /api/v1/characters/{id}/generate-image` - Generate basic character image with reference consistency
 - `POST /api/v1/characters/{id}/generate-initial-image` - Generate character's first reference image (uses exact prompt, no modifications)
 - `POST /api/v1/characters/generate-initial-image` - Generate standalone initial image without character association
 - `POST /api/v1/characters/{id}/generate-scene-image` - Generate character image for specific scene context
-- `POST /api/v1/characters/{id}/generate-core-set` - Generate core reference image set with quality validation
-- `POST /api/v1/characters/{id}/generate-360-set` - Generate complete 360° reference image set
+
+### Advanced 360° Reference Generation
+- `POST /api/v1/characters/{id}/generate-core-set` - Generate enhanced 360° core reference set (15+ professional shots)
+- `POST /api/v1/characters/{id}/generate-360-set` - Generate complete 360° reference image set (legacy endpoint, enhanced)
 - `POST /api/v1/characters/{id}/generate-smart-image` - Generate image using smart AI prompting with reference selection
+
+### Reference Image Management
 - `PUT /api/v1/characters/{id}/reference-image` - Update character's master reference image
 - `GET /api/v1/characters/{id}/reference-image` - Get character's current reference image
 - `DELETE /api/v1/characters/{id}/reference-image` - Delete master reference image and reset all derived content
@@ -148,11 +173,26 @@
   - `voiceDescription`: Legacy field for backward compatibility
 - **Skills**: Array of skills with levels (beginner to master) and descriptions
 - **Relationships**: Enhanced relationship system with visual cues and dynamics
-- **Media**: Master reference image and image gallery with DINOv3 processing (supports audio files for voice samples)
+- **Media**: Master reference image and enhanced image gallery with 360° reference system
 - **Quality Metrics**: Narrative and visual consistency tracking
+
+### Enhanced 360° Image Gallery System
+- **Core Reference Set**: Professional 15+ shot library with structured metadata
+- **Technical Metadata**: lens (35/50/85mm), f-stop, ISO, shutter speed, angle, crop, expression
+- **Shot Classification**: Core 9 essential shots + optional add-ons (profile, back view, hands, poses)
+- **Quality Tracking**: Individual image quality scores, consistency metrics, validation status
+- **DINOv3 Integration**: Automatic processing, asset ID assignment, feature extraction
+- **Smart File Naming**: Standardized naming convention for professional workflows
 
 ### Voice & Audio Support
 - **Audio File Upload**: Media collection supports audio files for voice samples
 - **Voice Model Integration**: Ready for TTS service integration (ElevenLabs, OpenAI TTS)
 - **Speech Pattern Analysis**: Structured dialogue voice profiles for consistent character voice
 - **Voice Sample Management**: Link voice samples to specific voice models
+- **Multi-Model Support**: Support for multiple voice generation services simultaneously
+
+### Data Field Migration (v2.0.1)
+- **Text Fields**: All narrative content now uses text fields instead of richText for simplified handling
+- **Affected Fields**: biography, personality, motivations, relationships, backstory, physicalDescription, clothing
+- **Backward Compatibility**: Enhanced extraction functions handle both text and legacy richText formats
+- **Performance**: Improved data processing and API response times

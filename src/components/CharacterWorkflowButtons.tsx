@@ -65,11 +65,19 @@ export const CharacterWorkflowButtons: React.FC<CharacterWorkflowButtonsProps> =
 
     setLoading('core-set')
     try {
-      const result = await handleApiCall(`/api/v1/characters/${characterId}/generate-core-set`)
+      const result = await handleApiCall(
+        `/api/v1/characters/${characterId}/generate-core-set`,
+        'POST',
+        {
+          includeAddonShots: false,
+          qualityThreshold: 75,
+          maxRetries: 3,
+        }
+      )
       setResults(result)
       if (onRefresh) onRefresh()
     } catch (err) {
-      console.error('Core set generation failed:', err)
+      console.error('Enhanced core set generation failed:', err)
     } finally {
       setLoading(null)
     }
@@ -147,6 +155,32 @@ export const CharacterWorkflowButtons: React.FC<CharacterWorkflowButtonsProps> =
     }
   }
 
+  const findReferenceImage = async () => {
+    const prompt = window.prompt(
+      'Enter a prompt to find the best reference image:',
+      'Character having a conversation, looking thoughtful'
+    )
+
+    if (!prompt) return
+
+    setLoading('reference-search')
+    try {
+      const result = await handleApiCall(
+        `/api/v1/characters/${characterId}/find-reference-image`,
+        'POST',
+        {
+          prompt,
+          returnAlternatives: true,
+        }
+      )
+      setResults(result)
+    } catch (err) {
+      console.error('Reference search failed:', err)
+    } finally {
+      setLoading(null)
+    }
+  }
+
   return (
     <div
       style={{
@@ -180,6 +214,13 @@ export const CharacterWorkflowButtons: React.FC<CharacterWorkflowButtonsProps> =
 
         <Button onClick={runQualityAssurance} disabled={loading !== null}>
           {loading === 'qa' ? 'Running QA...' : 'Run Quality Assurance'}
+        </Button>
+
+        <Button
+          onClick={findReferenceImage}
+          disabled={!coreSetGenerated || loading !== null}
+        >
+          {loading === 'reference-search' ? 'Searching...' : 'Find Reference Image'}
         </Button>
       </div>
 

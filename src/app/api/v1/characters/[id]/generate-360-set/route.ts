@@ -142,7 +142,7 @@ export async function POST(
         data: {
           imageGallery: [
             ...(character.imageGallery || []),
-            ...imageGalleryUpdate
+            ...imageGalleryUpdate as any // Type assertion needed for angle field
           ],
           coreSetGenerated: true,
           coreSetGeneratedAt: new Date().toISOString(),
@@ -216,7 +216,7 @@ async function generateImageForAngle(
   character: any, 
   angle: string, 
   prompt: string, 
-  qualityThreshold: number
+  _qualityThreshold: number
 ): Promise<{
   success: boolean
   url?: string

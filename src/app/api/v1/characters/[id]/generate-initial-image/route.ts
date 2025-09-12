@@ -189,7 +189,7 @@ export async function POST(
 /**
  * Enhance the user prompt for optimal reference image generation
  */
-function enhancePromptForReferenceImage(userPrompt: string): string {
+function _enhancePromptForReferenceImage(userPrompt: string): string {
   // Add reference image specific enhancements
   const referenceEnhancements = [
     'front facing',

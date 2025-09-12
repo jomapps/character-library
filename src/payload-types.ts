@@ -70,6 +70,7 @@ export interface Config {
     users: User;
     media: Media;
     characters: Character;
+    'reference-shots': ReferenceShot;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -79,6 +80,7 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     characters: CharactersSelect<false> | CharactersSelect<true>;
+    'reference-shots': ReferenceShotsSelect<false> | ReferenceShotsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -538,9 +540,120 @@ export interface Character {
          * The prompt used to generate this image (if AI-generated).
          */
         generationPrompt?: string | null;
+        /**
+         * The template used to generate this image (if from 360° system)
+         */
+        referenceShot?: (string | null) | ReferenceShot;
+        /**
+         * Camera lens focal length (35, 50, 85)
+         */
+        lens?: number | null;
+        angle?: ('front' | '3q_left' | '3q_right' | 'profile_left' | 'profile_right' | 'back') | null;
+        crop?: ('full' | '3q' | 'mcu' | 'cu' | 'hands') | null;
+        /**
+         * Facial expression (neutral, determined, etc.)
+         */
+        expression?: string | null;
+        /**
+         * Body pose (a_pose, t_pose, relaxed, etc.)
+         */
+        pose?: string | null;
+        /**
+         * Reference image strength used in generation (0.85-0.95)
+         */
+        referenceWeight?: number | null;
         id?: string | null;
       }[]
     | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reference-shots".
+ */
+export interface ReferenceShot {
+  id: string;
+  /**
+   * Unique identifier for this shot template (e.g., "35a_front_full_a_pose_v1")
+   */
+  slug: string;
+  /**
+   * Display name for this shot (e.g., "35mm FRONT FULL (A pose)")
+   */
+  shotName: string;
+  /**
+   * Camera lens focal length
+   */
+  lensMm: number;
+  /**
+   * Camera aperture setting
+   */
+  fStop: number;
+  /**
+   * Camera ISO setting
+   */
+  iso: number;
+  /**
+   * Camera shutter speed (e.g., "1/250")
+   */
+  shutterSpeed: string;
+  /**
+   * Shot mode/category
+   */
+  mode: string;
+  angle: 'front' | '3q_left' | '3q_right' | 'profile_left' | 'profile_right' | 'back';
+  crop: 'full' | '3q' | 'mcu' | 'cu' | 'hands';
+  /**
+   * Facial expression (neutral, determined, etc.)
+   */
+  expression: string;
+  /**
+   * Body pose (a_pose, t_pose, relaxed, etc.)
+   */
+  pose: string;
+  /**
+   * Reference image strength (0.85-0.95)
+   */
+  referenceWeight: number;
+  pack: 'core' | 'addon';
+  /**
+   * Technical description of this shot
+   */
+  description: string;
+  /**
+   * When and how to use this shot type
+   */
+  usageNotes: string;
+  /**
+   * Searchable tags for this shot template
+   */
+  tags?:
+    | {
+        tag: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Template for generated filenames using placeholders like {CHAR}, {LENS}, etc.
+   */
+  fileNamePattern: string;
+  /**
+   * Universal prompt template with placeholders for image generation
+   */
+  promptTemplate: string;
+  /**
+   * Whether this template is available for generation
+   */
+  isActive?: boolean | null;
+  /**
+   * Order for displaying templates (lower numbers first)
+   */
+  sortOrder?: number | null;
+  /**
+   * Template version for tracking updates
+   */
+  version?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -562,6 +675,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'characters';
         value: string | Character;
+      } | null)
+    | ({
+        relationTo: 'reference-shots';
+        value: string | ReferenceShot;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -822,8 +939,49 @@ export interface CharactersSelect<T extends boolean = true> {
         shotType?: T;
         tags?: T;
         generationPrompt?: T;
+        referenceShot?: T;
+        lens?: T;
+        angle?: T;
+        crop?: T;
+        expression?: T;
+        pose?: T;
+        referenceWeight?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reference-shots_select".
+ */
+export interface ReferenceShotsSelect<T extends boolean = true> {
+  slug?: T;
+  shotName?: T;
+  lensMm?: T;
+  fStop?: T;
+  iso?: T;
+  shutterSpeed?: T;
+  mode?: T;
+  angle?: T;
+  crop?: T;
+  expression?: T;
+  pose?: T;
+  referenceWeight?: T;
+  pack?: T;
+  description?: T;
+  usageNotes?: T;
+  tags?:
+    | T
+    | {
+        tag?: T;
+        id?: T;
+      };
+  fileNamePattern?: T;
+  promptTemplate?: T;
+  isActive?: T;
+  sortOrder?: T;
+  version?: T;
   updatedAt?: T;
   createdAt?: T;
 }

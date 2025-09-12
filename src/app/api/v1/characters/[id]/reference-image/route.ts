@@ -238,7 +238,7 @@ export async function DELETE(
       })),
     }
 
-    const updatedCharacter = await payload.update({
+    const _updatedCharacter = await payload.update({
       collection: 'characters',
       id,
       data: resetData,

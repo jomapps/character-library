@@ -6,19 +6,29 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
-import { characterWorkflowService } from '../../../../../../services/CharacterWorkflowService'
+// import { characterWorkflowService } from '../../../../../../services/CharacterWorkflowService' // Legacy service, now using CoreSetGenerationService
+import { coreSetGenerationService } from '../../../../../../services/CoreSetGenerationService'
+
+interface GenerateCoreSetRequest {
+  includeAddonShots?: boolean
+  customSeed?: number
+  qualityThreshold?: number
+  maxRetries?: number
+}
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const payload = await getPayload({ config })
     const { id: characterId } = await params
+    const body: GenerateCoreSetRequest = await request.json().catch(() => ({}))
 
-    console.log(`Starting 360° core set generation for character: ${characterId}`)
+    console.log(`🎬 Starting enhanced 360° core set generation for character: ${characterId}`)
 
-    // Get the character document
+    // Get the character document with full depth for relationships
     const character = await payload.findByID({
       collection: 'characters',
       id: characterId,
+      depth: 2,
     })
 
     if (!character) {
@@ -58,15 +68,31 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       )
     }
 
-    // Build character description from persona data
-    const characterDescription = buildCharacterDescription(character)
+    // Prepare character data for template generation
+    const characterData = {
+      name: character.name,
+      physicalDescription: character.physicalDescription,
+      personality: character.personality,
+      age: character.age,
+      eyeColor: character.eyeColor,
+      hairColor: character.hairColor,
+      height: character.height,
+      motivations: character.motivations,
+      // fears: character.fears, // Field doesn't exist in Character type
+    }
 
-    // Generate the 360° core set
-    const result = await characterWorkflowService.generate360CoreSet(
-      character.characterId || characterId,
+    // Generate the 360° core set using new template system
+    const result = await coreSetGenerationService.generate360CoreSet(
+      characterId,
       masterRefMedia.dinoAssetId,
-      characterDescription,
+      characterData,
       payload,
+      {
+        includeAddonShots: body.includeAddonShots || false,
+        customSeed: body.customSeed,
+        qualityThreshold: body.qualityThreshold || 75,
+        maxRetries: body.maxRetries || 3,
+      }
     )
 
     if (!result.success) {
@@ -77,26 +103,39 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
             generatedImages: result.generatedImages,
             failedImages: result.failedImages,
             totalAttempts: result.totalAttempts,
+            errorMessage: result.error,
           },
         },
         { status: 500 },
       )
     }
 
-    // Update character document with core set results
-    const coreSetImages = result.generatedImages
-      .filter((img) => img.isValid)
-      .map((img) => ({
-        imageFile: img.imageId,
-        isCoreReference: true,
-        dinoAssetId: img.dinoAssetId,
-        dinoProcessingStatus: 'validation_success' as const,
-        qualityScore: img.qualityScore,
-        consistencyScore: img.consistencyScore,
-        shotType: `${img.angle}_degree_turnaround`,
-        tags: `360° core reference, ${img.angle}° angle, turnaround`,
-        validationNotes: `Generated as part of 360° core set. Quality: ${img.qualityScore}, Consistency: ${img.consistencyScore}`,
-      }))
+    // Update character document with enhanced core set results
+    const coreSetImages = result.generatedImages.map((img) => ({
+      imageFile: img.imageId,
+      isCoreReference: true,
+      referenceShot: img.referenceShot.id, // Link to reference shot template
+
+      // Enhanced metadata from template
+      lens: img.referenceShot.lensMm,
+      angle: img.referenceShot.angle,
+      crop: img.referenceShot.crop,
+      expression: img.referenceShot.expression,
+      pose: img.referenceShot.pose,
+      referenceWeight: img.referenceShot.referenceWeight,
+
+      // Quality and validation data
+      dinoAssetId: img.dinoAssetId,
+      dinoProcessingStatus: img.isValid ? 'validation_success' as const : 'validation_failed' as const,
+      qualityScore: img.qualityScore,
+      consistencyScore: img.consistencyScore,
+      validationNotes: img.validationNotes || `Generated using ${img.referenceShot.shotName} template`,
+
+      // Legacy fields for backward compatibility
+      shotType: img.referenceShot.slug,
+      tags: `360° core reference, ${img.referenceShot.mode}, ${img.referenceShot.pack}`,
+      generationPrompt: `Template-generated using ${img.referenceShot.shotName}`,
+    }))
 
     // Add core set images to character gallery
     const updatedImageGallery = [...(character.imageGallery || []), ...coreSetImages]
@@ -121,11 +160,11 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       },
     })
 
-    console.log(`✓ 360° core set generation completed for character: ${character.name}`)
+    console.log(`✓ Enhanced 360° core set generation completed for character: ${character.name}`)
 
     return NextResponse.json({
       success: true,
-      message: `Successfully generated ${result.generatedImages.filter((img) => img.isValid).length}/8 core reference images`,
+      message: `Successfully generated ${result.generatedImages.length} reference images using template system`,
       data: {
         characterId,
         characterName: character.name,
@@ -134,10 +173,20 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
         totalAttempts: result.totalAttempts,
         coreSetImages: coreSetImages.map((img) => ({
           imageId: img.imageFile,
-          angle: img.shotType,
+          referenceShot: img.referenceShot,
+          shotName: result.generatedImages.find(gi => gi.imageId === img.imageFile)?.referenceShot.shotName,
           qualityScore: img.qualityScore,
           consistencyScore: img.consistencyScore,
+          lens: img.lens,
+          angle: img.angle,
+          crop: img.crop,
         })),
+        summary: {
+          totalGenerated: result.generatedImages.length,
+          validImages: result.generatedImages.filter(img => img.isValid).length,
+          averageQuality: result.generatedImages.reduce((sum, img) => sum + img.qualityScore, 0) / result.generatedImages.length,
+          averageConsistency: result.generatedImages.reduce((sum, img) => sum + img.consistencyScore, 0) / result.generatedImages.length,
+        },
       },
     })
   } catch (error) {
@@ -154,8 +203,9 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
 
 /**
  * Build character description from persona data for image generation
+ * @deprecated - Now using enhanced character data structure in CoreSetGenerationService
  */
-function buildCharacterDescription(character: any): string {
+function _buildCharacterDescription(character: any): string {
   const parts: string[] = []
 
   // Add basic info
@@ -170,7 +220,7 @@ function buildCharacterDescription(character: any): string {
 
   if (character.physicalDescription) {
     // Extract key physical traits from text
-    const physicalText = extractTextFromField(character.physicalDescription)
+    const physicalText = _extractTextFromField(character.physicalDescription)
     if (physicalText) {
       parts.push(physicalText.substring(0, 200)) // Limit length
     }
@@ -188,7 +238,7 @@ function buildCharacterDescription(character: any): string {
 
   // Add clothing/style if available
   if (character.clothing) {
-    const clothingText = extractTextFromField(character.clothing)
+    const clothingText = _extractTextFromField(character.clothing)
     if (clothingText) {
       parts.push(clothingText.substring(0, 100))
     }
@@ -199,8 +249,9 @@ function buildCharacterDescription(character: any): string {
 
 /**
  * Extract text from field - expects string format only
+ * @deprecated - Legacy function
  */
-function extractTextFromField(field: any): string {
+function _extractTextFromField(field: any): string {
   if (!field) return ''
 
   if (typeof field === 'string') {

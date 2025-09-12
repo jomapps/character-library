@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload'
-import { characterWorkflowService } from '../services/CharacterWorkflowService'
+// import { characterWorkflowService } from '../services/CharacterWorkflowService' // Legacy service
 import { pathragService } from '../services/PathRAGService'
 
 export const Characters: CollectionConfig = {
@@ -858,6 +858,101 @@ export const Characters: CollectionConfig = {
                     description: 'The prompt used to generate this image (if AI-generated).',
                   },
                 },
+                // Enhanced 360° Reference System Fields
+                {
+                  name: 'referenceShot',
+                  type: 'relationship',
+                  relationTo: 'reference-shots',
+                  label: 'Reference Shot Template',
+                  admin: {
+                    description: 'The template used to generate this image (if from 360° system)',
+                  },
+                },
+                {
+                  type: 'collapsible',
+                  label: 'Shot Metadata',
+                  admin: {
+                    description: 'Technical metadata for this shot',
+                  },
+                  fields: [
+                    {
+                      type: 'row',
+                      fields: [
+                        {
+                          name: 'lens',
+                          type: 'number',
+                          label: 'Lens (mm)',
+                          admin: {
+                            description: 'Camera lens focal length (35, 50, 85)',
+                            width: '33%',
+                          },
+                        },
+                        {
+                          name: 'angle',
+                          type: 'select',
+                          label: 'Angle',
+                          options: [
+                            { label: 'Front', value: 'front' },
+                            { label: '3/4 Left', value: '3q_left' },
+                            { label: '3/4 Right', value: '3q_right' },
+                            { label: 'Profile Left', value: 'profile_left' },
+                            { label: 'Profile Right', value: 'profile_right' },
+                            { label: 'Back', value: 'back' },
+                          ],
+                          admin: {
+                            width: '33%',
+                          },
+                        },
+                        {
+                          name: 'crop',
+                          type: 'select',
+                          label: 'Crop',
+                          options: [
+                            { label: 'Full Body', value: 'full' },
+                            { label: '3/4 (Mid-thigh)', value: '3q' },
+                            { label: 'Medium Close-Up', value: 'mcu' },
+                            { label: 'Close-Up', value: 'cu' },
+                            { label: 'Hands', value: 'hands' },
+                          ],
+                          admin: {
+                            width: '34%',
+                          },
+                        },
+                      ],
+                    },
+                    {
+                      type: 'row',
+                      fields: [
+                        {
+                          name: 'expression',
+                          type: 'text',
+                          label: 'Expression',
+                          admin: {
+                            description: 'Facial expression (neutral, determined, etc.)',
+                            width: '50%',
+                          },
+                        },
+                        {
+                          name: 'pose',
+                          type: 'text',
+                          label: 'Pose',
+                          admin: {
+                            description: 'Body pose (a_pose, t_pose, relaxed, etc.)',
+                            width: '50%',
+                          },
+                        },
+                      ],
+                    },
+                    {
+                      name: 'referenceWeight',
+                      type: 'number',
+                      label: 'Reference Weight',
+                      admin: {
+                        description: 'Reference image strength used in generation (0.85-0.95)',
+                      },
+                    },
+                  ],
+                },
               ],
             },
           ],
@@ -867,7 +962,7 @@ export const Characters: CollectionConfig = {
   ],
   hooks: {
     afterChange: [
-      async ({ doc, req, operation, previousDoc }) => {
+      async ({ doc, req: _req, operation, previousDoc }) => {
         try {
           // Master reference processing is now handled entirely by the Media collection hooks
           // This prevents infinite loops and duplicate processing

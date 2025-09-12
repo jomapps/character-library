@@ -331,8 +331,55 @@ curl -X POST https://character.ft.tc/api/v1/characters/generate-initial-image \
 }
 ```
 
+### POST /api/v1/characters/{id}/generate-core-set
+**Purpose**: Generate enhanced 360° core reference set (15+ professional shots)
+```bash
+curl -X POST https://character.ft.tc/api/v1/characters/68c07c4305803df129909509/generate-core-set \
+  -H "Content-Type: application/json" \
+  -d '{
+    "includeAddonShots": true,
+    "qualityThreshold": 75,
+    "maxRetries": 3,
+    "customSeed": 12345
+  }'
+```
+**Response**:
+```json
+{
+  "success": true,
+  "message": "Enhanced 360° core set generated successfully",
+  "data": {
+    "characterId": "68c07c4305803df129909509",
+    "characterName": "Maya Chen",
+    "coreSetGenerated": true,
+    "generatedImages": [
+      {
+        "shotType": "35mm_front_full",
+        "imageId": "core-image-1",
+        "dinoAssetId": "asset-id-1",
+        "qualityScore": 92,
+        "consistencyScore": 88,
+        "metadata": {
+          "lens": 35,
+          "angle": "front",
+          "crop": "full",
+          "expression": "neutral",
+          "pose": "a_pose"
+        }
+      }
+    ],
+    "coreSetQuality": {
+      "successCount": 15,
+      "totalAttempts": 18,
+      "averageQuality": 89.2,
+      "averageConsistency": 91.5
+    }
+  }
+}
+```
+
 ### POST /api/v1/characters/{id}/generate-360-set
-**Purpose**: Generate complete 360° reference image set
+**Purpose**: Generate complete 360° reference image set (legacy endpoint, enhanced)
 ```bash
 curl -X POST https://character.ft.tc/api/v1/characters/68c07c4305803df129909509/generate-360-set \
   -H "Content-Type: application/json" \
@@ -440,6 +487,45 @@ curl https://character.ft.tc/api/v1/characters/relationships/graph
 
 ## 🆕 New Features & Enhancements
 
+### Enhanced 360° Reference Generation System
+**Feature**: Professional-grade 360° reference sets with structured metadata
+- **Core 9 System**: 3 lenses (35mm, 50mm, 85mm) × 3 angles (Front, ¾ Left, ¾ Right)
+- **Add-on Shots**: Profile views, back view, hands close-up, T-pose, expression variations
+- **Technical Metadata**: Lens settings, camera parameters, composition details
+- **Smart File Naming**: Standardized naming convention for professional workflows
+
+**Example Core Set Generation**:
+```bash
+curl -X POST https://character.ft.tc/api/v1/characters/68c07c4305803df129909509/generate-core-set \
+  -H "Content-Type: application/json" \
+  -d '{
+    "includeAddonShots": true,
+    "qualityThreshold": 80,
+    "maxRetries": 3
+  }'
+```
+
+**Professional Shot Types Generated**:
+```
+Core 9 Essential Shots:
+1. 35mm FRONT FULL (A pose) - f/4, ISO 200, 1/250s
+2. 35mm 3QLEFT 3Q - f/4, ISO 200, 1/250s
+3. 35mm 3QRIGHT 3Q - f/4, ISO 200, 1/250s
+4. 50mm FRONT CU (NEUTRAL) - f/2.8, ISO 200, 1/250s
+5. 50mm 3QLEFT CU (THOUGHTFUL) - f/2.8, ISO 200, 1/250s
+6. 50mm 3QRIGHT CU (DETERMINED) - f/2.8, ISO 200, 1/250s
+7. 85mm FRONT MCU (SUBTLE_CONCERN) - f/2.5, ISO 200, 1/250s
+8. 85mm 3QLEFT MCU (RESOLUTE) - f/2.5, ISO 200, 1/250s
+9. 85mm 3QRIGHT MCU (VULNERABLE) - f/2.5, ISO 200, 1/250s
+
+Add-on Shots (Optional):
+- Profile L/R (85mm)
+- Back Full (35mm)
+- Hands Close-up (macro)
+- T-pose Calibration (35mm)
+- Expression Variations (50mm)
+```
+
 ### Prompt Control System
 **Feature**: Initial image generation now uses exact user prompts without modifications
 - **Style Option**: Use `"style": "none"` to disable all prompt enhancements
@@ -523,13 +609,33 @@ export interface GenerationOptions {
   guidance?: number
   seed?: number
 }
+
+export interface CoreSetGenerationOptions {
+  includeAddonShots?: boolean
+  customSeed?: number
+  qualityThreshold?: number
+  maxRetries?: number
+}
+
+export interface ShotMetadata {
+  lens: number              // 35 | 50 | 85
+  angle: string            // front | 3q_left | 3q_right | profile_l | profile_r | back
+  crop: string             // full | 3q | mcu | cu | hands
+  expression: string       // neutral | determined | thoughtful | etc.
+  pose: string             // a_pose | t_pose | natural
+  fstop: string           // f/2.5 | f/2.8 | f/4
+  iso: number             // 200
+  shutterSpeed: string    // 1/250s
+}
 ```
 
 ### Performance Metrics
 - **DINOv3 Upload Success**: 100% (improved from ~60%)
 - **Average Generation Time**: 8-12 seconds (including DINOv3 processing)
+- **Core Set Generation Time**: 15-25 minutes for complete 15+ shot set
 - **Error Recovery Time**: <2 seconds for retry attempts
 - **URL Resolution Time**: <100ms with prioritization system
+- **Quality Score Average**: 85-95% for professional reference sets
 
 ### Enhanced Logging Example
 ```
