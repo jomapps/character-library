@@ -1,0 +1,53 @@
+Character Reference Kit Master Cheat Sheet
+WHAT YOU NEED (9 15 shots)
+Core 9 (the 3×3 pack): 3 lenses × 3 angles
+Lenses: 35mm (Action/Body), 50mm (Conversation), 85mm (Emotion)
+Angles: FRONT / ¾ LEFT / ¾ RIGHT
+Add-ons (optional): PROFILE L/R (85mm), BACK FULL (35mm), HANDS CU (macro), A pose + T pose (35mm),
+Expression Trio (50mm: Neutral / Determined / Concerned)
+LENS MODES (how to use)
+35mm = walk-ups, blocking, full-body clarity, wardrobe
+50mm = dialogue singles (your convo mode )
+85mm = emotional beats, reaction inserts, micro expressions
+ANGLES & CROPS
+ANGLES: FRONT / 3QLEFT / 3QRIGHT / PROFILEL / PROFILER / BACK
+CROPS: FULL / 3Q (mid thigh) / MCU (shoulders up) / CU (chest up) / HANDS
+FILE NAMING
+{CHAR}_{LENS}{MODE}_{ANGLE}_{CROP}_{EXPR}_v{N}.jpg
+e.g., MayaChen_50C_FRONT_CU_NEUTRAL_v1.jpg | 35A=35mm Action, 50C=50mm Conversation, 85C=85mm Emotion
+UNIVERSAL PROMPT TEMPLATE (neutral studio reference)
+Ultra detailed, photorealistic studio reference of {CHARACTER}; physique/traits: {PHYSIQUE_TRAITS};
+personality cues: {PERSONALITY}; neutral seamless studio background; natural/soft key fill; HDR;
+camera: {LENS}mm, f/{FSTOP}, ISO {ISO}, 1/{SHUTTER}s; composition: {CROP} crop, {ANGLE} angle, matched
+eye level;
+focus: crisp eyes, accurate skin tones, visible pores, authentic eye moisture; magazine quality realism;
+reference_image: {REF_URL} | reference_weight: {0.85 0.95}
+--negatives: CGI, 3D, illustration, cartoon, uncanny valley, extra limbs, text, watermarks, props.
+CORE 9 (copy settings)
+1) 35mm FRONT FULL (A pose) f/4, ISO 200, 1/250s; pose: relaxed A pose, feet shoulder width, arms
+natural.
+2) 35mm 3QLEFT 3Q f/4, ISO 200, 1/250s.
+3) 35mm 3QRIGHT 3Q f/4, ISO 200, 1/250s.
+4) 50mm FRONT CU (NEUTRAL) f/2.8, ISO 200, 1/250s.
+5) 50mm 3QLEFT CU (THOUGHTFUL) f/2.8, ISO 200, 1/250s.
+6) 50mm 3QRIGHT CU (DETERMINED) f/2.8, ISO 200, 1/250s.
+7) 85mm FRONT MCU (SUBTLE_CONCERN) f/2.5, ISO 200, 1/250s.
+8) 85mm 3QLEFT MCU (RESOLUTE) f/2.5, ISO 200, 1/250s.
+9) 85mm 3QRIGHT MCU (VULNERABLE) f/2.5, ISO 200, 1/250s.
+MODEL NOTES (Nano Banana or similar)
+Always include the master reference image with consistent reference_weight (0.85 0.95).
+For angle swaps, keep background + lighting identical; only change ANGLE/CROP/LENS.
+Lock the seed for a pack run; change seed only for a new version (v2, v3 ).
+Pose guidance strength: ~0.35 0.55 for natural variation, identity intact.
+BASE PROMPT EXAMPLE (Maya Chen)
+Ultra detailed, photorealistic studio reference of Maya Chen; lean build from physical work, calloused
+hands, eyes that shift between determination and vulnerability;
+personality: determined, impulsive, carries emotional weight but masks it with action; deep connection to
+cars as escape and memory;
+neutral seamless studio background; natural lighting; HDR; crisp focus; accurate skin tones; authentic
+skin texture; realistic eye moisture/reflections; magazine quality realism;
+camera: 35mm, f/4, ISO 200, 1/250s; composition: chest to mid thigh crop; equal headroom; thirds; matched
+eye level; slight low angle (subtle hero);
+reference_image: https://media.rumbletv.com/media/68c32931957ccd9d1edcccd2_initial_1757690719619.jpg |
+reference_weight: 0.90
+--negatives: NOT CGI, NOT 3D, NOT illustration, NOT cartoon; no extra objects/props/text/watermarks.
