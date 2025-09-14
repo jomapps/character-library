@@ -55,7 +55,7 @@
 
 ## 2. Character Image Generation Workflow
 
-### 🎬 Enhanced 360° Professional Reference Set Generation v2.0
+### 🎬 Enhanced 360° Professional Reference Set Generation v2.0 (Async)
 ```
 1. System Preparation
    POST /api/v1/admin/seed-reference-shots-enhanced
@@ -75,13 +75,17 @@
    ├── Updates character record
    └── Enables advanced generation
 
-4. Generate Comprehensive 360° Core Set (25+ GUARANTEED SHOTS)
-   POST /api/v1/characters/{id}/generate-core-set
-   ├── Core 9 Essential Foundation:
-   │   ├── 35mm (Action/Body): Front (0°), ¾ Left (-35°), ¾ Right (+35°)
-   │   ├── 50mm (Conversation): Front (0°), ¾ Left (-35°), ¾ Right (+35°)
-   │   └── 85mm (Emotion): Front (0°), ¾ Left (-35°), ¾ Right (+35°)
-   ├── Essential Additional Shots (16+ More):
+4. Generate Comprehensive 360° Core Set (ASYNC - 27 GUARANTEED SHOTS)
+   POST /api/v1/characters/{id}/generate-360-set
+   ├── Returns immediately with job ID and poll URL
+   ├── Background processing prevents timeouts
+   ├── Real-time progress tracking available
+   └── Core 27 Professional Shots:
+       ├── Core 9 Essential Foundation:
+       │   ├── 35mm (Action/Body): Front (0°), ¾ Left (-35°), ¾ Right (+35°)
+       │   ├── 50mm (Conversation): Front (0°), ¾ Left (-35°), ¾ Right (+35°)
+       │   └── 85mm (Emotion): Front (0°), ¾ Left (-35°), ¾ Right (+35°)
+       ├── Essential Additional Shots (18+ More):
    │   ├── Profile Structure: Left (-90°), Right (+90°) for facial geometry
    │   ├── Back Coverage: Full body (180°), ¾ back for wardrobe/hair
    │   ├── Detail Work: Hands close-up for prop interaction
@@ -128,6 +132,46 @@
    ├── Context-aware generation
    ├── Mood and lighting adaptation
    └── Scene-specific variations
+```
+
+### 🚀 Async Job Monitoring Workflow (NEW)
+```
+1. Start Background Job
+   POST /api/v1/characters/{id}/generate-360-set
+   ├── Returns immediately with job ID
+   ├── Estimated completion time provided
+   ├── Poll URL for status checking
+   └── HTTP 202 Accepted status
+
+2. Monitor Job Progress
+   GET /api/v1/jobs/{jobId}/status
+   ├── Real-time progress (current/total images)
+   ├── Current task description (e.g., "Generating front_85mm shot")
+   ├── Percentage completion
+   ├── Updated estimated completion time
+   └── Poll every 10-30 seconds
+
+3. Job Completion
+   When status = "completed":
+   ├── Full results with generated images
+   ├── Quality scores and metadata
+   ├── Failed images with error details
+   ├── Total processing time
+   └── Character automatically updated
+
+4. Error Handling
+   When status = "failed":
+   ├── Detailed error message
+   ├── Partial results if any images succeeded
+   ├── Retry recommendations
+   └── Troubleshooting guidance
+
+5. Job Management
+   ├── List all jobs: GET /api/v1/jobs
+   ├── Filter by character: ?characterId={id}
+   ├── Filter by status: ?status=processing
+   ├── Cancel job: DELETE /api/v1/jobs/{jobId}/status
+   └── Pagination support
 ```
 
 ### Master Reference Reset Workflow
