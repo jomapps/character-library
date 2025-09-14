@@ -88,7 +88,6 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       characterData,
       payload,
       {
-        includeAddonShots: body.includeAddonShots || false,
         customSeed: body.customSeed,
         qualityThreshold: body.qualityThreshold || 75,
         maxRetries: body.maxRetries || 3,

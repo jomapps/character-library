@@ -562,6 +562,50 @@ export interface Character {
          * Reference image strength used in generation (0.85-0.95)
          */
         referenceWeight?: number | null;
+        /**
+         * Actual camera azimuth used for generation
+         */
+        cameraAzimuthDeg?: number | null;
+        /**
+         * Actual camera elevation used for generation
+         */
+        cameraElevationDeg?: number | null;
+        /**
+         * Actual camera distance used for generation
+         */
+        cameraDistanceM?: number | null;
+        /**
+         * Subject rotation used for generation
+         */
+        subjectYawDeg?: number | null;
+        /**
+         * Subject gaze direction used
+         */
+        gaze?: ('to_camera' | 'away' | 'left' | 'right') | null;
+        /**
+         * Composition positioning used
+         */
+        thirds?: ('centered' | 'left_third' | 'right_third') | null;
+        /**
+         * Scene types this image works best for
+         */
+        recommendedFor?: ('close_dialogue' | 'action' | 'emotional' | 'establishing' | 'introduction')[] | null;
+        /**
+         * Why this image was selected/generated for this context
+         */
+        usageReason?: string | null;
+        /**
+         * Camera parameter accuracy (0-100)
+         */
+        technicalScore?: number | null;
+        /**
+         * Rule of thirds, headroom compliance (0-100)
+         */
+        compositionScore?: number | null;
+        /**
+         * Overall cinematic quality (0-100)
+         */
+        cinematicScore?: number | null;
         id?: string | null;
       }[]
     | null;
@@ -602,7 +646,17 @@ export interface ReferenceShot {
    * Shot mode/category
    */
   mode: string;
-  angle: 'front' | '3q_left' | '3q_right' | 'profile_left' | 'profile_right' | 'back';
+  angle:
+    | 'front'
+    | '3q_left'
+    | '3q_right'
+    | 'profile_left'
+    | 'profile_right'
+    | 'back'
+    | '45_left'
+    | '45_right'
+    | '135_left'
+    | '135_right';
   crop: 'full' | '3q' | 'mcu' | 'cu' | 'hands';
   /**
    * Facial expression (neutral, determined, etc.)
@@ -642,6 +696,54 @@ export interface ReferenceShot {
    * Universal prompt template with placeholders for image generation
    */
   promptTemplate: string;
+  /**
+   * Camera horizontal position: -180 to +180 (- = camera-left, + = camera-right)
+   */
+  cameraAzimuthDeg?: number | null;
+  /**
+   * Camera vertical position: -90 to +90 (- = below, + = above)
+   */
+  cameraElevationDeg?: number | null;
+  /**
+   * Physical distance from subject in meters
+   */
+  cameraDistanceM?: number | null;
+  /**
+   * Subject rotation: -180 to +180
+   */
+  subjectYawDeg?: number | null;
+  /**
+   * Subject gaze direction
+   */
+  gaze?: ('to_camera' | 'away' | 'left' | 'right') | null;
+  /**
+   * Subject positioning on rule of thirds grid
+   */
+  thirds?: ('centered' | 'left_third' | 'right_third') | null;
+  /**
+   * Amount of space above subject's head
+   */
+  headroom?: ('equal' | 'tight' | 'loose') | null;
+  /**
+   * Detailed scenarios where this shot is most effective
+   */
+  whenToUse?: string | null;
+  /**
+   * Scene types where this shot works best
+   */
+  sceneTypes?: ('dialogue' | 'action' | 'emotional' | 'establishing' | 'transition')[] | null;
+  /**
+   * 1 = Essential (Core 9), 10 = Optional
+   */
+  priority?: number | null;
+  /**
+   * Specific negatives for this shot type
+   */
+  negativePrompts?: string | null;
+  /**
+   * Professional composition guidance
+   */
+  compositionNotes?: string | null;
   /**
    * Whether this template is available for generation
    */
@@ -946,6 +1048,17 @@ export interface CharactersSelect<T extends boolean = true> {
         expression?: T;
         pose?: T;
         referenceWeight?: T;
+        cameraAzimuthDeg?: T;
+        cameraElevationDeg?: T;
+        cameraDistanceM?: T;
+        subjectYawDeg?: T;
+        gaze?: T;
+        thirds?: T;
+        recommendedFor?: T;
+        usageReason?: T;
+        technicalScore?: T;
+        compositionScore?: T;
+        cinematicScore?: T;
         id?: T;
       };
   updatedAt?: T;
@@ -979,6 +1092,18 @@ export interface ReferenceShotsSelect<T extends boolean = true> {
       };
   fileNamePattern?: T;
   promptTemplate?: T;
+  cameraAzimuthDeg?: T;
+  cameraElevationDeg?: T;
+  cameraDistanceM?: T;
+  subjectYawDeg?: T;
+  gaze?: T;
+  thirds?: T;
+  headroom?: T;
+  whenToUse?: T;
+  sceneTypes?: T;
+  priority?: T;
+  negativePrompts?: T;
+  compositionNotes?: T;
   isActive?: T;
   sortOrder?: T;
   version?: T;

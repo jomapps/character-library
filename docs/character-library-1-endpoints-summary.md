@@ -20,12 +20,14 @@
 
 ## 🆕 Recent Enhancements (September 2025)
 
-### 360° Reference Generation System (Latest)
-- **Enhanced 360° Core Set**: Upgraded from basic 8-angle turnaround to comprehensive 15+ shot reference library
-- **Professional Camera System**: 3 lens modes (35mm Action/Body, 50mm Conversation, 85mm Emotion) × 3 angles (Front, ¾ Left, ¾ Right)
-- **Smart Reference Templates**: Structured metadata system with technical specs (lens, f-stop, ISO, shutter speed)
-- **Core 9 + Add-ons**: Essential 9-shot set plus optional profile, back view, hands close-up, T-pose, and expression variations
-- **Intelligent File Naming**: Standardized naming convention: `{CHAR}_{LENS}{MODE}_{ANGLE}_{CROP}_{EXPR}_v{N}.jpg`
+### 🎬 Enhanced 360° Reference Generation System v2.0 (Latest)
+- **Comprehensive 25+ Shot Library**: Upgraded to guaranteed 25+ reference shots with complete coverage
+- **Cinematic Precision**: Exact camera positioning with azimuth (-180° to +180°), elevation (-90° to +90°), and distance (meters)
+- **Professional Camera System**: 3 lens modes (35mm Action/Body, 50mm Conversation, 85mm Emotion) with precise technical specifications
+- **Scene-Based Intelligence**: Automatic scene analysis and optimal reference image selection
+- **Enhanced Prompt System**: Precision cinematographic prompts with technical camera parameters
+- **Multi-Factor Scoring**: Advanced scoring system for scene type, lens preference, composition, and quality
+- **Complete Shot Coverage**: Core 9 + profiles + back views + hands + expressions + angle variants + calibration shots
 
 ### Enhanced Voice & Character Development
 - **Structured Voice Profiles**: Comprehensive `dialogueVoice` group with voice description, style, speech patterns, and vocabulary
@@ -89,10 +91,11 @@
 - `POST /api/v1/characters/generate-initial-image` - Generate standalone initial image without character association
 - `POST /api/v1/characters/{id}/generate-scene-image` - Generate character image for specific scene context
 
-### Advanced 360° Reference Generation
-- `POST /api/v1/characters/{id}/generate-core-set` - Generate enhanced 360° core reference set (15+ professional shots)
+### Advanced 360° Reference Generation v2.0
+- `POST /api/v1/characters/{id}/generate-core-set` - Generate enhanced 360° core reference set (25+ professional shots with cinematic precision)
 - `POST /api/v1/characters/{id}/generate-360-set` - Generate complete 360° reference image set (legacy endpoint, enhanced)
 - `POST /api/v1/characters/{id}/generate-smart-image` - Generate image using smart AI prompting with reference selection
+- `POST /api/v1/characters/{id}/find-reference-for-scene` - **NEW**: Intelligent scene-based reference image selection with detailed analysis
 
 ### Reference Image Management
 - `PUT /api/v1/characters/{id}/reference-image` - Update character's master reference image
@@ -116,6 +119,12 @@
 - `POST /api/v1/characters/{id}/validate-consistency` - Validate character's narrative and visual consistency
 - `POST /api/v1/characters/validate-project-consistency` - Validate consistency across entire project
 - `POST /api/v1/characters/batch-validate` - Batch validate multiple characters
+
+## 🆕 Enhanced System Administration
+### Reference Shot Library Management
+- `POST /api/v1/admin/seed-reference-shots-enhanced` - **NEW**: Seed comprehensive 25+ shot reference library with cinematic precision
+- `GET /api/v1/admin/seed-reference-shots-enhanced` - **NEW**: Get information about enhanced seeding system capabilities
+- `DELETE /api/v1/admin/seed-reference-shots-enhanced` - **NEW**: Clean all reference shots (admin only)
 
 ## Bulk Operations
 - `POST /api/v1/characters/bulk/novel-movie` - Bulk create characters for Novel Movie projects
@@ -176,13 +185,16 @@
 - **Media**: Master reference image and enhanced image gallery with 360° reference system
 - **Quality Metrics**: Narrative and visual consistency tracking
 
-### Enhanced 360° Image Gallery System
-- **Core Reference Set**: Professional 15+ shot library with structured metadata
-- **Technical Metadata**: lens (35/50/85mm), f-stop, ISO, shutter speed, angle, crop, expression
-- **Shot Classification**: Core 9 essential shots + optional add-ons (profile, back view, hands, poses)
-- **Quality Tracking**: Individual image quality scores, consistency metrics, validation status
+### Enhanced 360° Image Gallery System v2.0
+- **Comprehensive Reference Set**: Professional 25+ shot library with cinematic precision
+- **Camera Parameters**: Exact azimuth/elevation/distance, subject yaw, gaze direction, rule of thirds
+- **Technical Metadata**: lens (35/50/85mm), f-stop, ISO, shutter speed, angle, crop, expression, pose
+- **Shot Classification**: Core 9 + profiles + back views + hands + expressions + angle variants + calibration
+- **Scene Context**: Recommended usage scenarios, scene types, priority levels
+- **Quality Metrics**: Technical score, composition score, cinematic score, consistency validation
+- **Enhanced Validation**: Multi-factor quality assessment with detailed reasoning
 - **DINOv3 Integration**: Automatic processing, asset ID assignment, feature extraction
-- **Smart File Naming**: Standardized naming convention for professional workflows
+- **Professional Workflows**: Standardized naming and metadata for film production standards
 
 ### Voice & Audio Support
 - **Audio File Upload**: Media collection supports audio files for voice samples

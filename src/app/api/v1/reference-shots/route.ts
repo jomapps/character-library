@@ -36,10 +36,6 @@ export interface ListReferenceShotsResponse {
   coreShots: number
   addonShots: number
   shots: ReferenceShot[]
-  groupedByPack?: {
-    core: ReferenceShot[]
-    addon: ReferenceShot[]
-  }
   groupedByLens?: {
     '35mm': ReferenceShot[]
     '50mm': ReferenceShot[]
@@ -176,6 +172,26 @@ export async function POST(request: NextRequest): Promise<NextResponse<CreateRef
       }, { status: 400 })
     }
 
+    // Validate angle field
+    const validAngles = ['front', '3q_left', '3q_right', 'profile_left', 'profile_right', 'back', '45_left', '45_right', '135_left', '135_right']
+    if (body.angle && !validAngles.includes(body.angle)) {
+      return NextResponse.json({
+        success: false,
+        created: false,
+        error: `Invalid angle: ${body.angle}. Valid angles are: ${validAngles.join(', ')}`,
+      }, { status: 400 })
+    }
+
+    // Validate crop field
+    const validCrops = ['full', '3q', 'mcu', 'cu', 'hands']
+    if (body.crop && !validCrops.includes(body.crop)) {
+      return NextResponse.json({
+        success: false,
+        created: false,
+        error: `Invalid crop: ${body.crop}. Valid crops are: ${validCrops.join(', ')}`,
+      }, { status: 400 })
+    }
+
     // Check if slug already exists
     const existing = await payload.find({
       collection: 'reference-shots',
@@ -196,11 +212,13 @@ export async function POST(request: NextRequest): Promise<NextResponse<CreateRef
     // Convert tags array to required format
     const formattedTags = body.tags.map(tag => ({ tag }))
 
-    // Create the reference shot
+    // Create the reference shot with proper type casting
     const shot = await payload.create({
       collection: 'reference-shots',
       data: {
         ...body,
+        angle: body.angle as any, // Cast to bypass TypeScript strict checking
+        crop: body.crop as any, // Cast to bypass TypeScript strict checking
         tags: formattedTags,
       },
     })

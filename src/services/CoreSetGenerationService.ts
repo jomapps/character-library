@@ -9,7 +9,6 @@ import { imageGenerationService } from './ImageGenerationService'
 import { dinoOrchestrator } from './DinoOrchestrator'
 
 export interface CoreSetGenerationOptions {
-  includeAddonShots?: boolean
   customSeed?: number
   qualityThreshold?: number
   maxRetries?: number
@@ -55,8 +54,8 @@ export class CoreSetGenerationService {
     console.log(`🎬 Starting 360° core set generation for character: ${characterId}`)
 
     try {
-      // Get reference shot templates
-      const referenceShots = await this.getReferenceShots(payload, options.includeAddonShots)
+      // Get all 27 essential reference shots
+      const referenceShots = await this.getReferenceShots(payload)
       console.log(`📋 Found ${referenceShots.length} reference shot templates`)
 
       // Get master reference image URL for template substitution
@@ -230,20 +229,14 @@ export class CoreSetGenerationService {
   }
 
   /**
-   * Get reference shot templates from database
+   * Get all 27 essential reference shot templates from database
    */
-  private async getReferenceShots(payload: any, includeAddonShots: boolean = false): Promise<any[]> {
-    const query: any = {
-      isActive: { equals: true },
-    }
-
-    if (!includeAddonShots) {
-      query.pack = { equals: 'core' }
-    }
-
+  private async getReferenceShots(payload: any): Promise<any[]> {
     const result = await payload.find({
       collection: 'reference-shots',
-      where: query,
+      where: {
+        isActive: { equals: true },
+      },
       sort: 'sortOrder',
       limit: 50,
     })
@@ -306,7 +299,7 @@ export class CoreSetGenerationService {
   /**
    * Upload generated image to media storage
    */
-  private async uploadGeneratedImage(
+  protected async uploadGeneratedImage(
     imageBuffer: Buffer,
     fileName: string,
     payload: any

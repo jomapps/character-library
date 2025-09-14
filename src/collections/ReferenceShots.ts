@@ -4,7 +4,7 @@ export const ReferenceShots: CollectionConfig = {
   slug: 'reference-shots',
   admin: {
     useAsTitle: 'shotName',
-    defaultColumns: ['shotName', 'lensMm', 'mode', 'angle', 'crop', 'pack'],
+    defaultColumns: ['shotName', 'lensMm', 'mode', 'angle', 'crop', 'pack', 'priority', 'cameraAzimuthDeg'],
     group: 'Character System',
   },
   access: {
@@ -110,6 +110,10 @@ export const ReferenceShots: CollectionConfig = {
             { label: 'Profile Left', value: 'profile_left' },
             { label: 'Profile Right', value: 'profile_right' },
             { label: 'Back', value: 'back' },
+            { label: '45° Left', value: '45_left' },
+            { label: '45° Right', value: '45_right' },
+            { label: '135° Left', value: '135_left' },
+            { label: '135° Right', value: '135_right' },
           ],
           admin: {
             width: '50%',
@@ -242,6 +246,200 @@ export const ReferenceShots: CollectionConfig = {
         description: 'Universal prompt template with placeholders for image generation',
         rows: 8,
       },
+    },
+    {
+      type: 'collapsible',
+      label: 'Enhanced Camera Positioning',
+      fields: [
+        {
+          type: 'row',
+          fields: [
+            {
+              name: 'cameraAzimuthDeg',
+              type: 'number',
+              label: 'Camera Azimuth (degrees)',
+              admin: {
+                description: 'Camera horizontal position: -180 to +180 (- = camera-left, + = camera-right)',
+                width: '33%',
+              },
+              validate: (val: number | null | undefined) => {
+                if (val !== null && val !== undefined && (val < -180 || val > 180)) {
+                  return 'Azimuth must be between -180 and +180 degrees'
+                }
+                return true
+              },
+            },
+            {
+              name: 'cameraElevationDeg',
+              type: 'number',
+              label: 'Camera Elevation (degrees)',
+              admin: {
+                description: 'Camera vertical position: -90 to +90 (- = below, + = above)',
+                width: '33%',
+              },
+              validate: (val: number | null | undefined) => {
+                if (val !== null && val !== undefined && (val < -90 || val > 90)) {
+                  return 'Elevation must be between -90 and +90 degrees'
+                }
+                return true
+              },
+            },
+            {
+              name: 'cameraDistanceM',
+              type: 'number',
+              label: 'Camera Distance (meters)',
+              admin: {
+                description: 'Physical distance from subject in meters',
+                width: '34%',
+              },
+              validate: (val: number | null | undefined) => {
+                if (val !== null && val !== undefined && (val <= 0 || val > 10)) {
+                  return 'Distance must be between 0.1 and 10 meters'
+                }
+                return true
+              },
+            },
+          ],
+        },
+        {
+          type: 'row',
+          fields: [
+            {
+              name: 'subjectYawDeg',
+              type: 'number',
+              label: 'Subject Yaw (degrees)',
+              admin: {
+                description: 'Subject rotation: -180 to +180',
+                width: '50%',
+              },
+              validate: (val: number | null | undefined) => {
+                if (val !== null && val !== undefined && (val < -180 || val > 180)) {
+                  return 'Subject yaw must be between -180 and +180 degrees'
+                }
+                return true
+              },
+            },
+            {
+              name: 'gaze',
+              type: 'select',
+              label: 'Gaze Direction',
+              options: [
+                { label: 'To Camera', value: 'to_camera' },
+                { label: 'Away', value: 'away' },
+                { label: 'Left', value: 'left' },
+                { label: 'Right', value: 'right' },
+              ],
+              admin: {
+                description: 'Subject gaze direction',
+                width: '50%',
+              },
+            },
+          ],
+        },
+        {
+          type: 'row',
+          fields: [
+            {
+              name: 'thirds',
+              type: 'select',
+              label: 'Rule of Thirds',
+              options: [
+                { label: 'Centered', value: 'centered' },
+                { label: 'Left Third', value: 'left_third' },
+                { label: 'Right Third', value: 'right_third' },
+              ],
+              admin: {
+                description: 'Subject positioning on rule of thirds grid',
+                width: '50%',
+              },
+            },
+            {
+              name: 'headroom',
+              type: 'select',
+              label: 'Headroom',
+              options: [
+                { label: 'Equal', value: 'equal' },
+                { label: 'Tight', value: 'tight' },
+                { label: 'Loose', value: 'loose' },
+              ],
+              admin: {
+                description: 'Amount of space above subject\'s head',
+                width: '50%',
+              },
+            },
+          ],
+        },
+      ],
+    },
+    {
+      type: 'collapsible',
+      label: 'Enhanced Metadata',
+      fields: [
+        {
+          name: 'whenToUse',
+          type: 'textarea',
+          label: 'When to Use',
+          admin: {
+            description: 'Detailed scenarios where this shot is most effective',
+            rows: 3,
+          },
+        },
+        {
+          name: 'sceneTypes',
+          type: 'select',
+          hasMany: true,
+          label: 'Recommended Scene Types',
+          options: [
+            { label: 'Dialogue', value: 'dialogue' },
+            { label: 'Action', value: 'action' },
+            { label: 'Emotional', value: 'emotional' },
+            { label: 'Establishing', value: 'establishing' },
+            { label: 'Transition', value: 'transition' },
+          ],
+          admin: {
+            description: 'Scene types where this shot works best',
+          },
+        },
+        {
+          type: 'row',
+          fields: [
+            {
+              name: 'priority',
+              type: 'number',
+              label: 'Priority Level',
+              defaultValue: 5,
+              admin: {
+                description: '1 = Essential (Core 9), 10 = Optional',
+                width: '50%',
+              },
+              validate: (val: number | null | undefined) => {
+                if (val !== null && val !== undefined && (val < 1 || val > 10)) {
+                  return 'Priority must be between 1 and 10'
+                }
+                return true
+              },
+            },
+            {
+              name: 'negativePrompts',
+              type: 'text',
+              label: 'Negative Prompts',
+              admin: {
+                description: 'Specific negatives for this shot type',
+                width: '50%',
+              },
+            },
+          ],
+        },
+        {
+          name: 'compositionNotes',
+          type: 'textarea',
+          label: 'Composition Notes',
+          admin: {
+            description: 'Professional composition guidance',
+            rows: 2,
+          },
+        },
+      ],
     },
     {
       type: 'collapsible',
