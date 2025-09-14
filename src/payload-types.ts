@@ -71,6 +71,7 @@ export interface Config {
     media: Media;
     characters: Character;
     'reference-shots': ReferenceShot;
+    'image-generation-jobs': ImageGenerationJob;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -81,6 +82,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     characters: CharactersSelect<false> | CharactersSelect<true>;
     'reference-shots': ReferenceShotsSelect<false> | ReferenceShotsSelect<true>;
+    'image-generation-jobs': ImageGenerationJobsSelect<false> | ImageGenerationJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -761,6 +763,89 @@ export interface ReferenceShot {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "image-generation-jobs".
+ */
+export interface ImageGenerationJob {
+  id: string;
+  /**
+   * Unique identifier for the job
+   */
+  jobId: string;
+  /**
+   * ID of the character for which images are being generated
+   */
+  characterId: string;
+  /**
+   * Type of image generation job
+   */
+  jobType: 'core-set' | '360-set' | 'single-image';
+  /**
+   * Current status of the job
+   */
+  status: 'pending' | 'processing' | 'completed' | 'failed' | 'cancelled';
+  progress?: {
+    /**
+     * Number of images completed
+     */
+    current?: number | null;
+    /**
+     * Total number of images to generate
+     */
+    total?: number | null;
+    /**
+     * Completion percentage (0-100)
+     */
+    percentage?: number | null;
+    /**
+     * Description of current task being processed
+     */
+    currentTask?: string | null;
+  };
+  /**
+   * Original request parameters
+   */
+  requestData?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Generation results including images and metadata
+   */
+  results?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Error message if job failed
+   */
+  error?: string | null;
+  /**
+   * When the job started processing
+   */
+  startedAt?: string | null;
+  /**
+   * When the job completed
+   */
+  completedAt?: string | null;
+  /**
+   * Estimated completion time
+   */
+  estimatedCompletionAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -781,6 +866,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'reference-shots';
         value: string | ReferenceShot;
+      } | null)
+    | ({
+        relationTo: 'image-generation-jobs';
+        value: string | ImageGenerationJob;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1107,6 +1196,32 @@ export interface ReferenceShotsSelect<T extends boolean = true> {
   isActive?: T;
   sortOrder?: T;
   version?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "image-generation-jobs_select".
+ */
+export interface ImageGenerationJobsSelect<T extends boolean = true> {
+  jobId?: T;
+  characterId?: T;
+  jobType?: T;
+  status?: T;
+  progress?:
+    | T
+    | {
+        current?: T;
+        total?: T;
+        percentage?: T;
+        currentTask?: T;
+      };
+  requestData?: T;
+  results?: T;
+  error?: T;
+  startedAt?: T;
+  completedAt?: T;
+  estimatedCompletionAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }

@@ -75,7 +75,8 @@ export class EnhancedCoreSetGenerationService extends CoreSetGenerationService {
     masterReferenceAssetId: string,
     characterData: any,
     payload: any,
-    options: EnhancedCoreSetGenerationOptions = {}
+    options: EnhancedCoreSetGenerationOptions = {},
+    progressCallback?: (current: number, total: number, currentTask: string) => Promise<void>
   ): Promise<EnhancedCoreSetGenerationResult> {
     const startTime = Date.now()
     
@@ -120,9 +121,15 @@ export class EnhancedCoreSetGenerationService extends CoreSetGenerationService {
     const masterReferenceUrl = await this.getEnhancedMasterReferenceUrl(masterReferenceAssetId, payload)
 
     // Generate images with enhanced prompts and validation
-    for (const referenceShot of referenceShots) {
+    for (let i = 0; i < referenceShots.length; i++) {
+      const referenceShot = referenceShots[i]
       try {
-        console.log(`🎨 Generating: ${referenceShot.shotName}`)
+        console.log(`🎨 Generating: ${referenceShot.shotName} (${i + 1}/${referenceShots.length})`)
+
+        // Update progress
+        if (progressCallback) {
+          await progressCallback(i, referenceShots.length, `Generating ${referenceShot.shotName}`)
+        }
 
         const enhancedResult = await this.generateEnhancedImage(
           referenceShot,

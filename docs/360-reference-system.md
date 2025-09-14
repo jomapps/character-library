@@ -77,36 +77,134 @@ reference_weight: {REF_WEIGHT}
 
 ## API Endpoints
 
-### Generate Complete 360° Set
+### Generate Complete 360° Set (Async)
 ```bash
-POST /api/v1/characters/{id}/generate-core-set
+POST /api/v1/characters/{id}/generate-360-set
 ```
 
 **Request:**
 ```json
 {
-  "includeAddonShots": true,
+  "style": "character_production",
   "qualityThreshold": 75,
+  "imageCount": 27,
   "maxRetries": 3,
   "customSeed": 12345
 }
+```
+
+**Response (Immediate):**
+```json
+{
+  "success": true,
+  "jobId": "550e8400-e29b-41d4-a716-446655440000",
+  "status": "accepted",
+  "message": "360° image generation job started. Generating 27 images.",
+  "estimatedCompletionTime": "2025-09-14T19:15:00.000Z",
+  "pollUrl": "/api/v1/jobs/550e8400-e29b-41d4-a716-446655440000/status"
+}
+```
+
+### Check Job Progress
+```bash
+GET /api/v1/jobs/{jobId}/status
 ```
 
 **Response:**
 ```json
 {
   "success": true,
-  "message": "360° reference set generated successfully",
-  "data": {
-    "characterId": "...",
-    "generatedImages": 27,
-    "failedImages": 0,
+  "jobId": "550e8400-e29b-41d4-a716-446655440000",
+  "status": "processing",
+  "progress": {
+    "current": 15,
+    "total": 27,
+    "percentage": 56,
+    "currentTask": "Generating front_85mm shot"
+  },
+  "message": "Job is processing. Generating front_85mm shot",
+  "startedAt": "2025-09-14T18:45:00.000Z",
+  "estimatedCompletionAt": "2025-09-14T19:12:00.000Z"
+}
+```
+
+**Response (Completed):**
+```json
+{
+  "success": true,
+  "jobId": "550e8400-e29b-41d4-a716-446655440000",
+  "status": "completed",
+  "progress": {
+    "current": 27,
+    "total": 27,
+    "percentage": 100,
+    "currentTask": "Completed"
+  },
+  "results": {
+    "generatedImages": [
+      {
+        "url": "https://media.rumbletv.com/media/abc123",
+        "angle": "front_50mm",
+        "quality": 92,
+        "dinoAssetId": "dino-abc123",
+        "mediaId": "abc123"
+      }
+    ],
+    "failedImages": [],
     "totalAttempts": 27,
-    "enhancedMetrics": {
-      "averageCameraAccuracy": 92,
-      "averageCompositionCompliance": 88,
-      "averageCinematicQuality": 90
+    "processingTime": 1680000
+  },
+  "message": "Job completed successfully. Generated 27 images.",
+  "startedAt": "2025-09-14T18:45:00.000Z",
+  "completedAt": "2025-09-14T19:13:00.000Z"
+}
+```
+
+### Cancel Job
+```bash
+DELETE /api/v1/jobs/{jobId}/status
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Job cancelled successfully"
+}
+```
+
+### List Jobs
+```bash
+GET /api/v1/jobs?characterId={id}&status=processing&page=1&limit=10
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "jobs": [
+    {
+      "jobId": "550e8400-e29b-41d4-a716-446655440000",
+      "characterId": "68c32931957ccd9d1edcccd2",
+      "jobType": "360-set",
+      "status": "processing",
+      "progress": {
+        "current": 15,
+        "total": 27,
+        "percentage": 56,
+        "currentTask": "Generating front_85mm shot"
+      },
+      "createdAt": "2025-09-14T18:45:00.000Z",
+      "startedAt": "2025-09-14T18:45:30.000Z"
     }
+  ],
+  "pagination": {
+    "totalDocs": 1,
+    "limit": 10,
+    "page": 1,
+    "totalPages": 1,
+    "hasNextPage": false,
+    "hasPrevPage": false
   }
 }
 ```
@@ -145,23 +243,45 @@ POST /api/v1/admin/seed-reference-shots-enhanced
 ### 1. Initial Setup
 ```bash
 # Seed the 27 reference shot templates
-curl -X POST "http://localhost:3000/api/v1/admin/seed-reference-shots-enhanced" \
+curl -X POST "https://character.ft.tc/api/v1/admin/seed-reference-shots-enhanced" \
   -H "Content-Type: application/json" \
   -d '{"cleanExisting": true, "guaranteeAllShots": true}'
 ```
 
-### 2. Generate Character Set
+### 2. Start Async Image Generation
 ```bash
-# Generate complete 27-shot reference set
-curl -X POST "http://localhost:3000/api/v1/characters/{id}/generate-core-set" \
+# Start 360° image generation job
+curl -X POST "https://character.ft.tc/api/v1/characters/{id}/generate-360-set" \
   -H "Content-Type: application/json" \
-  -d '{"qualityThreshold": 80}'
+  -d '{
+    "style": "character_production",
+    "qualityThreshold": 80,
+    "imageCount": 27,
+    "maxRetries": 3
+  }'
+
+# Response includes jobId and pollUrl
+# {"success": true, "jobId": "abc-123", "pollUrl": "/api/v1/jobs/abc-123/status"}
 ```
 
-### 3. Scene-Based Selection
+### 3. Poll Job Progress
 ```bash
-# Find best reference for specific scene
-curl -X POST "http://localhost:3000/api/v1/characters/{id}/find-reference-for-scene" \
+# Check job status and progress
+curl "https://character.ft.tc/api/v1/jobs/{jobId}/status"
+
+# Poll every 10-30 seconds until status is "completed" or "failed"
+```
+
+### 4. Retrieve Results
+```bash
+# When status is "completed", the response includes all generated images
+# in the "results" field with URLs, quality scores, and metadata
+```
+
+### 5. Scene-Based Selection (Optional)
+```bash
+# Find best reference for specific scene from generated images
+curl -X POST "https://character.ft.tc/api/v1/characters/{id}/find-reference-for-scene" \
   -H "Content-Type: application/json" \
   -d '{"sceneDescription": "Character looking determined before big decision"}'
 ```

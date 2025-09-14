@@ -8,25 +8,25 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPayload } from 'payload'
 import config from '@payload-config'
+import { BackgroundJobService } from '../../../../../../services/BackgroundJobService'
+import { v4 as uuidv4 } from 'uuid'
 
 export interface Generate360SetRequest {
   style?: 'character_production' | 'cinematic' | 'realistic'
   qualityThreshold?: number
   imageCount?: number
   angles?: string[]
+  maxRetries?: number
+  customSeed?: number
 }
 
 export interface Generate360SetResponse {
   success: boolean
-  images?: Array<{
-    url: string
-    angle: string
-    quality: number
-    dinoAssetId?: string
-    mediaId?: string
-  }>
-  status: 'completed' | 'processing' | 'failed'
-  processingTime?: number
+  jobId?: string
+  status: 'accepted' | 'processing' | 'completed' | 'failed'
+  message?: string
+  estimatedCompletionTime?: string
+  pollUrl?: string
   error?: string
 }
 
@@ -45,19 +45,17 @@ export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ): Promise<NextResponse<Generate360SetResponse>> {
-  const startTime = Date.now()
-  
   try {
     const payload = await getPayload({ config })
-    const { id } = await params
+    const { id: characterId } = await params
     const body: Generate360SetRequest = await request.json()
 
-    console.log(`Generating 360° image set for character: ${id}`)
+    console.log(`🚀 Starting async 360° image generation for character: ${characterId}`)
 
     // Validate character exists
     const character = await payload.findByID({
       collection: 'characters',
-      id,
+      id: characterId,
       depth: 2,
     })
 
@@ -69,189 +67,95 @@ export async function POST(
       }, { status: 404 })
     }
 
-    // Extract parameters with defaults
-    const style = body.style || 'character_production'
-    const qualityThreshold = body.qualityThreshold || 75
-    const imageCount = body.imageCount || 8
-    const angles = body.angles || DEFAULT_ANGLES.slice(0, imageCount)
+    // Validate character has master reference image
+    const masterRef = typeof character.masterReferenceImage === 'string'
+      ? null
+      : character.masterReferenceImage
 
-    console.log(`Generating ${angles.length} images with style: ${style}`)
-
-    // Check if character has sufficient data for generation
-    if (!character.physicalDescription && !character.masterReferenceImage) {
+    if (!masterRef?.dinoAssetId) {
       return NextResponse.json({
         success: false,
         status: 'failed',
-        error: 'Character needs either a physical description or reference image for 360° generation',
+        error: 'Character must have a master reference image for 360° generation',
       }, { status: 400 })
     }
 
-    // Generate images for each angle
-    const generatedImages: Array<{
-      url: string
-      angle: string
-      quality: number
-      dinoAssetId?: string
-      mediaId?: string
-    }> = []
+    // Generate unique job ID
+    const jobId = uuidv4()
 
-    for (const angle of angles) {
-      try {
-        console.log(`Generating image for angle: ${angle}`)
-        
-        // Create prompt for this specific angle
-        const anglePrompt = createAnglePrompt(character, angle, style)
-        
-        // Here you would integrate with your image generation service
-        // For now, we'll simulate the generation process
-        const imageResult = await generateImageForAngle(character, angle, anglePrompt, qualityThreshold)
-        
-        if (imageResult.success && imageResult.url && imageResult.quality) {
-          generatedImages.push({
-            url: imageResult.url,
-            angle: angle,
-            quality: imageResult.quality,
-            dinoAssetId: imageResult.dinoAssetId,
-            mediaId: imageResult.mediaId,
-          })
-        } else {
-          console.warn(`Failed to generate image for angle ${angle}: ${imageResult.error}`)
-        }
-        
-      } catch (angleError) {
-        console.error(`Error generating image for angle ${angle}:`, angleError)
-        // Continue with other angles even if one fails
-      }
+    // Extract parameters with defaults
+    const style = body.style || 'character_production'
+    const qualityThreshold = body.qualityThreshold || 75
+    const imageCount = body.imageCount || 27 // Default to full 27-shot set
+    const maxRetries = body.maxRetries || 3
+    const customSeed = body.customSeed
+
+    console.log(`📋 Creating job ${jobId} for ${imageCount} images with style: ${style}`)
+
+    // Create job record in database
+    const jobData = {
+      jobId,
+      characterId,
+      jobType: '360-set' as const,
+      status: 'pending' as const,
+      progress: {
+        current: 0,
+        total: imageCount,
+        percentage: 0,
+        currentTask: 'Initializing...'
+      },
+      requestData: {
+        style,
+        qualityThreshold,
+        imageCount,
+        maxRetries,
+        customSeed,
+        angles: body.angles || DEFAULT_ANGLES.slice(0, imageCount)
+      },
+      startedAt: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     }
 
-    // Update character with generated images
-    if (generatedImages.length > 0) {
-      const imageGalleryUpdate = generatedImages.map(img => ({
-        imageFile: img.mediaId,
-        isCoreReference: true,
-        angle: img.angle,
-        dinoAssetId: img.dinoAssetId,
-        quality: img.quality,
-        generatedAt: new Date().toISOString(),
-        style: style,
-      }))
-
-      await payload.update({
-        collection: 'characters',
-        id,
-        data: {
-          imageGallery: [
-            ...(character.imageGallery || []),
-            ...imageGalleryUpdate as any // Type assertion needed for angle field
-          ],
-          coreSetGenerated: true,
-          coreSetGeneratedAt: new Date().toISOString(),
-        },
-      })
-    }
-
-    const processingTime = Date.now() - startTime
-    const status = generatedImages.length > 0 ? 'completed' : 'failed'
-
-    console.log(`360° generation ${status} for character ${id}. Generated ${generatedImages.length}/${angles.length} images in ${processingTime}ms`)
-
-    return NextResponse.json({
-      success: generatedImages.length > 0,
-      images: generatedImages,
-      status,
-      processingTime,
+    await payload.create({
+      collection: 'image-generation-jobs',
+      data: jobData,
     })
 
+    // Start background processing
+    const backgroundJobService = BackgroundJobService.getInstance()
+
+    // Don't await this - let it run in background
+    backgroundJobService.startJob(jobId, characterId, '360-set', jobData.requestData, payload)
+      .catch(error => {
+        console.error(`Background job ${jobId} failed to start:`, error)
+      })
+
+    // Calculate estimated completion time (rough estimate: 30 seconds per image)
+    const estimatedSeconds = imageCount * 30
+    const estimatedCompletionTime = new Date(Date.now() + estimatedSeconds * 1000).toISOString()
+
+    // Return immediate response with job details
+    return NextResponse.json({
+      success: true,
+      jobId,
+      status: 'accepted',
+      message: `360° image generation job started. Generating ${imageCount} images.`,
+      estimatedCompletionTime,
+      pollUrl: `/api/v1/jobs/${jobId}/status`,
+    }, { status: 202 }) // 202 Accepted
+
   } catch (error) {
-    const processingTime = Date.now() - startTime
-    console.error('360° image set generation error:', error)
-    
+    console.error('360° image set generation job creation error:', error)
+
     return NextResponse.json({
       success: false,
       status: 'failed',
-      processingTime,
-      error: error instanceof Error ? error.message : 'Failed to generate 360° image set',
+      error: error instanceof Error ? error.message : 'Failed to create 360° image generation job',
     }, { status: 500 })
   }
 }
 
-function createAnglePrompt(character: any, angle: string, style: string): string {
-  const baseDescription = extractTextFromField(character.physicalDescription) ||
-                         extractTextFromField(character.biography) ||
-                         `Character named ${character.name}`
-  
-  const styleModifiers: Record<string, string> = {
-    'character_production': 'professional character sheet style, clean background, consistent lighting',
-    'cinematic': 'cinematic lighting, dramatic composition, film quality',
-    'realistic': 'photorealistic, natural lighting, detailed textures'
-  }
-
-  const angleInstructions: Record<string, string> = {
-    'front': 'facing directly forward, front view',
-    'back': 'facing away, back view showing rear',
-    'left': 'left profile, side view from left',
-    'right': 'right profile, side view from right',
-    'three-quarter-left': 'three-quarter view from left side',
-    'three-quarter-right': 'three-quarter view from right side',
-    'front-left': 'angled front-left view',
-    'front-right': 'angled front-right view'
-  }
-
-  return `${baseDescription}, ${angleInstructions[angle] || angle}, ${styleModifiers[style] || styleModifiers['character_production']}`
-}
-
-function extractTextFromField(field: any): string | null {
-  if (!field) {
-    return null
-  }
-
-  if (typeof field === 'string') {
-    return field.trim() || null
-  }
-
-  throw new Error(`Expected string field but received ${typeof field}. RichText format is no longer supported.`)
-}
-
-async function generateImageForAngle(
-  character: any, 
-  angle: string, 
-  prompt: string, 
-  _qualityThreshold: number
-): Promise<{
-  success: boolean
-  url?: string
-  quality?: number
-  dinoAssetId?: string
-  mediaId?: string
-  error?: string
-}> {
-  // This is a placeholder for actual image generation integration
-  // You would integrate with your preferred image generation service here
-  // For example: DALL-E, Midjourney, Stable Diffusion, etc.
-  
-  try {
-    // Simulate image generation process
-    console.log(`Simulating image generation for prompt: ${prompt}`)
-    
-    // In a real implementation, you would:
-    // 1. Call your image generation API
-    // 2. Upload the generated image to your media storage
-    // 3. Create a media record in Payload
-    // 4. Return the media ID and URL
-    
-    // For now, return a simulated success response
-    return {
-      success: true,
-      url: `https://placeholder.example.com/character-${character.id}-${angle}.jpg`,
-      quality: Math.floor(Math.random() * 25) + 75, // Random quality 75-100
-      dinoAssetId: `dino-${character.id}-${angle}-${Date.now()}`,
-      mediaId: `media-${character.id}-${angle}-${Date.now()}`,
-    }
-    
-  } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Image generation failed'
-    }
-  }
-}
+// Note: This endpoint now uses async processing with the BackgroundJobService
+// The actual image generation logic has been moved to the background service
+// and uses the enhanced 360° reference system with 27 professional shots

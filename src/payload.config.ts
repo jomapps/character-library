@@ -12,6 +12,7 @@ import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import { Characters } from './collections/Characters'
 import { ReferenceShots } from './collections/ReferenceShots'
+import ImageGenerationJobs from './collections/ImageGenerationJobs'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -47,7 +48,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Characters, ReferenceShots],
+  collections: [Users, Media, Characters, ReferenceShots, ImageGenerationJobs],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

@@ -331,13 +331,21 @@ curl -X POST https://character.ft.tc/api/v1/characters/generate-initial-image \
 }
 ```
 
-### POST /api/v1/characters/{id}/generate-core-set
-**Purpose**: Generate enhanced 360° core reference set (27 professional shots with precise camera positioning)
+### POST /api/v1/characters/{id}/generate-360-set (ASYNC)
+**Purpose**: Generate enhanced 360° reference set (27 professional shots) with background processing
+
+**⚡ NEW: Async Processing**
+- Returns immediately with job ID
+- Background processing prevents timeouts
+- Poll for progress and results
+- Estimated completion: ~15-30 minutes for 27 shots
 ```bash
-curl -X POST https://character.ft.tc/api/v1/characters/68c07c4305803df129909509/generate-core-set \
+curl -X POST https://character.ft.tc/api/v1/characters/68c07c4305803df129909509/generate-360-set \
   -H "Content-Type: application/json" \
   -d '{
+    "style": "character_production",
     "qualityThreshold": 75,
+    "imageCount": 27,
     "maxRetries": 3,
     "customSeed": 12345
   }'
@@ -377,16 +385,159 @@ curl -X POST https://character.ft.tc/api/v1/characters/68c07c4305803df129909509/
 }
 ```
 
-### POST /api/v1/characters/{id}/generate-360-set
-**Purpose**: Generate complete 360° reference image set (legacy endpoint, enhanced)
+### POST /api/v1/characters/{id}/generate-360-set (ASYNC)
+**Purpose**: Generate complete 360° reference image set with background processing
+
+**⚡ NEW: Async Processing**
+- Returns immediately with job ID
+- Background processing prevents timeouts
+- Poll for progress and results
+- Estimated completion: ~15-30 minutes for 27 shots
+
 ```bash
 curl -X POST https://character.ft.tc/api/v1/characters/68c07c4305803df129909509/generate-360-set \
   -H "Content-Type: application/json" \
   -d '{
     "style": "character_production",
     "qualityThreshold": 75,
-    "imageCount": 8
+    "imageCount": 27,
+    "maxRetries": 3,
+    "customSeed": 12345
   }'
+```
+
+**Response (Immediate):**
+```json
+{
+  "success": true,
+  "jobId": "550e8400-e29b-41d4-a716-446655440000",
+  "status": "accepted",
+  "message": "360° image generation job started. Generating 27 images.",
+  "estimatedCompletionTime": "2025-09-14T19:15:00.000Z",
+  "pollUrl": "/api/v1/jobs/550e8400-e29b-41d4-a716-446655440000/status"
+}
+```
+
+**Then Poll for Progress:**
+```bash
+curl https://character.ft.tc/api/v1/jobs/550e8400-e29b-41d4-a716-446655440000/status
+```
+
+**Progress Response:**
+```json
+{
+  "success": true,
+  "jobId": "550e8400-e29b-41d4-a716-446655440000",
+  "status": "processing",
+  "progress": {
+    "current": 15,
+    "total": 27,
+    "percentage": 56,
+    "currentTask": "Generating front_85mm shot"
+  },
+  "message": "Job is processing. Generating front_85mm shot"
+}
+```
+
+**Completed Response:**
+```json
+{
+  "success": true,
+  "jobId": "550e8400-e29b-41d4-a716-446655440000",
+  "status": "completed",
+  "results": {
+    "generatedImages": [
+      {
+        "url": "https://media.rumbletv.com/media/abc123",
+        "angle": "front_50mm",
+        "quality": 92,
+        "dinoAssetId": "dino-abc123",
+        "mediaId": "abc123"
+      }
+    ],
+    "totalAttempts": 27,
+    "processingTime": 1680000
+  },
+  "message": "Job completed successfully. Generated 27 images."
+}
+```
+
+### GET /api/v1/jobs/{jobId}/status
+**Purpose**: Check status and progress of background image generation job
+
+```bash
+curl https://character.ft.tc/api/v1/jobs/550e8400-e29b-41d4-a716-446655440000/status
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "jobId": "550e8400-e29b-41d4-a716-446655440000",
+  "status": "processing",
+  "progress": {
+    "current": 15,
+    "total": 27,
+    "percentage": 56,
+    "currentTask": "Generating front_85mm shot"
+  },
+  "message": "Job is processing. Generating front_85mm shot",
+  "startedAt": "2025-09-14T18:45:00.000Z",
+  "estimatedCompletionAt": "2025-09-14T19:12:00.000Z"
+}
+```
+
+### DELETE /api/v1/jobs/{jobId}/status
+**Purpose**: Cancel a running background job
+
+```bash
+curl -X DELETE https://character.ft.tc/api/v1/jobs/550e8400-e29b-41d4-a716-446655440000/status
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Job cancelled successfully"
+}
+```
+
+### GET /api/v1/jobs
+**Purpose**: List background jobs with filtering and pagination
+
+```bash
+curl "https://character.ft.tc/api/v1/jobs?characterId=68c07c4305803df129909509&status=processing&page=1&limit=10"
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "jobs": [
+    {
+      "jobId": "550e8400-e29b-41d4-a716-446655440000",
+      "characterId": "68c07c4305803df129909509",
+      "jobType": "360-set",
+      "status": "processing",
+      "progress": {
+        "current": 15,
+        "total": 27,
+        "percentage": 56,
+        "currentTask": "Generating front_85mm shot"
+      },
+      "createdAt": "2025-09-14T18:45:00.000Z",
+      "startedAt": "2025-09-14T18:45:30.000Z"
+    }
+  ],
+  "pagination": {
+    "totalDocs": 1,
+    "limit": 10,
+    "page": 1,
+    "totalPages": 1,
+    "hasNextPage": false,
+    "hasPrevPage": false
+  }
+}
 ```
 
 ### PUT /api/v1/characters/{id}/reference-image
