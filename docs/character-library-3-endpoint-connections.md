@@ -172,6 +172,7 @@ DELETE reference-image → RESETS ALL:
 - **Quality Tracking**: Individual image quality scores, consistency metrics, validation status
 - **Asset Linking**: Images linked to character records, DINOv3 asset IDs, and reference shot templates
 - **Smart File Naming**: Standardized naming convention: `{CHAR}_{LENS}{MODE}_{ANGLE}_{CROP}_{EXPR}_v{N}.jpg`
+- **Unified Image Access**: `GET /api/v1/characters/{id}/images` - **NEW**: Single endpoint for all character images organized by category
 
 ## Error Handling & Fallbacks
 

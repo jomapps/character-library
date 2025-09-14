@@ -578,6 +578,102 @@ curl -X DELETE https://character.ft.tc/api/v1/characters/68c07c4305803df12990950
 }
 ```
 
+### GET /api/v1/characters/{id}/images (NEW)
+**Purpose**: Get all generated images for a character organized by category
+```bash
+curl "https://character.ft.tc/api/v1/characters/68c07c4305803df129909509/images?includeUrls=true&minQuality=70&category=core"
+```
+**Query Parameters**:
+- `includeUrls` (boolean, default: true) - Include image URLs in response
+- `minQuality` (number, default: 0) - Filter images by minimum quality score
+- `category` (string, optional) - Filter by category: 'core', 'scene', 'ondemand', 'relationship'
+
+**Response**:
+```json
+{
+  "success": true,
+  "characterId": "68c07c4305803df129909509",
+  "characterName": "Dragon Warrior",
+  "totalImages": 32,
+  "images": {
+    "masterReference": {
+      "imageId": "master-ref-123",
+      "url": "https://media.rumbletv.com/media/master_ref.jpg",
+      "dinoAssetId": "dino-master-123",
+      "qualityScore": 92,
+      "isProcessed": true
+    },
+    "coreReferenceSet": [
+      {
+        "imageId": "core-front-50mm",
+        "url": "https://media.rumbletv.com/media/front_50mm.jpg",
+        "dinoAssetId": "dino-front-50mm",
+        "shotType": "core_reference",
+        "angle": "front",
+        "lens": "50mm",
+        "qualityScore": 89,
+        "consistencyScore": 94,
+        "isValid": true,
+        "referenceShot": {
+          "angle": "front",
+          "lensMm": 50,
+          "pack": "core"
+        }
+      }
+    ],
+    "sceneImages": [
+      {
+        "imageId": "scene-alley-123",
+        "url": "https://media.rumbletv.com/media/scene_alley.jpg",
+        "dinoAssetId": "dino-scene-123",
+        "shotType": "scene",
+        "sceneContext": "dark alley at night",
+        "tags": "scene,action,dramatic",
+        "qualityScore": 87,
+        "consistencyScore": 91,
+        "isValid": true,
+        "generationPrompt": "Dragon warrior standing in dark alley"
+      }
+    ],
+    "onDemandImages": [
+      {
+        "imageId": "ondemand-smile-123",
+        "url": "https://media.rumbletv.com/media/smile.jpg",
+        "dinoAssetId": "dino-smile-123",
+        "shotType": "on_demand",
+        "tags": "expression,smile,portrait",
+        "qualityScore": 85,
+        "consistencyScore": 88,
+        "isValid": true,
+        "generationPrompt": "Dragon warrior with a warm smile"
+      }
+    ],
+    "relationshipImages": [
+      {
+        "imageId": "relationship-duo-123",
+        "url": "https://media.rumbletv.com/media/duo.jpg",
+        "dinoAssetId": "dino-duo-123",
+        "shotType": "relationship",
+        "tags": "relationship,friendship,duo",
+        "qualityScore": 90,
+        "consistencyScore": 92,
+        "isValid": true
+      }
+    ]
+  },
+  "summary": {
+    "masterReferenceCount": 1,
+    "coreReferenceCount": 27,
+    "sceneImageCount": 3,
+    "onDemandImageCount": 1,
+    "relationshipImageCount": 1,
+    "totalValidImages": 31,
+    "averageQuality": 88,
+    "averageConsistency": 91
+  }
+}
+```
+
 ### POST /api/v1/characters/{id}/generate-scene-image
 **Purpose**: Generate character image for specific scene
 ```bash

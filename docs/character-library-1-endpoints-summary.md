@@ -114,6 +114,7 @@
 - `PUT /api/v1/characters/{id}/reference-image` - Update character's master reference image
 - `GET /api/v1/characters/{id}/reference-image` - Get character's current reference image
 - `DELETE /api/v1/characters/{id}/reference-image` - Delete master reference image and reset all derived content
+- `GET /api/v1/characters/{id}/images` - **NEW**: Get all generated images for character (organized by category)
 
 ## Character Relationships
 - `GET /api/v1/characters/{id}/relationships` - Get character's relationships
