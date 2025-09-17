@@ -1,46 +1,86 @@
-# Enhanced 360° Image Generation System
+# Enhanced 360° Image Generation System v2.0
 
 ## Overview
-This document outlines the enhanced 360° image generation system for character reference sets. The system has been upgraded from a basic 8-angle turnaround to a comprehensive 15+ shot reference library with intelligent prompt-based image selection.
+This document outlines the enhanced 360° image generation system for character reference sets. The system has been upgraded from a basic 8-angle turnaround to a comprehensive **25+ shot reference library** with **precision cinematographic parameters** and **intelligent scene-based image selection**.
+
+**Latest Update**: The system now features cinematic precision with exact camera positioning, comprehensive shot coverage, and advanced scene analysis capabilities.
 
 ## System Architecture
 
 ### Core Components
-1. **ReferenceShots Collection**: Template library for all shot types
-2. **Enhanced Character ImageGallery**: Structured metadata for generated images
-3. **CoreSetGenerationService**: Automated 360° set generation
-4. **ReferenceSearchService**: Intelligent image selection
-5. **Quality Control Integration**: DINOv3 validation pipeline
+1. **Enhanced ReferenceShots Collection**: Comprehensive template library with cinematic precision
+2. **Enhanced Character ImageGallery**: Advanced metadata with camera parameters
+3. **EnhancedCoreSetGenerationService**: Professional 360° set generation with 25+ shots
+4. **EnhancedReferenceSearchService**: Scene-aware intelligent image selection
+5. **SceneAnalysisEngine**: Automatic scene understanding and recommendation
+6. **EnhancedPromptBuilder**: Precision cinematographic prompt generation
+7. **CinematicParameterCalculator**: Professional camera parameter calculation
+8. **Quality Control Integration**: Multi-factor validation with DINOv3
 
 ## Enhanced Features
 
-### 1. Expanded Shot Library (15+ Images)
-The system now generates a minimum of 15 reference images per character:
+### 1. Comprehensive Shot Library (25+ Images GUARANTEED)
+The system now generates a **minimum of 25 reference images** per character with complete coverage:
 
-**Core 9 (Essential Set)**:
+**Core 9 (Essential Foundation)**:
 - 3 lenses × 3 angles: 35mm (Action/Body), 50mm (Conversation), 85mm (Emotion)
-- Angles: FRONT, 3/4 LEFT, 3/4 RIGHT
+- Precise angles: FRONT (0°), 3/4 LEFT (-35°), 3/4 RIGHT (+35°)
 
-**Add-on Shots (6+ Additional)**:
-- Profile shots (LEFT/RIGHT)
-- Back view (full body)
-- Hands close-up (macro)
-- T-pose calibration
-- Expression variations
+**Essential Additional Shots (16+ More)**:
+- **Profile Structure**: Left (-90°) and right (+90°) profiles for facial geometry
+- **Back Coverage**: Full body (180°) and 3/4 back views for wardrobe/hair
+- **Detail Shots**: Hands close-up for prop interaction and gestures
+- **Calibration**: T-pose for rigging and model alignment
+- **Expression Variants**: Concerned, vulnerable, determined, thoughtful expressions
+- **Angle Variants**: High/low angles for power dynamics and emotional impact
+- **Extended Coverage**: Additional 3/4 variants (±45°) and tight close-ups (±15°)
+- **Medium Variants**: Subtle angle variations (±25°) for natural conversation
 
-### 2. Structured Metadata System
-Each generated image includes comprehensive metadata:
-- **Technical**: lens (35/50/85mm), f-stop, ISO, shutter speed
-- **Composition**: angle, crop (full/3q/mcu/cu/hands), pose
-- **Creative**: expression, mode, usage notes
-- **Quality**: reference weight (0.85-0.95), validation scores
+**Total: 25+ shots per character (ALL Priority 1 = Always Created)**
 
-### 3. Intelligent Reference Selection
-The system can analyze any text prompt and automatically select the most appropriate reference image based on:
-- Scene type (dialogue, action, emotional)
-- Required angle and crop
-- Expression needs
-- Technical requirements
+### 2. Enhanced Metadata System with Cinematic Precision
+Each generated image includes comprehensive professional metadata:
+
+**Technical Parameters**:
+- **Camera**: lens (35/50/85mm), f-stop, ISO, shutter speed
+- **Positioning**: azimuth (-180° to +180°), elevation (-90° to +90°), distance (meters)
+- **Subject**: yaw rotation, gaze direction (to_camera/away/left/right)
+
+**Composition Control**:
+- **Framing**: crop (full/3q/mcu/cu/hands), pose, expression
+- **Rule of Thirds**: centered/left_third/right_third positioning
+- **Headroom**: tight/equal/loose spacing control
+
+**Scene Context**:
+- **Usage**: detailed scenarios where shot is most effective
+- **Scene Types**: dialogue, action, emotional, establishing, transition
+- **Priority**: 1-10 scale (1 = essential, 10 = optional)
+
+**Quality Metrics**:
+- **Technical Score**: camera parameter accuracy (0-100)
+- **Composition Score**: rule of thirds and headroom compliance (0-100)
+- **Cinematic Score**: overall cinematic quality (0-100)
+- **Consistency Score**: DINOv3 character consistency validation
+
+### 3. Advanced Scene-Based Reference Selection
+The system features intelligent scene analysis that automatically selects optimal reference images:
+
+**Scene Analysis Engine**:
+- **Automatic Detection**: dialogue, action, emotional, establishing, transition scenes
+- **Emotional Tone**: neutral, tense, intimate, dramatic, contemplative
+- **Keyword Extraction**: meaningful terms from scene descriptions
+- **Confidence Scoring**: 0-100% confidence in scene analysis
+
+**Multi-Factor Scoring System**:
+- **Scene Type Match** (25%): Perfect alignment with scene requirements
+- **Lens Preference** (20%): Optimal focal length for scene type
+- **Crop Preference** (20%): Appropriate framing for content
+- **Angle Preference** (15%): Best camera positioning for scene
+- **Emotional Tone** (10%): Expression matching scene mood
+- **Composition Match** (5%): Rule of thirds and headroom compliance
+- **Quality Score** (5%): Technical image quality
+
+**Detailed Reasoning**: Every selection includes comprehensive explanation of why specific images were chosen, with alternative recommendations and confidence metrics.
 
 ## Quality Control Workflow
 

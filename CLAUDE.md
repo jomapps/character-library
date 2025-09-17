@@ -1,6 +1,4 @@
----
-type: "always_apply"
----
+[byterover-mcp]
 
 # Byterover MCP Server Tools Reference
 

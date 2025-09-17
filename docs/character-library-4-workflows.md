@@ -55,46 +55,75 @@
 
 ## 2. Character Image Generation Workflow
 
-### Enhanced 360° Professional Reference Set Generation
+### 🎬 Enhanced 360° Professional Reference Set Generation v2.0
 ```
-1. Initial Reference Image
+1. System Preparation
+   POST /api/v1/admin/seed-reference-shots-enhanced
+   ├── Seeds comprehensive 25+ shot reference library
+   ├── Ensures all cinematic precision templates available
+   └── Validates enhanced prompt system
+
+2. Initial Reference Image
    POST /api/v1/characters/{id}/generate-initial-image
    ├── Uses exact user prompt (no modifications)
    ├── Creates master reference with DINOv3 processing
    └── Sets baseline visual identity
 
-2. Set Master Reference
+3. Set Master Reference
    PUT /api/v1/characters/{id}/reference-image
    ├── Confirms master image
    ├── Updates character record
    └── Enables advanced generation
 
-3. Generate Enhanced 360° Core Set
+4. Generate Comprehensive 360° Core Set (25+ GUARANTEED SHOTS)
    POST /api/v1/characters/{id}/generate-core-set
-   ├── Core 9 Essential Shots:
-   │   ├── 35mm (Action/Body): Front, ¾ Left, ¾ Right
-   │   ├── 50mm (Conversation): Front, ¾ Left, ¾ Right
-   │   └── 85mm (Emotion): Front, ¾ Left, ¾ Right
-   ├── Optional Add-on Shots:
-   │   ├── Profile L/R (85mm)
-   │   ├── Back Full (35mm)
-   │   ├── Hands Close-up (macro)
-   │   ├── T-pose Calibration (35mm)
-   │   └── Expression Variations (50mm)
-   ├── Technical Metadata:
-   │   ├── Camera settings (lens, f-stop, ISO, shutter)
-   │   ├── Composition details (angle, crop, expression)
-   │   └── Quality metrics (consistency, validation scores)
-   └── Professional File Naming: {CHAR}_{LENS}{MODE}_{ANGLE}_{CROP}_{EXPR}_v{N}.jpg
+   ├── Core 9 Essential Foundation:
+   │   ├── 35mm (Action/Body): Front (0°), ¾ Left (-35°), ¾ Right (+35°)
+   │   ├── 50mm (Conversation): Front (0°), ¾ Left (-35°), ¾ Right (+35°)
+   │   └── 85mm (Emotion): Front (0°), ¾ Left (-35°), ¾ Right (+35°)
+   ├── Essential Additional Shots (16+ More):
+   │   ├── Profile Structure: Left (-90°), Right (+90°) for facial geometry
+   │   ├── Back Coverage: Full body (180°), ¾ back for wardrobe/hair
+   │   ├── Detail Work: Hands close-up for prop interaction
+   │   ├── Calibration: T-pose for rigging and model alignment
+   │   ├── Expression Variants: Concerned, vulnerable, determined, thoughtful
+   │   ├── Angle Variants: High/low angles (±15°) for power dynamics
+   │   ├── Extended Coverage: Additional ¾ variants (±45°) and tight CUs (±15°)
+   │   └── Medium Variants: Subtle angles (±25°) for natural conversation
+   ├── Cinematic Precision Metadata:
+   │   ├── Camera Positioning: Azimuth (-180° to +180°), elevation (-90° to +90°), distance (meters)
+   │   ├── Subject Control: Yaw rotation, gaze direction (to_camera/away/left/right)
+   │   ├── Composition Rules: Rule of thirds (centered/left_third/right_third), headroom (tight/equal/loose)
+   │   ├── Scene Context: Usage scenarios, scene types, priority levels
+   │   └── Quality Metrics: Technical score, composition score, cinematic score
+   └── Professional Standards: Real cinematography workflows with technical specifications
 
-4. Smart Image Generation
+5. Scene-Based Reference Selection (NEW)
+   POST /api/v1/characters/{id}/find-reference-for-scene
+   ├── Scene Analysis Engine:
+   │   ├── Automatic scene type detection (dialogue/action/emotional/establishing/transition)
+   │   ├── Emotional tone analysis (neutral/tense/intimate/dramatic/contemplative)
+   │   ├── Keyword extraction and confidence scoring
+   │   └── Camera preference calculation (intimacy/dynamism/emotional intensity)
+   ├── Multi-Factor Scoring System:
+   │   ├── Scene Type Match (25%): Perfect alignment with scene requirements
+   │   ├── Lens Preference (20%): Optimal focal length for scene type
+   │   ├── Crop Preference (20%): Appropriate framing for content
+   │   ├── Angle Preference (15%): Best camera positioning for scene
+   │   ├── Emotional Tone (10%): Expression matching scene mood
+   │   ├── Composition Match (5%): Rule of thirds and headroom compliance
+   │   └── Quality Score (5%): Technical image quality
+   ├── Detailed Reasoning: Comprehensive explanation of selection logic
+   └── Alternative Recommendations: Top 3 alternative matches with scores
+
+6. Smart Image Generation
    POST /api/v1/characters/{id}/generate-smart-image
    ├── AI-powered reference selection
    ├── Intelligent prompt analysis
    ├── Quality validation and retry logic
    └── Optimal reference image matching
 
-5. Scene-Specific Images
+7. Scene-Specific Images
    POST /api/v1/characters/{id}/generate-scene-image
    ├── Context-aware generation
    ├── Mood and lighting adaptation

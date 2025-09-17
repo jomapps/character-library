@@ -487,12 +487,13 @@ curl https://character.ft.tc/api/v1/characters/relationships/graph
 
 ## 🆕 New Features & Enhancements
 
-### Enhanced 360° Reference Generation System
-**Feature**: Professional-grade 360° reference sets with structured metadata
-- **Core 9 System**: 3 lenses (35mm, 50mm, 85mm) × 3 angles (Front, ¾ Left, ¾ Right)
-- **Add-on Shots**: Profile views, back view, hands close-up, T-pose, expression variations
-- **Technical Metadata**: Lens settings, camera parameters, composition details
-- **Smart File Naming**: Standardized naming convention for professional workflows
+### 🎬 Enhanced 360° Reference Generation System v2.0
+**Feature**: Professional-grade 360° reference sets with cinematic precision (25+ guaranteed shots)
+- **Comprehensive Coverage**: Core 9 + profiles + back views + hands + expressions + angle variants + calibration
+- **Cinematic Precision**: Exact camera positioning (azimuth/elevation/distance), subject control, composition rules
+- **Scene Intelligence**: Automatic scene analysis and optimal reference image selection
+- **Professional Standards**: Real cinematography workflows with technical specifications
+- **Multi-Factor Scoring**: Advanced quality assessment with detailed reasoning
 
 **Example Core Set Generation**:
 ```bash
@@ -653,4 +654,133 @@ DINOv3 upload request: {
   hasApiKey: true
 }
 DINOv3 processing: processing - Asset ID: 61cd63e4-e406-481f-b317-202e9b158fad
+```
+
+## 🆕 Enhanced System API Examples
+
+### POST /api/v1/admin/seed-reference-shots-enhanced
+**Purpose**: Seed comprehensive 25+ shot reference library with cinematic precision
+```bash
+curl -X POST https://character.ft.tc/api/v1/admin/seed-reference-shots-enhanced \
+  -H "Content-Type: application/json" \
+  -d '{
+    "cleanExisting": false,
+    "guaranteeAllShots": true,
+    "validateTemplates": true,
+    "comprehensiveCoverage": true
+  }'
+```
+**Response**:
+```json
+{
+  "success": true,
+  "message": "Enhanced reference shots seeded successfully. Created 25 shots (25 essential, 0 comprehensive).",
+  "results": {
+    "essential": 25,
+    "comprehensive": 0,
+    "failed": 0,
+    "total": 25,
+    "errors": []
+  },
+  "timing": {
+    "startTime": "2025-09-14T10:00:00.000Z",
+    "endTime": "2025-09-14T10:00:15.000Z",
+    "durationMs": 15000
+  }
+}
+```
+
+### POST /api/v1/characters/{id}/find-reference-for-scene
+**Purpose**: Intelligent scene-based reference image selection with detailed analysis
+```bash
+curl -X POST https://character.ft.tc/api/v1/characters/68c07c4305803df129909509/find-reference-for-scene \
+  -H "Content-Type: application/json" \
+  -d '{
+    "sceneDescription": "Intimate dialogue between two characters, emotional revelation about past trauma",
+    "includeAlternatives": true,
+    "detailedAnalysis": true,
+    "minQualityScore": 80
+  }'
+```
+**Response**:
+```json
+{
+  "success": true,
+  "selectedImage": {
+    "imageUrl": "https://character.ft.tc/media/character_85mm_front_cu_neutral_v1.png",
+    "mediaId": "media-id-123",
+    "score": 92,
+    "metadata": {
+      "lens": 85,
+      "crop": "cu",
+      "angle": "front",
+      "cameraAzimuthDeg": 0,
+      "gaze": "to_camera"
+    }
+  },
+  "reasoning": "Perfect match for emotional scenes. 85mm lens ideal for emotional work. CU crop provides close-up intimacy. High quality score (92/100). Overall compatibility score: 92/100.",
+  "alternatives": [
+    {
+      "imageUrl": "https://character.ft.tc/media/character_85mm_3qleft_mcu_neutral_v1.png",
+      "mediaId": "media-id-124",
+      "score": 87,
+      "reasoning": "85mm MCU shot (3q_left) - Score: 87/100"
+    }
+  ],
+  "sceneAnalysis": {
+    "sceneType": "emotional",
+    "emotionalTone": "intimate",
+    "confidence": 95,
+    "keywords": ["intimate", "dialogue", "emotional", "revelation", "trauma"],
+    "reasoning": "Detected scene type: emotional. Emotional tone: intimate. Key indicators: intimate, dialogue, emotional. Recommending 85mm lens and close-ups for emotional intimacy.",
+    "requiredShots": {
+      "preferredLens": [85],
+      "preferredCrop": ["cu", "mcu"],
+      "preferredAngles": [-25, 0, 25]
+    },
+    "cameraPreferences": {
+      "intimacyLevel": 8,
+      "dynamismLevel": 2,
+      "emotionalIntensity": 9
+    }
+  },
+  "searchMetrics": {
+    "totalImagesEvaluated": 25,
+    "averageScore": 73,
+    "selectionConfidence": 0.92,
+    "processingTimeMs": 150
+  }
+}
+```
+
+### GET /api/v1/admin/seed-reference-shots-enhanced
+**Purpose**: Get information about enhanced seeding system capabilities
+```bash
+curl https://character.ft.tc/api/v1/admin/seed-reference-shots-enhanced
+```
+**Response**:
+```json
+{
+  "name": "Enhanced Reference Shots Seeding System",
+  "version": "2.0.0",
+  "description": "Comprehensive 25+ shot reference library with cinematic precision",
+  "features": [
+    "Guaranteed 25+ reference shots",
+    "Precise camera positioning (azimuth, elevation, distance)",
+    "Enhanced composition control (thirds, headroom, gaze)",
+    "Scene-type recommendations",
+    "Professional cinematography standards",
+    "Automated parameter calculation",
+    "Quality validation and scoring"
+  ],
+  "shotCategories": {
+    "core9": "Essential 9-shot foundation (35mm, 50mm, 85mm × 3 angles)",
+    "profiles": "Left/right profile shots for structure reference",
+    "backViews": "Wardrobe and hair reference shots",
+    "hands": "Detailed hand reference for prop work",
+    "expressions": "Emotional range variations",
+    "angles": "High/low angle variants for power dynamics",
+    "comprehensive": "Extended coverage for complete reference library"
+  }
+}
 ```
