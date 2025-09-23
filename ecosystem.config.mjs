@@ -50,4 +50,4 @@ export default {
       min_uptime: '10s',
     },
   ],
-}
+};
