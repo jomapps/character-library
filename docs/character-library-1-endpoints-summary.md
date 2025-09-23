@@ -20,7 +20,15 @@
 
 ## 🆕 Recent Enhancements (September 2025)
 
-### 🎬 Enhanced 360° Reference Generation System v2.0 (Latest)
+### 🚀 Async Background Processing System (Latest - September 2025)
+- **Non-Blocking Generation**: 360° image generation now runs in background, preventing timeouts
+- **Real-Time Progress Tracking**: Monitor job progress with current image being generated
+- **Job Management API**: Start, monitor, cancel, and list background jobs
+- **Immediate Response**: API returns job ID instantly, poll for results when ready
+- **Robust Error Handling**: Partial success support, detailed failure tracking
+- **External App Integration**: Perfect for apps that need long-running image generation
+
+### 🎬 Enhanced 360° Reference Generation System v2.0
 - **Comprehensive 25+ Shot Library**: Upgraded to guaranteed 25+ reference shots with complete coverage
 - **Cinematic Precision**: Exact camera positioning with azimuth (-180° to +180°), elevation (-90° to +90°), and distance (meters)
 - **Professional Camera System**: 3 lens modes (35mm Action/Body, 50mm Conversation, 85mm Emotion) with precise technical specifications
@@ -93,14 +101,20 @@
 
 ### Advanced 360° Reference Generation v2.0
 - `POST /api/v1/characters/{id}/generate-core-set` - Generate enhanced 360° core reference set (25+ professional shots with cinematic precision)
-- `POST /api/v1/characters/{id}/generate-360-set` - Generate complete 360° reference image set (legacy endpoint, enhanced)
+- `POST /api/v1/characters/{id}/generate-360-set` - **ASYNC**: Generate complete 360° reference image set with background processing
 - `POST /api/v1/characters/{id}/generate-smart-image` - Generate image using smart AI prompting with reference selection
 - `POST /api/v1/characters/{id}/find-reference-for-scene` - **NEW**: Intelligent scene-based reference image selection with detailed analysis
+
+### Background Job Management (NEW)
+- `GET /api/v1/jobs/{jobId}/status` - Check status and progress of background image generation job
+- `DELETE /api/v1/jobs/{jobId}/status` - Cancel a running background job
+- `GET /api/v1/jobs` - List background jobs with filtering and pagination (characterId, status, jobType)
 
 ### Reference Image Management
 - `PUT /api/v1/characters/{id}/reference-image` - Update character's master reference image
 - `GET /api/v1/characters/{id}/reference-image` - Get character's current reference image
 - `DELETE /api/v1/characters/{id}/reference-image` - Delete master reference image and reset all derived content
+- `GET /api/v1/characters/{id}/images` - **NEW**: Get all generated images for character (organized by category)
 
 ## Character Relationships
 - `GET /api/v1/characters/{id}/relationships` - Get character's relationships

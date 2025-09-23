@@ -71,6 +71,7 @@ export interface Config {
     media: Media;
     characters: Character;
     'reference-shots': ReferenceShot;
+    'image-generation-jobs': ImageGenerationJob;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -81,6 +82,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     characters: CharactersSelect<false> | CharactersSelect<true>;
     'reference-shots': ReferenceShotsSelect<false> | ReferenceShotsSelect<true>;
+    'image-generation-jobs': ImageGenerationJobsSelect<false> | ImageGenerationJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -562,6 +564,50 @@ export interface Character {
          * Reference image strength used in generation (0.85-0.95)
          */
         referenceWeight?: number | null;
+        /**
+         * Actual camera azimuth used for generation
+         */
+        cameraAzimuthDeg?: number | null;
+        /**
+         * Actual camera elevation used for generation
+         */
+        cameraElevationDeg?: number | null;
+        /**
+         * Actual camera distance used for generation
+         */
+        cameraDistanceM?: number | null;
+        /**
+         * Subject rotation used for generation
+         */
+        subjectYawDeg?: number | null;
+        /**
+         * Subject gaze direction used
+         */
+        gaze?: ('to_camera' | 'away' | 'left' | 'right') | null;
+        /**
+         * Composition positioning used
+         */
+        thirds?: ('centered' | 'left_third' | 'right_third') | null;
+        /**
+         * Scene types this image works best for
+         */
+        recommendedFor?: ('close_dialogue' | 'action' | 'emotional' | 'establishing' | 'introduction')[] | null;
+        /**
+         * Why this image was selected/generated for this context
+         */
+        usageReason?: string | null;
+        /**
+         * Camera parameter accuracy (0-100)
+         */
+        technicalScore?: number | null;
+        /**
+         * Rule of thirds, headroom compliance (0-100)
+         */
+        compositionScore?: number | null;
+        /**
+         * Overall cinematic quality (0-100)
+         */
+        cinematicScore?: number | null;
         id?: string | null;
       }[]
     | null;
@@ -602,7 +648,17 @@ export interface ReferenceShot {
    * Shot mode/category
    */
   mode: string;
-  angle: 'front' | '3q_left' | '3q_right' | 'profile_left' | 'profile_right' | 'back';
+  angle:
+    | 'front'
+    | '3q_left'
+    | '3q_right'
+    | 'profile_left'
+    | 'profile_right'
+    | 'back'
+    | '45_left'
+    | '45_right'
+    | '135_left'
+    | '135_right';
   crop: 'full' | '3q' | 'mcu' | 'cu' | 'hands';
   /**
    * Facial expression (neutral, determined, etc.)
@@ -643,6 +699,54 @@ export interface ReferenceShot {
    */
   promptTemplate: string;
   /**
+   * Camera horizontal position: -180 to +180 (- = camera-left, + = camera-right)
+   */
+  cameraAzimuthDeg?: number | null;
+  /**
+   * Camera vertical position: -90 to +90 (- = below, + = above)
+   */
+  cameraElevationDeg?: number | null;
+  /**
+   * Physical distance from subject in meters
+   */
+  cameraDistanceM?: number | null;
+  /**
+   * Subject rotation: -180 to +180
+   */
+  subjectYawDeg?: number | null;
+  /**
+   * Subject gaze direction
+   */
+  gaze?: ('to_camera' | 'away' | 'left' | 'right') | null;
+  /**
+   * Subject positioning on rule of thirds grid
+   */
+  thirds?: ('centered' | 'left_third' | 'right_third') | null;
+  /**
+   * Amount of space above subject's head
+   */
+  headroom?: ('equal' | 'tight' | 'loose') | null;
+  /**
+   * Detailed scenarios where this shot is most effective
+   */
+  whenToUse?: string | null;
+  /**
+   * Scene types where this shot works best
+   */
+  sceneTypes?: ('dialogue' | 'action' | 'emotional' | 'establishing' | 'transition')[] | null;
+  /**
+   * 1 = Essential (Core 9), 10 = Optional
+   */
+  priority?: number | null;
+  /**
+   * Specific negatives for this shot type
+   */
+  negativePrompts?: string | null;
+  /**
+   * Professional composition guidance
+   */
+  compositionNotes?: string | null;
+  /**
    * Whether this template is available for generation
    */
   isActive?: boolean | null;
@@ -654,6 +758,89 @@ export interface ReferenceShot {
    * Template version for tracking updates
    */
   version?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "image-generation-jobs".
+ */
+export interface ImageGenerationJob {
+  id: string;
+  /**
+   * Unique identifier for the job
+   */
+  jobId: string;
+  /**
+   * ID of the character for which images are being generated
+   */
+  characterId: string;
+  /**
+   * Type of image generation job
+   */
+  jobType: 'core-set' | '360-set' | 'single-image';
+  /**
+   * Current status of the job
+   */
+  status: 'pending' | 'processing' | 'completed' | 'failed' | 'cancelled';
+  progress?: {
+    /**
+     * Number of images completed
+     */
+    current?: number | null;
+    /**
+     * Total number of images to generate
+     */
+    total?: number | null;
+    /**
+     * Completion percentage (0-100)
+     */
+    percentage?: number | null;
+    /**
+     * Description of current task being processed
+     */
+    currentTask?: string | null;
+  };
+  /**
+   * Original request parameters
+   */
+  requestData?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Generation results including images and metadata
+   */
+  results?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Error message if job failed
+   */
+  error?: string | null;
+  /**
+   * When the job started processing
+   */
+  startedAt?: string | null;
+  /**
+   * When the job completed
+   */
+  completedAt?: string | null;
+  /**
+   * Estimated completion time
+   */
+  estimatedCompletionAt?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -679,6 +866,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'reference-shots';
         value: string | ReferenceShot;
+      } | null)
+    | ({
+        relationTo: 'image-generation-jobs';
+        value: string | ImageGenerationJob;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -946,6 +1137,17 @@ export interface CharactersSelect<T extends boolean = true> {
         expression?: T;
         pose?: T;
         referenceWeight?: T;
+        cameraAzimuthDeg?: T;
+        cameraElevationDeg?: T;
+        cameraDistanceM?: T;
+        subjectYawDeg?: T;
+        gaze?: T;
+        thirds?: T;
+        recommendedFor?: T;
+        usageReason?: T;
+        technicalScore?: T;
+        compositionScore?: T;
+        cinematicScore?: T;
         id?: T;
       };
   updatedAt?: T;
@@ -979,9 +1181,47 @@ export interface ReferenceShotsSelect<T extends boolean = true> {
       };
   fileNamePattern?: T;
   promptTemplate?: T;
+  cameraAzimuthDeg?: T;
+  cameraElevationDeg?: T;
+  cameraDistanceM?: T;
+  subjectYawDeg?: T;
+  gaze?: T;
+  thirds?: T;
+  headroom?: T;
+  whenToUse?: T;
+  sceneTypes?: T;
+  priority?: T;
+  negativePrompts?: T;
+  compositionNotes?: T;
   isActive?: T;
   sortOrder?: T;
   version?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "image-generation-jobs_select".
+ */
+export interface ImageGenerationJobsSelect<T extends boolean = true> {
+  jobId?: T;
+  characterId?: T;
+  jobType?: T;
+  status?: T;
+  progress?:
+    | T
+    | {
+        current?: T;
+        total?: T;
+        percentage?: T;
+        currentTask?: T;
+      };
+  requestData?: T;
+  results?: T;
+  error?: T;
+  startedAt?: T;
+  completedAt?: T;
+  estimatedCompletionAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }

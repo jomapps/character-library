@@ -953,6 +953,174 @@ export const Characters: CollectionConfig = {
                     },
                   ],
                 },
+                {
+                  type: 'collapsible',
+                  label: 'Enhanced Camera Parameters',
+                  admin: {
+                    description: 'Precise camera positioning data used for generation',
+                  },
+                  fields: [
+                    {
+                      type: 'row',
+                      fields: [
+                        {
+                          name: 'cameraAzimuthDeg',
+                          type: 'number',
+                          label: 'Camera Azimuth Used',
+                          admin: {
+                            description: 'Actual camera azimuth used for generation',
+                            width: '33%',
+                          },
+                        },
+                        {
+                          name: 'cameraElevationDeg',
+                          type: 'number',
+                          label: 'Camera Elevation Used',
+                          admin: {
+                            description: 'Actual camera elevation used for generation',
+                            width: '33%',
+                          },
+                        },
+                        {
+                          name: 'cameraDistanceM',
+                          type: 'number',
+                          label: 'Camera Distance Used',
+                          admin: {
+                            description: 'Actual camera distance used for generation',
+                            width: '34%',
+                          },
+                        },
+                      ],
+                    },
+                    {
+                      type: 'row',
+                      fields: [
+                        {
+                          name: 'subjectYawDeg',
+                          type: 'number',
+                          label: 'Subject Yaw Used',
+                          admin: {
+                            description: 'Subject rotation used for generation',
+                            width: '33%',
+                          },
+                        },
+                        {
+                          name: 'gaze',
+                          type: 'select',
+                          label: 'Gaze Direction',
+                          options: [
+                            { label: 'To Camera', value: 'to_camera' },
+                            { label: 'Away', value: 'away' },
+                            { label: 'Left', value: 'left' },
+                            { label: 'Right', value: 'right' },
+                          ],
+                          admin: {
+                            description: 'Subject gaze direction used',
+                            width: '33%',
+                          },
+                        },
+                        {
+                          name: 'thirds',
+                          type: 'select',
+                          label: 'Rule of Thirds',
+                          options: [
+                            { label: 'Centered', value: 'centered' },
+                            { label: 'Left Third', value: 'left_third' },
+                            { label: 'Right Third', value: 'right_third' },
+                          ],
+                          admin: {
+                            description: 'Composition positioning used',
+                            width: '34%',
+                          },
+                        },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  type: 'collapsible',
+                  label: 'Scene Context & Quality',
+                  admin: {
+                    description: 'Scene recommendations and quality metrics',
+                  },
+                  fields: [
+                    {
+                      name: 'recommendedFor',
+                      type: 'select',
+                      hasMany: true,
+                      label: 'Recommended For',
+                      options: [
+                        { label: 'Close Dialogue', value: 'close_dialogue' },
+                        { label: 'Action Sequences', value: 'action' },
+                        { label: 'Emotional Moments', value: 'emotional' },
+                        { label: 'Establishing Shots', value: 'establishing' },
+                        { label: 'Character Introduction', value: 'introduction' },
+                      ],
+                      admin: {
+                        description: 'Scene types this image works best for',
+                      },
+                    },
+                    {
+                      name: 'usageReason',
+                      type: 'textarea',
+                      label: 'Usage Reason',
+                      admin: {
+                        description: 'Why this image was selected/generated for this context',
+                        rows: 2,
+                      },
+                    },
+                    {
+                      type: 'row',
+                      fields: [
+                        {
+                          name: 'technicalScore',
+                          type: 'number',
+                          label: 'Technical Score',
+                          admin: {
+                            description: 'Camera parameter accuracy (0-100)',
+                            width: '33%',
+                          },
+                          validate: (val: number | null | undefined) => {
+                            if (val !== null && val !== undefined && (val < 0 || val > 100)) {
+                              return 'Technical score must be between 0 and 100'
+                            }
+                            return true
+                          },
+                        },
+                        {
+                          name: 'compositionScore',
+                          type: 'number',
+                          label: 'Composition Score',
+                          admin: {
+                            description: 'Rule of thirds, headroom compliance (0-100)',
+                            width: '33%',
+                          },
+                          validate: (val: number | null | undefined) => {
+                            if (val !== null && val !== undefined && (val < 0 || val > 100)) {
+                              return 'Composition score must be between 0 and 100'
+                            }
+                            return true
+                          },
+                        },
+                        {
+                          name: 'cinematicScore',
+                          type: 'number',
+                          label: 'Cinematic Score',
+                          admin: {
+                            description: 'Overall cinematic quality (0-100)',
+                            width: '34%',
+                          },
+                          validate: (val: number | null | undefined) => {
+                            if (val !== null && val !== undefined && (val < 0 || val > 100)) {
+                              return 'Cinematic score must be between 0 and 100'
+                            }
+                            return true
+                          },
+                        },
+                      ],
+                    },
+                  ],
+                },
               ],
             },
           ],

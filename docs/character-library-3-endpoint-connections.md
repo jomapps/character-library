@@ -42,7 +42,7 @@ If Similar Found → Use Existing Character
 If Not Found → Create New Character → POST /api/v1/characters/novel-movie
 ```
 
-### 3. Enhanced 360° Image Generation Pipeline
+### 3. Enhanced 360° Image Generation Pipeline (Async)
 ```
 Character Data → POST /api/v1/characters/{id}/generate-initial-image
               ↓
@@ -54,9 +54,11 @@ DINOv3 Integration → Feature Extraction → Asset ID Assignment
               ↓
 Reference Image → PUT /api/v1/characters/{id}/reference-image
                 ↓
-Enhanced 360° Core Set → POST /api/v1/characters/{id}/generate-core-set
+Enhanced 360° Core Set → POST /api/v1/characters/{id}/generate-360-set (ASYNC)
                        ↓
-Professional Reference Library (15+ shots):
+Background Job Processing → Returns Job ID → Poll for Progress
+                       ↓
+Professional Reference Library (27 shots):
 ├── Core 9 Essential: 3 lenses × 3 angles
 │   ├── 35mm (Action/Body): Front, ¾ Left, ¾ Right
 │   ├── 50mm (Conversation): Front, ¾ Left, ¾ Right
@@ -96,6 +98,15 @@ DELETE /api/v1/characters/{id}/reference-image → Clears ALL derived content
 ### Search & Discovery Layer
 - **Similarity Search**: `POST /api/v1/characters/search` - Analyzes existing characters
 - **Knowledge Query**: `POST /api/v1/characters/query` - Requires PathRAG sync
+
+### Async Job Management Layer (NEW)
+- **Job Status**: `GET /api/v1/jobs/{jobId}/status` - Monitor background job progress
+- **Job Cancellation**: `DELETE /api/v1/jobs/{jobId}/status` - Cancel running jobs
+- **Job Listing**: `GET /api/v1/jobs` - List and filter background jobs
+- **Dependencies**:
+  ├── Requires valid job ID from generate-360-set
+  ├── Job status polling for external app integration
+  └── Background service must be running
 - **Query Stats**: `GET /api/v1/characters/query` - PathRAG health check
 
 ### Enhanced Image Generation Layer
@@ -106,13 +117,17 @@ generate-initial-image (First image with exact prompt)
     ↓
 reference-image (Set master reference)
     ↓
-generate-core-set (Enhanced 360° professional reference set)
+generate-core-set (Enhanced 360° professional reference set - sync)
     ├── Core 9 Essential Shots (3 lenses × 3 angles)
     ├── Add-on Shots (profiles, back, hands, poses)
     ├── Technical Metadata (lens, f-stop, ISO, etc.)
     └── Quality Metrics (consistency, validation scores)
     ↓
-generate-360-set (Legacy endpoint, enhanced)
+generate-360-set (ASYNC - Background processing)
+    ├── Returns job ID immediately
+    ├── Background processing (27 shots)
+    ├── Real-time progress tracking
+    └── Poll for completion
     ↓
 generate-smart-image (AI-powered reference selection)
     ↓
@@ -157,6 +172,7 @@ DELETE reference-image → RESETS ALL:
 - **Quality Tracking**: Individual image quality scores, consistency metrics, validation status
 - **Asset Linking**: Images linked to character records, DINOv3 asset IDs, and reference shot templates
 - **Smart File Naming**: Standardized naming convention: `{CHAR}_{LENS}{MODE}_{ANGLE}_{CROP}_{EXPR}_v{N}.jpg`
+- **Unified Image Access**: `GET /api/v1/characters/{id}/images` - **NEW**: Single endpoint for all character images organized by category
 
 ## Error Handling & Fallbacks
 
@@ -182,10 +198,12 @@ DELETE reference-image → RESETS ALL:
 - Image URLs cached with CDN integration
 - Relationship graphs cached for performance
 
-### Batch Operations
+### Batch Operations & Async Processing
 - Bulk endpoints for multiple character operations
-- Async processing for image generation
-- Progress tracking for long-running operations
+- **Async 360° Generation**: Background processing prevents timeouts
+- **Real-time Progress Tracking**: Monitor job status and current task
+- **Job Management**: Start, monitor, cancel, and list background jobs
+- **External App Integration**: Perfect for long-running operations
 
 ## 🆕 DINOv3 Integration Architecture
 

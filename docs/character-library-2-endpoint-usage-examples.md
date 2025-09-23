@@ -331,14 +331,21 @@ curl -X POST https://character.ft.tc/api/v1/characters/generate-initial-image \
 }
 ```
 
-### POST /api/v1/characters/{id}/generate-core-set
-**Purpose**: Generate enhanced 360° core reference set (15+ professional shots)
+### POST /api/v1/characters/{id}/generate-360-set (ASYNC)
+**Purpose**: Generate enhanced 360° reference set (27 professional shots) with background processing
+
+**⚡ NEW: Async Processing**
+- Returns immediately with job ID
+- Background processing prevents timeouts
+- Poll for progress and results
+- Estimated completion: ~15-30 minutes for 27 shots
 ```bash
-curl -X POST https://character.ft.tc/api/v1/characters/68c07c4305803df129909509/generate-core-set \
+curl -X POST https://character.ft.tc/api/v1/characters/68c07c4305803df129909509/generate-360-set \
   -H "Content-Type: application/json" \
   -d '{
-    "includeAddonShots": true,
+    "style": "character_production",
     "qualityThreshold": 75,
+    "imageCount": 27,
     "maxRetries": 3,
     "customSeed": 12345
   }'
@@ -378,16 +385,159 @@ curl -X POST https://character.ft.tc/api/v1/characters/68c07c4305803df129909509/
 }
 ```
 
-### POST /api/v1/characters/{id}/generate-360-set
-**Purpose**: Generate complete 360° reference image set (legacy endpoint, enhanced)
+### POST /api/v1/characters/{id}/generate-360-set (ASYNC)
+**Purpose**: Generate complete 360° reference image set with background processing
+
+**⚡ NEW: Async Processing**
+- Returns immediately with job ID
+- Background processing prevents timeouts
+- Poll for progress and results
+- Estimated completion: ~15-30 minutes for 27 shots
+
 ```bash
 curl -X POST https://character.ft.tc/api/v1/characters/68c07c4305803df129909509/generate-360-set \
   -H "Content-Type: application/json" \
   -d '{
     "style": "character_production",
     "qualityThreshold": 75,
-    "imageCount": 8
+    "imageCount": 27,
+    "maxRetries": 3,
+    "customSeed": 12345
   }'
+```
+
+**Response (Immediate):**
+```json
+{
+  "success": true,
+  "jobId": "550e8400-e29b-41d4-a716-446655440000",
+  "status": "accepted",
+  "message": "360° image generation job started. Generating 27 images.",
+  "estimatedCompletionTime": "2025-09-14T19:15:00.000Z",
+  "pollUrl": "/api/v1/jobs/550e8400-e29b-41d4-a716-446655440000/status"
+}
+```
+
+**Then Poll for Progress:**
+```bash
+curl https://character.ft.tc/api/v1/jobs/550e8400-e29b-41d4-a716-446655440000/status
+```
+
+**Progress Response:**
+```json
+{
+  "success": true,
+  "jobId": "550e8400-e29b-41d4-a716-446655440000",
+  "status": "processing",
+  "progress": {
+    "current": 15,
+    "total": 27,
+    "percentage": 56,
+    "currentTask": "Generating front_85mm shot"
+  },
+  "message": "Job is processing. Generating front_85mm shot"
+}
+```
+
+**Completed Response:**
+```json
+{
+  "success": true,
+  "jobId": "550e8400-e29b-41d4-a716-446655440000",
+  "status": "completed",
+  "results": {
+    "generatedImages": [
+      {
+        "url": "https://media.rumbletv.com/media/abc123",
+        "angle": "front_50mm",
+        "quality": 92,
+        "dinoAssetId": "dino-abc123",
+        "mediaId": "abc123"
+      }
+    ],
+    "totalAttempts": 27,
+    "processingTime": 1680000
+  },
+  "message": "Job completed successfully. Generated 27 images."
+}
+```
+
+### GET /api/v1/jobs/{jobId}/status
+**Purpose**: Check status and progress of background image generation job
+
+```bash
+curl https://character.ft.tc/api/v1/jobs/550e8400-e29b-41d4-a716-446655440000/status
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "jobId": "550e8400-e29b-41d4-a716-446655440000",
+  "status": "processing",
+  "progress": {
+    "current": 15,
+    "total": 27,
+    "percentage": 56,
+    "currentTask": "Generating front_85mm shot"
+  },
+  "message": "Job is processing. Generating front_85mm shot",
+  "startedAt": "2025-09-14T18:45:00.000Z",
+  "estimatedCompletionAt": "2025-09-14T19:12:00.000Z"
+}
+```
+
+### DELETE /api/v1/jobs/{jobId}/status
+**Purpose**: Cancel a running background job
+
+```bash
+curl -X DELETE https://character.ft.tc/api/v1/jobs/550e8400-e29b-41d4-a716-446655440000/status
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "message": "Job cancelled successfully"
+}
+```
+
+### GET /api/v1/jobs
+**Purpose**: List background jobs with filtering and pagination
+
+```bash
+curl "https://character.ft.tc/api/v1/jobs?characterId=68c07c4305803df129909509&status=processing&page=1&limit=10"
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "jobs": [
+    {
+      "jobId": "550e8400-e29b-41d4-a716-446655440000",
+      "characterId": "68c07c4305803df129909509",
+      "jobType": "360-set",
+      "status": "processing",
+      "progress": {
+        "current": 15,
+        "total": 27,
+        "percentage": 56,
+        "currentTask": "Generating front_85mm shot"
+      },
+      "createdAt": "2025-09-14T18:45:00.000Z",
+      "startedAt": "2025-09-14T18:45:30.000Z"
+    }
+  ],
+  "pagination": {
+    "totalDocs": 1,
+    "limit": 10,
+    "page": 1,
+    "totalPages": 1,
+    "hasNextPage": false,
+    "hasPrevPage": false
+  }
+}
 ```
 
 ### PUT /api/v1/characters/{id}/reference-image
@@ -425,6 +575,102 @@ curl -X DELETE https://character.ft.tc/api/v1/characters/68c07c4305803df12990950
     "enhancedQualityMetrics",
     "sceneContexts.generatedImages"
   ]
+}
+```
+
+### GET /api/v1/characters/{id}/images (NEW)
+**Purpose**: Get all generated images for a character organized by category
+```bash
+curl "https://character.ft.tc/api/v1/characters/68c07c4305803df129909509/images?includeUrls=true&minQuality=70&category=core"
+```
+**Query Parameters**:
+- `includeUrls` (boolean, default: true) - Include image URLs in response
+- `minQuality` (number, default: 0) - Filter images by minimum quality score
+- `category` (string, optional) - Filter by category: 'core', 'scene', 'ondemand', 'relationship'
+
+**Response**:
+```json
+{
+  "success": true,
+  "characterId": "68c07c4305803df129909509",
+  "characterName": "Dragon Warrior",
+  "totalImages": 32,
+  "images": {
+    "masterReference": {
+      "imageId": "master-ref-123",
+      "url": "https://media.rumbletv.com/media/master_ref.jpg",
+      "dinoAssetId": "dino-master-123",
+      "qualityScore": 92,
+      "isProcessed": true
+    },
+    "coreReferenceSet": [
+      {
+        "imageId": "core-front-50mm",
+        "url": "https://media.rumbletv.com/media/front_50mm.jpg",
+        "dinoAssetId": "dino-front-50mm",
+        "shotType": "core_reference",
+        "angle": "front",
+        "lens": "50mm",
+        "qualityScore": 89,
+        "consistencyScore": 94,
+        "isValid": true,
+        "referenceShot": {
+          "angle": "front",
+          "lensMm": 50,
+          "pack": "core"
+        }
+      }
+    ],
+    "sceneImages": [
+      {
+        "imageId": "scene-alley-123",
+        "url": "https://media.rumbletv.com/media/scene_alley.jpg",
+        "dinoAssetId": "dino-scene-123",
+        "shotType": "scene",
+        "sceneContext": "dark alley at night",
+        "tags": "scene,action,dramatic",
+        "qualityScore": 87,
+        "consistencyScore": 91,
+        "isValid": true,
+        "generationPrompt": "Dragon warrior standing in dark alley"
+      }
+    ],
+    "onDemandImages": [
+      {
+        "imageId": "ondemand-smile-123",
+        "url": "https://media.rumbletv.com/media/smile.jpg",
+        "dinoAssetId": "dino-smile-123",
+        "shotType": "on_demand",
+        "tags": "expression,smile,portrait",
+        "qualityScore": 85,
+        "consistencyScore": 88,
+        "isValid": true,
+        "generationPrompt": "Dragon warrior with a warm smile"
+      }
+    ],
+    "relationshipImages": [
+      {
+        "imageId": "relationship-duo-123",
+        "url": "https://media.rumbletv.com/media/duo.jpg",
+        "dinoAssetId": "dino-duo-123",
+        "shotType": "relationship",
+        "tags": "relationship,friendship,duo",
+        "qualityScore": 90,
+        "consistencyScore": 92,
+        "isValid": true
+      }
+    ]
+  },
+  "summary": {
+    "masterReferenceCount": 1,
+    "coreReferenceCount": 27,
+    "sceneImageCount": 3,
+    "onDemandImageCount": 1,
+    "relationshipImageCount": 1,
+    "totalValidImages": 31,
+    "averageQuality": 88,
+    "averageConsistency": 91
+  }
 }
 ```
 
@@ -659,7 +905,7 @@ DINOv3 processing: processing - Asset ID: 61cd63e4-e406-481f-b317-202e9b158fad
 ## 🆕 Enhanced System API Examples
 
 ### POST /api/v1/admin/seed-reference-shots-enhanced
-**Purpose**: Seed comprehensive 25+ shot reference library with cinematic precision
+**Purpose**: Seed comprehensive 27 shot reference library with cinematic precision
 ```bash
 curl -X POST https://character.ft.tc/api/v1/admin/seed-reference-shots-enhanced \
   -H "Content-Type: application/json" \
