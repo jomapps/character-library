@@ -11,7 +11,7 @@ export default {
       max_memory_restart: '1G',
       env: {
         NODE_ENV: 'production',
-        PORT: 3000,
+        PORT: 3003,
         NODE_OPTIONS: '--no-deprecation',
         DATABASE_URI: 'mongodb://127.0.0.1/character-library',
         PAYLOAD_SECRET: '46759c2bb45d4c85458e2981',
